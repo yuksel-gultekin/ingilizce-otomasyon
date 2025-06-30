@@ -37,8 +37,7 @@ namespace EnglishAutomationApp.Data
             // Connect and ensure tables exist
             using var connection = new OleDbConnection(GetConnectionString());
             await connection.OpenAsync();
-            await CreateTablesAsync(connection);
-            // await EnsureTablesExistAsync(connection);
+            await EnsureTablesExistAsync(connection);
         }
 
         private static void CreateEmptyAccessDatabase(string dbPath)
