@@ -38,7 +38,7 @@ namespace EnglishAutomationApp.Data
             using var connection = new OleDbConnection(GetConnectionString());
             await connection.OpenAsync();
             await CreateTablesAsync(connection);
-           // await EnsureTablesExistAsync(connection);
+            // await EnsureTablesExistAsync(connection);
         }
 
         private static void CreateEmptyAccessDatabase(string dbPath)
@@ -112,54 +112,54 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-                // Create Users table with simpler syntax
+                // ✅ Users table
                 var createUsersTable = @"
-                    CREATE TABLE Users (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        Email TEXT(255),
-                        PasswordHash TEXT(255),
-                        FirstName TEXT(100),
-                        LastName TEXT(100),
-                        Role TEXT(50),
-                        IsActive YESNO,
-                        CreatedDate DATETIME
-                    )";
+            CREATE TABLE Users (
+                Id COUNTER PRIMARY KEY,
+                Email TEXT(255) NOT NULL,
+                PasswordHash TEXT(255),
+                FirstName TEXT(100),
+                LastName TEXT(100),
+                Role TEXT(50),
+                IsActive YESNO,
+                CreatedDate DATETIME
+            )";
                 await ExecuteNonQueryAsync(connection, createUsersTable);
 
-            // Courses table with simpler syntax
-            var createCoursesTable = @"
-                CREATE TABLE Courses (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    Title TEXT(255),
-                    Description TEXT,
-                    Content MEMO,
-                    Level INTEGER,
-                    Type INTEGER,
-                    Price CURRENCY,
-                    OrderIndex INTEGER,
-                    EstimatedDurationMinutes INTEGER,
-                    Prerequisites TEXT,
-                    Color TEXT(20),
-                    IsActive YESNO,
-                    CreatedDate DATETIME
-                )";
-            await ExecuteNonQueryAsync(connection, createCoursesTable);
+                // ✅ Courses table
+                var createCoursesTable = @"
+            CREATE TABLE Courses (
+                Id COUNTER PRIMARY KEY,
+                Title TEXT(255),
+                Description MEMO,
+                Content MEMO,
+                Level INTEGER,
+                Type INTEGER,
+                Price CURRENCY,
+                OrderIndex INTEGER,
+                EstimatedDurationMinutes INTEGER,
+                Prerequisites TEXT(255),
+                Color TEXT(20),
+                IsActive YESNO,
+                CreatedDate DATETIME
+            )";
+                await ExecuteNonQueryAsync(connection, createCoursesTable);
 
-            // VocabularyWords table with simpler syntax
-            var createVocabularyTable = @"
-                CREATE TABLE VocabularyWords (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    EnglishWord TEXT(255),
-                    TurkishMeaning TEXT(255),
-                    Pronunciation TEXT(255),
-                    ExampleSentence MEMO,
-                    ExampleSentenceTurkish MEMO,
-                    Difficulty INTEGER,
-                    PartOfSpeech INTEGER,
-                    Category TEXT(100),
-                    CreatedDate DATETIME
-                )";
-            await ExecuteNonQueryAsync(connection, createVocabularyTable);
+                // ✅ VocabularyWords table
+                var createVocabularyTable = @"
+            CREATE TABLE VocabularyWords (
+                Id COUNTER PRIMARY KEY,
+                EnglishWord TEXT(255),
+                TurkishMeaning TEXT(255),
+                Pronunciation TEXT(255),
+                ExampleSentence MEMO,
+                ExampleSentenceTurkish MEMO,
+                Difficulty INTEGER,
+                PartOfSpeech INTEGER,
+                Category TEXT(100),
+                CreatedDate DATETIME
+            )";
+                await ExecuteNonQueryAsync(connection, createVocabularyTable);
             }
             catch (Exception ex)
             {
@@ -168,20 +168,22 @@ namespace EnglishAutomationApp.Data
             }
         }
 
+
         private static async Task SeedDataAsync(OleDbConnection connection)
         {
             var adminSql = @"
-                INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
+        VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             using var adminCommand = new OleDbCommand(adminSql, connection);
-            adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
-            adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
-            adminCommand.Parameters.AddWithValue("?", "Admin");
-            adminCommand.Parameters.AddWithValue("?", "User");
-            adminCommand.Parameters.AddWithValue("?", "Admin");
-            adminCommand.Parameters.AddWithValue("?", true);
-            adminCommand.Parameters.AddWithValue("?", DateTime.Now);
+            adminCommand.Parameters.AddWithValue("@p1", "admin@engotomasyon.com");
+            adminCommand.Parameters.AddWithValue("@p2", BCrypt.Net.BCrypt.HashPassword("admin123"));
+            adminCommand.Parameters.AddWithValue("@p3", "Admin");
+            adminCommand.Parameters.AddWithValue("@p4", "User");
+            adminCommand.Parameters.AddWithValue("@p5", "Admin");
+            adminCommand.Parameters.AddWithValue("@p6", true);
+            adminCommand.Parameters.AddWithValue("@p7", DateTime.Now);
+
             await adminCommand.ExecuteNonQueryAsync();
         }
 
