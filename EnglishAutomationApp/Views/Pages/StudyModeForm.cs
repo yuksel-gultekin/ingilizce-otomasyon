@@ -14,7 +14,7 @@ namespace EnglishAutomationApp.Views.Pages
         private List<VocabularyWord> words;
         private int currentWordIndex = 0;
         private int correctAnswers = 0;
-        private bool showingAnswer = false;
+
         private bool isReviewMode = false;
 
         private Panel headerPanel;
@@ -251,14 +251,14 @@ namespace EnglishAutomationApp.Views.Pages
             incorrectButton.Visible = true;
         }
 
-        private async void CorrectButton_Click(object sender, EventArgs e)
+        private async void CorrectButton_Click(object? sender, EventArgs e)
         {
             correctAnswers++;
             await RecordAnswer(true);
             ShowNextButtons();
         }
 
-        private async void IncorrectButton_Click(object sender, EventArgs e)
+        private async void IncorrectButton_Click(object? sender, EventArgs e)
         {
             await RecordAnswer(false);
             ShowNextButtons();
@@ -297,13 +297,13 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void NextButton_Click(object sender, EventArgs e)
+        private void NextButton_Click(object? sender, EventArgs e)
         {
             currentWordIndex++;
             ShowCurrentWord();
         }
 
-        private void FinishButton_Click(object sender, EventArgs e)
+        private void FinishButton_Click(object? sender, EventArgs e)
         {
             ShowResults();
         }
