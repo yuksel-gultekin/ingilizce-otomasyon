@@ -112,6 +112,22 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
+
+                var createVocabularyTable = @"
+            CREATE TABLE VocabularyWords (
+                Id COUNTER PRIMARY KEY,
+                EnglishWord TEXT(255),
+                TurkishMeaning TEXT(255),
+                Pronunciation TEXT(255),
+                ExampleSentence MEMO,
+                ExampleSentenceTurkish MEMO,
+                Difficulty INTEGER,
+                PartOfSpeech INTEGER,
+                Category TEXT(100),
+                CreatedDate DATETIME
+            )";
+                await ExecuteNonQueryAsync(connection, createVocabularyTable);
+
                 // ✅ Users table
                 var createUsersTable = @"
             CREATE TABLE Users (
@@ -145,21 +161,7 @@ namespace EnglishAutomationApp.Data
             )";
                 await ExecuteNonQueryAsync(connection, createCoursesTable);
 
-                // ✅ VocabularyWords table
-                var createVocabularyTable = @"
-            CREATE TABLE VocabularyWords (
-                Id COUNTER PRIMARY KEY,
-                EnglishWord TEXT(255),
-                TurkishMeaning TEXT(255),
-                Pronunciation TEXT(255),
-                ExampleSentence MEMO,
-                ExampleSentenceTurkish MEMO,
-                Difficulty INTEGER,
-                PartOfSpeech INTEGER,
-                Category TEXT(100),
-                CreatedDate DATETIME
-            )";
-                await ExecuteNonQueryAsync(connection, createVocabularyTable);
+
             }
             catch (Exception ex)
             {
