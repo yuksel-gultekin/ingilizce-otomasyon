@@ -499,5 +499,60 @@ namespace EnglishAutomationApp.Data
                     "Restore Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             }
         }
+
+        public static string GetDatabaseInfo()
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+                if (File.Exists(dbPath))
+                {
+                    var fileInfo = new FileInfo(dbPath);
+                    return $"Database Path: {dbPath}\n" +
+                           $"Database Size: {GetDatabaseSizeFormatted()}\n" +
+                           $"Last Modified: {fileInfo.LastWriteTime:yyyy-MM-dd HH:mm:ss}\n" +
+                           $"Status: Connected";
+                }
+                else
+                {
+                    return $"Database Path: {dbPath}\n" +
+                           $"Status: Database file not found";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Error getting database info: {ex.Message}";
+            }
+        }
+
+        public static string GetDatabaseSizeFormatted()
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+                if (File.Exists(dbPath))
+                {
+                    var fileInfo = new FileInfo(dbPath);
+                    var sizeInBytes = fileInfo.Length;
+
+                    if (sizeInBytes < 1024)
+                        return $"{sizeInBytes} bytes";
+                    else if (sizeInBytes < 1024 * 1024)
+                        return $"{sizeInBytes / 1024.0:F1} KB";
+                    else if (sizeInBytes < 1024 * 1024 * 1024)
+                        return $"{sizeInBytes / (1024.0 * 1024.0):F1} MB";
+                    else
+                        return $"{sizeInBytes / (1024.0 * 1024.0 * 1024.0):F1} GB";
+                }
+                else
+                {
+                    return "N/A";
+                }
+            }
+            catch (Exception)
+            {
+                return "Unknown";
+            }
+        }
     }
 }
