@@ -9,21 +9,21 @@ namespace EnglishAutomationApp.Views
 {
     public partial class LoginForm : Form
     {
-        private TextBox emailTextBox = null!;
-        private TextBox passwordTextBox = null!;
-        private Button loginButton = null!;
-        private Button registerButton = null!;
-        private Label messageLabel = null!;
-        private Label titleLabel = null!;
-        private Label subtitleLabel = null!;
-        private Label emailLabel = null!;
-        private Label passwordLabel = null!;
-        private Panel mainPanel = null!;
-        private Panel inputPanel = null!;
-        private PictureBox logoBox = null!;
-        private CheckBox rememberMeCheckBox = null!;
-        private LinkLabel forgotPasswordLabel = null!;
-        private System.Windows.Forms.Timer fadeTimer = null!;
+        private TextBox emailTextBox;
+        private TextBox passwordTextBox;
+        private Button loginButton;
+        private Button registerButton;
+        private Label messageLabel;
+        private Label titleLabel;
+        private Label subtitleLabel;
+        private Label emailLabel;
+        private Label passwordLabel;
+        private Panel mainPanel;
+        private Panel inputPanel;
+        private PictureBox logoBox;
+        private CheckBox rememberMeCheckBox;
+        private LinkLabel forgotPasswordLabel;
+        private Timer fadeTimer;
         private float opacity = 0f;
 
         public LoginForm()
@@ -41,10 +41,12 @@ namespace EnglishAutomationApp.Views
             this.Text = "English Automation Platform";
             this.Size = new Size(500, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.BackColor = Color.FromArgb(15, 23, 42); // Slate-900
-            this.AllowTransparency = true;
+            this.AllowTransparency = false;
             this.DoubleBuffered = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
 
             // Logo/Icon placeholder
             logoBox = new PictureBox();
@@ -213,39 +215,30 @@ namespace EnglishAutomationApp.Views
             textBox.Paint += (s, e) =>
             {
                 var tb = s as TextBox;
-                if (tb != null)
+                using (var pen = new Pen(Color.FromArgb(71, 85, 105), 1)) // Slate-600
                 {
-                    using (var pen = new Pen(Color.FromArgb(71, 85, 105), 1)) // Slate-600
-                    {
-                        e.Graphics.DrawRectangle(pen, 0, 0, tb.Width - 1, tb.Height - 1);
-                    }
+                    e.Graphics.DrawRectangle(pen, 0, 0, tb.Width - 1, tb.Height - 1);
                 }
             };
 
             textBox.Enter += (s, e) =>
             {
                 var tb = s as TextBox;
-                if (tb != null)
-                {
-                    tb.BackColor = Color.FromArgb(71, 85, 105); // Slate-600
-                    tb.Invalidate();
-                }
+                tb.BackColor = Color.FromArgb(71, 85, 105); // Slate-600
+                tb.Invalidate();
             };
 
             textBox.Leave += (s, e) =>
             {
                 var tb = s as TextBox;
-                if (tb != null)
-                {
-                    tb.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
-                    tb.Invalidate();
-                }
+                tb.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+                tb.Invalidate();
             };
         }
 
         private void SetupFadeInAnimation()
         {
-            fadeTimer = new System.Windows.Forms.Timer();
+            fadeTimer = new Timer();
             fadeTimer.Interval = 20;
             fadeTimer.Tick += (s, e) =>
             {
@@ -260,7 +253,7 @@ namespace EnglishAutomationApp.Views
             this.Shown += (s, e) => fadeTimer.Start();
         }
 
-        private void LogoBox_Paint(object? sender, PaintEventArgs e)
+        private void LogoBox_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -269,7 +262,7 @@ namespace EnglishAutomationApp.Views
                 logoBox.ClientRectangle,
                 Color.FromArgb(99, 102, 241), // Indigo-500
                 Color.FromArgb(139, 92, 246), // Violet-500
-                LinearGradientMode.ForwardDiagonal))
+                LinearGradientMode.Diagonal))
             {
                 g.FillEllipse(brush, 0, 0, logoBox.Width, logoBox.Height);
             }
@@ -284,7 +277,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void MainPanel_Paint(object? sender, PaintEventArgs e)
+        private void MainPanel_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -305,11 +298,9 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void LoginButton_Paint(object? sender, PaintEventArgs e)
+        private void LoginButton_Paint(object sender, PaintEventArgs e)
         {
             var button = sender as Button;
-            if (button == null) return;
-
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -340,12 +331,12 @@ namespace EnglishAutomationApp.Views
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
-        private void LoginButton_MouseEnter(object? sender, EventArgs e)
+        private void LoginButton_MouseEnter(object sender, EventArgs e)
         {
             loginButton.Invalidate();
         }
 
-        private void LoginButton_MouseLeave(object? sender, EventArgs e)
+        private void LoginButton_MouseLeave(object sender, EventArgs e)
         {
             loginButton.Invalidate();
         }
@@ -365,18 +356,14 @@ namespace EnglishAutomationApp.Views
         {
             base.OnPaint(e);
             
-            // Add subtle background gradient
-            using (var brush = new LinearGradientBrush(
-                this.ClientRectangle,
-                Color.FromArgb(15, 23, 42),  // Slate-900
-                Color.FromArgb(30, 41, 59),  // Slate-800
-                LinearGradientMode.Vertical))
+            // Solid background - no transparency
+            using (var brush = new SolidBrush(Color.FromArgb(15, 23, 42))) // Slate-900
             {
                 e.Graphics.FillRectangle(brush, this.ClientRectangle);
             }
         }
 
-        private async void LoginButton_Click(object? sender, EventArgs e)
+        private async void LoginButton_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(emailTextBox.Text) || 
                 string.IsNullOrWhiteSpace(passwordTextBox.Text))
@@ -400,7 +387,7 @@ namespace EnglishAutomationApp.Views
                     ShowMessage(result.Message, Color.FromArgb(34, 197, 94)); // Green-500
                     
                     // Fade out animation before opening main form
-                    var fadeOutTimer = new System.Windows.Forms.Timer();
+                    var fadeOutTimer = new Timer();
                     fadeOutTimer.Interval = 20;
                     fadeOutTimer.Tick += (s, args) =>
                     {
@@ -420,7 +407,7 @@ namespace EnglishAutomationApp.Views
                     ShowMessage(result.Message, Color.FromArgb(248, 113, 113)); // Red-400
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ShowMessage($"Connection error. Please try again.", Color.FromArgb(248, 113, 113)); // Red-400
             }
@@ -432,7 +419,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void RegisterButton_Click(object? sender, EventArgs e)
+        private void RegisterButton_Click(object sender, EventArgs e)
         {
             var registerForm = new RegisterForm();
             registerForm.ShowDialog(this);
@@ -444,7 +431,7 @@ namespace EnglishAutomationApp.Views
             messageLabel.ForeColor = color;
             
             // Add fade-in animation for messages
-            var messageTimer = new System.Windows.Forms.Timer();
+            var messageTimer = new Timer();
             messageTimer.Interval = 3000;
             messageTimer.Tick += (s, e) =>
             {
@@ -459,7 +446,7 @@ namespace EnglishAutomationApp.Views
             get
             {
                 CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED
+                cp.ExStyle |= 0x02000000; // WS_EX_COMPOSITED - For smooth painting
                 return cp;
             }
         }
