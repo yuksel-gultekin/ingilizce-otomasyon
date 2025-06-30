@@ -12,33 +12,58 @@ namespace EnglishAutomationApp.Data
     {
         private static string GetConnectionString()
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                                    "EnglishAutomationApp", "database.accdb");
+            var dbPath = GetDatabasePath();
 
             // Create directory if it doesn't exist
             var directory = Path.GetDirectoryName(dbPath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory!);
+                System.Windows.Forms.MessageBox.Show($"Created directory: {directory}", "Debug - Directory Created");
             }
 
+            // Use ACE provider for .accdb files
             return $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
         }
 
         private static string GetDatabasePath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                              "EnglishAutomationApp", "database.accdb");
+            try
+            {
+                // Use a more accessible location
+                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var appFolder = Path.Combine(appDataPath, "EnglishAutomationApp");
+                var dbPath = Path.Combine(appFolder, "database.accdb");
+
+                System.Windows.Forms.MessageBox.Show($"App Data Path: {appDataPath}\nApp Folder: {appFolder}\nDB Path: {dbPath}", "Debug - Paths");
+
+                return dbPath;
+            }
+            catch (Exception ex)
+            {
+                // Fallback to application directory
+                var fallbackPath = Path.Combine(System.Windows.Forms.Application.StartupPath, "database.accdb");
+                System.Windows.Forms.MessageBox.Show($"Error getting LocalApplicationData path: {ex.Message}\nUsing fallback: {fallbackPath}", "Debug - Fallback");
+                return fallbackPath;
+            }
         }
 
         public static async Task InitializeDatabaseAsync()
         {
             var dbPath = GetDatabasePath();
 
+            System.Windows.Forms.MessageBox.Show($"Database path: {dbPath}", "Debug Info");
+
             if (!File.Exists(dbPath))
             {
+                System.Windows.Forms.MessageBox.Show("Database file not found. Creating new database...", "Debug Info");
                 await CreateDatabaseAsync();
                 await SeedDataAsync();
+                System.Windows.Forms.MessageBox.Show("Database created and seeded successfully!", "Debug Info");
+            }
+            else
+            {
+                System.Windows.Forms.MessageBox.Show("Database file already exists.", "Debug Info");
             }
         }
 
@@ -46,8 +71,6 @@ namespace EnglishAutomationApp.Data
         {
             var dbPath = GetDatabasePath();
 
-            // Create empty Access database using ADOX (requires Microsoft.Office.Interop.Access)
-            // For simplicity, we'll create the database programmatically
             try
             {
                 // Create the database file using OleDb commands
@@ -348,32 +371,40 @@ namespace EnglishAutomationApp.Data
 
         private static void CreateEmptyAccessDatabase(string dbPath)
         {
-            // Create an empty Access database file
-            // This creates a minimal Access database structure
-            var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};";
-
             try
             {
-                // Create the database file by attempting to connect and create a dummy table
+                System.Windows.Forms.MessageBox.Show($"Attempting to create database at: {dbPath}", "Debug Info");
+
+                // Create directory if it doesn't exist
+                var directory = Path.GetDirectoryName(dbPath);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory!);
+                    System.Windows.Forms.MessageBox.Show($"Created directory: {directory}", "Debug Info");
+                }
+
+                // Create Access database using ADOX (if available) or OleDb
+                var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};";
+
+                // Create the database by connecting and creating a temporary table
                 using var connection = new OleDbConnection(connectionString);
                 connection.Open();
 
-                // Create a temporary table to initialize the database
-                var createTempTable = "CREATE TABLE TempTable (Id AUTOINCREMENT PRIMARY KEY)";
+                // Create and drop a temporary table to initialize the database
+                var createTempTable = "CREATE TABLE TempInit (Id AUTOINCREMENT PRIMARY KEY)";
                 using var command = new OleDbCommand(createTempTable, connection);
                 command.ExecuteNonQuery();
 
-                // Drop the temporary table
-                var dropTempTable = "DROP TABLE TempTable";
+                var dropTempTable = "DROP TABLE TempInit";
                 using var dropCommand = new OleDbCommand(dropTempTable, connection);
                 dropCommand.ExecuteNonQuery();
+
+                System.Windows.Forms.MessageBox.Show("Access database created successfully!", "Debug Info");
             }
             catch (Exception ex)
             {
-                // If database creation fails, create a simple file
-                // This might happen if Access drivers are not installed
-                File.WriteAllText(dbPath, ""); // Create empty file
-                throw new InvalidOperationException($"Could not create Access database. Please ensure Microsoft Access Database Engine is installed. Error: {ex.Message}");
+                System.Windows.Forms.MessageBox.Show($"Error creating database: {ex.Message}", "Error");
+                throw new InvalidOperationException($"Could not create Access database. Error: {ex.Message}");
             }
         }
 
