@@ -82,7 +82,6 @@ namespace EnglishAutomationApp.Helpers
             };
 
             button.FlatAppearance.BorderSize = 0;
-            button.FlatAppearance.BorderColor = Color.Transparent;
 
             // Hover effects
             button.MouseEnter += (s, e) => {
