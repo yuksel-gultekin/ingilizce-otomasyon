@@ -210,11 +210,11 @@ namespace EnglishAutomationApp.Views.Pages
             descriptionLabel.Location = new Point(15, 120);
             descriptionLabel.Size = new Size(190, 80);
 
-            // Price
+            // Price - All courses are now free
             var priceLabel = new Label();
-            priceLabel.Text = course.Price == 0 ? "FREE" : $"${course.Price:F2}";
+            priceLabel.Text = "FREE";
             priceLabel.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            priceLabel.ForeColor = course.Price == 0 ? Color.Green : Color.FromArgb(255, 152, 0);
+            priceLabel.ForeColor = Color.Green;
             priceLabel.Location = new Point(15, 210);
             priceLabel.Size = new Size(80, 25);
 
@@ -254,11 +254,17 @@ namespace EnglishAutomationApp.Views.Pages
         {
             var button = sender as Button;
             var course = button?.Tag as Course;
-            
+
             if (course != null)
             {
-                MessageBox.Show($"Starting course: {course.Title}\n\nThis feature will be implemented in the full version.", 
+                // All courses are now free - no payment required
+                MessageBox.Show($"Starting course: {course.Title}\n\nWelcome to your English learning journey!\n\nThis course is now available for free.",
                     "Course Started", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Here you could add logic to:
+                // - Create user progress record
+                // - Navigate to course content
+                // - Show first lesson
             }
         }
     }
