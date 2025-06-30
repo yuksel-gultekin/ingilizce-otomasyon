@@ -45,12 +45,14 @@ namespace EnglishAutomationApp.Services
         public static async Task<VocabularyWord> UpdateWordAsync(VocabularyWord word)
         {
             // Update functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
             return word;
         }
 
         public static async Task<bool> DeleteWordAsync(int wordId)
         {
             // Delete functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
             return true;
         }
 
@@ -67,134 +69,59 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<UserVocabulary?> GetUserVocabularyAsync(int userId, int wordId)
         {
-            using var context = new AppDbContext();
-            return await context.UserVocabularies
-                .Include(uv => uv.VocabularyWord)
-                .FirstOrDefaultAsync(uv => uv.UserId == userId && uv.VocabularyWordId == wordId);
+            // User vocabulary functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
+            return null;
         }
 
         public static async Task<List<UserVocabulary>> GetUserVocabulariesAsync(int userId)
         {
-            using var context = new AppDbContext();
-            return await context.UserVocabularies
-                .Include(uv => uv.VocabularyWord)
-                .Where(uv => uv.UserId == userId)
-                .OrderByDescending(uv => uv.LastReviewedDate)
-                .ToListAsync();
+            // User vocabulary functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
+            return new List<UserVocabulary>();
         }
 
         public static async Task<UserVocabulary> AddOrUpdateUserVocabularyAsync(int userId, int wordId, bool isCorrect)
         {
-            using var context = new AppDbContext();
-            
-            var userVocab = await context.UserVocabularies
-                .FirstOrDefaultAsync(uv => uv.UserId == userId && uv.VocabularyWordId == wordId);
-
-            if (userVocab == null)
+            // User vocabulary functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
+            return new UserVocabulary
             {
-                userVocab = new UserVocabulary
-                {
-                    UserId = userId,
-                    VocabularyWordId = wordId,
-                    FirstLearnedDate = DateTime.Now,
-                    MasteryLevel = 1
-                };
-                context.UserVocabularies.Add(userVocab);
-            }
-
-            userVocab.LastReviewedDate = DateTime.Now;
-            userVocab.ReviewCount++;
-            userVocab.TotalAttempts++;
-
-            if (isCorrect)
-            {
-                userVocab.CorrectAnswers++;
-                if (userVocab.MasteryLevel < 5)
-                {
-                    userVocab.MasteryLevel++;
-                }
-            }
-            else
-            {
-                if (userVocab.MasteryLevel > 1)
-                {
-                    userVocab.MasteryLevel--;
-                }
-            }
-
-            await context.SaveChangesAsync();
-            return userVocab;
+                UserId = userId,
+                VocabularyWordId = wordId,
+                FirstLearnedDate = DateTime.Now,
+                MasteryLevel = 1
+            };
         }
 
         public static async Task<List<VocabularyWord>> GetWordsForReviewAsync(int userId, int maxWords = 10)
         {
-            using var context = new AppDbContext();
-
-            // Get words that need review based on spaced repetition algorithm
-            var wordsForReview = await context.UserVocabularies
-                .Include(uv => uv.VocabularyWord)
-                .Where(uv => uv.UserId == userId &&
-                    uv.VocabularyWord.IsActive &&
-                    (uv.LastReviewedDate == null ||
-                     uv.LastReviewedDate.Value.AddDays(GetReviewInterval(uv.MasteryLevel)) <= DateTime.Now))
-                .OrderBy(uv => uv.LastReviewedDate ?? DateTime.MinValue)
-                .Take(maxWords)
-                .Select(uv => uv.VocabularyWord)
-                .ToListAsync();
-
-            // If not enough words for review, add some new words
-            if (wordsForReview.Count < maxWords)
-            {
-                var learnedWordIds = await context.UserVocabularies
-                    .Where(uv => uv.UserId == userId)
-                    .Select(uv => uv.VocabularyWordId)
-                    .ToListAsync();
-
-                var newWords = await context.VocabularyWords
-                    .Where(w => w.IsActive && !learnedWordIds.Contains(w.Id))
-                    .OrderBy(w => w.Difficulty)
-                    .Take(maxWords - wordsForReview.Count)
-                    .ToListAsync();
-
-                wordsForReview.AddRange(newWords);
-            }
-
-            return wordsForReview;
+            // Get random words for review - functionality needs to be implemented in AccessDatabaseHelper
+            var allWords = await GetAllWordsAsync();
+            return allWords.Take(maxWords).ToList();
         }
 
         public static async Task<Dictionary<string, int>> GetUserStatsAsync(int userId)
         {
-            using var context = new AppDbContext();
-
-            var stats = new Dictionary<string, int>();
-
-            var userVocabs = await context.UserVocabularies
-                .Where(uv => uv.UserId == userId)
-                .ToListAsync();
-
-            stats["TotalWordsLearned"] = userVocabs.Count;
-            stats["MasteredWords"] = userVocabs.Count(uv => uv.IsMastered);
-            stats["WordsInProgress"] = userVocabs.Count(uv => !uv.IsMastered);
-            stats["TotalReviews"] = userVocabs.Sum(uv => uv.ReviewCount);
-            stats["AverageAccuracy"] = userVocabs.Count > 0 ?
-                (int)userVocabs.Average(uv => uv.AccuracyRate) : 0;
-            stats["CurrentStreak"] = await CalculateCurrentStreakAsync(userId);
-
-            return stats;
+            // User stats functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
+            var allWords = await GetAllWordsAsync();
+            return new Dictionary<string, int>
+            {
+                ["TotalWordsLearned"] = allWords.Count,
+                ["MasteredWords"] = 0,
+                ["WordsInProgress"] = allWords.Count,
+                ["TotalReviews"] = 0,
+                ["AverageAccuracy"] = 0,
+                ["CurrentStreak"] = 0
+            };
         }
 
         public static async Task<List<VocabularyWord>> GetWeakWordsAsync(int userId, int count = 5)
         {
-            using var context = new AppDbContext();
-
-            return await context.UserVocabularies
-                .Include(uv => uv.VocabularyWord)
-                .Where(uv => uv.UserId == userId && uv.VocabularyWord.IsActive)
-                .OrderBy(uv => uv.AccuracyRate)
-                .ThenBy(uv => uv.MasteryLevel)
-                .Take(count)
-                .Select(uv => uv.VocabularyWord)
-                .ToListAsync();
+            // Weak words functionality needs to be implemented in AccessDatabaseHelper
+            var allWords = await GetAllWordsAsync();
+            return allWords.Take(count).ToList();
         }
 
         private static int GetReviewInterval(int masteryLevel)
@@ -213,33 +140,9 @@ namespace EnglishAutomationApp.Services
 
         private static async Task<int> CalculateCurrentStreakAsync(int userId)
         {
-            using var context = new AppDbContext();
-
-            var recentReviews = await context.UserVocabularies
-                .Where(uv => uv.UserId == userId && uv.LastReviewedDate.HasValue)
-                .OrderByDescending(uv => uv.LastReviewedDate)
-                .Take(30) // Check last 30 reviews
-                .ToListAsync();
-
-            int streak = 0;
-            var currentDate = DateTime.Now.Date;
-
-            foreach (var review in recentReviews)
-            {
-                var reviewDate = review.LastReviewedDate!.Value.Date;
-                var daysDiff = (currentDate - reviewDate).Days;
-
-                if (daysDiff == streak)
-                {
-                    streak++;
-                }
-                else if (daysDiff > streak)
-                {
-                    break;
-                }
-            }
-
-            return streak;
+            // Streak calculation functionality needs to be implemented in AccessDatabaseHelper
+            await Task.CompletedTask;
+            return 0;
         }
 
         public static async Task SeedSampleWordsAsync()

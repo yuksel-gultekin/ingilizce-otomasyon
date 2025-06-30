@@ -178,6 +178,7 @@ namespace EnglishAutomationApp.Services
                 CurrentUser.LastName = lastName;
 
                 // For now, we'll just update in memory. Database update needs to be implemented in AccessDatabaseHelper
+                await Task.CompletedTask;
                 return (true, "Profile updated successfully.");
             }
             catch (Exception ex)

@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
 using EnglishAutomationApp.Services;
-using EnglishAutomationApp.Helpers;
 
 namespace EnglishAutomationApp.Views.Pages
 {

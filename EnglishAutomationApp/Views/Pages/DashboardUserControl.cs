@@ -203,21 +203,14 @@ namespace EnglishAutomationApp.Views.Pages
             {
                 if (AuthenticationService.CurrentUser == null) return;
 
-                using var context = new AppDbContext();
-                var userId = AuthenticationService.CurrentUser.Id;
+                // Load statistics from Access DB
+                var allCourses = await AccessDatabaseHelper.GetAllCoursesAsync();
+                var allWords = await AccessDatabaseHelper.GetAllVocabularyWordsAsync();
 
-                // Load statistics
-                var totalCourses = await context.Courses.CountAsync(c => c.IsActive);
-                var userProgresses = await context.UserProgresses
-                    .Where(up => up.UserId == userId)
-                    .Include(up => up.Course)
-                    .ToListAsync();
-
-                var completedCourses = userProgresses.Count(up => up.Status == ProgressStatus.Completed);
-                var totalTimeMinutes = userProgresses.Sum(up => up.TimeSpentMinutes);
-
-                // Calculate vocabulary count (simulated)
-                var vocabularyCount = 25; // Placeholder
+                var totalCourses = allCourses.Count;
+                var completedCourses = 0; // User progress functionality needs to be implemented
+                var totalTimeMinutes = 0; // User progress functionality needs to be implemented
+                var vocabularyCount = allWords.Count;
 
                 // Update UI
                 totalCoursesLabel.Text = totalCourses.ToString();
@@ -236,7 +229,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading dashboard data: {ex.Message}", "Error", 
+                MessageBox.Show($"Error loading dashboard data: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
