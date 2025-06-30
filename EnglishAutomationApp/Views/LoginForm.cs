@@ -23,7 +23,7 @@ namespace EnglishAutomationApp.Views
         private PictureBox logoBox;
         private CheckBox rememberMeCheckBox;
         private LinkLabel forgotPasswordLabel;
-        private Timer fadeTimer;
+        private System.Windows.Forms.Timer fadeTimer;
         private float opacity = 0f;
 
         public LoginForm()
