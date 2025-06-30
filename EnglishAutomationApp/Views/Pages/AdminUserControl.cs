@@ -111,12 +111,12 @@ namespace EnglishAutomationApp.Views.Pages
             this.ResumeLayout(false);
         }
 
-        private void BackupButton_Click(object sender, EventArgs e)
+        private void BackupButton_Click(object? sender, EventArgs e)
         {
             AccessDatabaseHelper.BackupDatabase();
         }
 
-        private void CompactButton_Click(object sender, EventArgs e)
+        private void CompactButton_Click(object? sender, EventArgs e)
         {
             var result = MessageBox.Show("This will compact the database to reduce its size. Continue?",
                 "Compact Database", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -127,7 +127,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void RestoreButton_Click(object sender, EventArgs e)
+        private void RestoreButton_Click(object? sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select Database Backup File";

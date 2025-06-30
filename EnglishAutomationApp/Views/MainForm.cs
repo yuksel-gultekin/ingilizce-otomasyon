@@ -224,12 +224,12 @@ namespace EnglishAutomationApp.Views
         // Public navigation methods for other controls to use
         public void NavigateToCoursesPage()
         {
-            CoursesMenuItem_Click(null, null);
+            CoursesMenuItem_Click(null, EventArgs.Empty);
         }
 
         public void NavigateToProgressPage()
         {
-            ProgressMenuItem_Click(null, null);
+            ProgressMenuItem_Click(null, EventArgs.Empty);
         }
 
 

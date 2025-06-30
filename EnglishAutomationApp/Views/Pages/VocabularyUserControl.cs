@@ -445,7 +445,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private async void StatsButton_Click(object? sender, EventArgs e)
+        private void StatsButton_Click(object? sender, EventArgs e)
         {
             if (AuthenticationService.CurrentUser == null)
             {

@@ -269,7 +269,7 @@ namespace EnglishAutomationApp.Views
                 logoBox.ClientRectangle,
                 Color.FromArgb(99, 102, 241), // Indigo-500
                 Color.FromArgb(139, 92, 246), // Violet-500
-                LinearGradientMode.Diagonal))
+                LinearGradientMode.ForwardDiagonal))
             {
                 g.FillEllipse(brush, 0, 0, logoBox.Width, logoBox.Height);
             }
@@ -308,6 +308,8 @@ namespace EnglishAutomationApp.Views
         private void LoginButton_Paint(object? sender, PaintEventArgs e)
         {
             var button = sender as Button;
+            if (button == null) return;
+
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -418,7 +420,7 @@ namespace EnglishAutomationApp.Views
                     ShowMessage(result.Message, Color.FromArgb(248, 113, 113)); // Red-400
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 ShowMessage($"Connection error. Please try again.", Color.FromArgb(248, 113, 113)); // Red-400
             }

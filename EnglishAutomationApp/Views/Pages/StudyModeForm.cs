@@ -14,7 +14,7 @@ namespace EnglishAutomationApp.Views.Pages
         private List<VocabularyWord> words = null!;
         private int currentWordIndex = 0;
         private int correctAnswers = 0;
-
+        private bool showingAnswer = false;
         private bool isReviewMode = false;
 
         private Panel headerPanel = null!;
@@ -241,7 +241,7 @@ namespace EnglishAutomationApp.Views.Pages
             finishButton.Visible = false;
         }
 
-        private void ShowAnswerButton_Click(object sender, EventArgs e)
+        private void ShowAnswerButton_Click(object? sender, EventArgs e)
         {
             showingAnswer = true;
             meaningLabel.Visible = true;

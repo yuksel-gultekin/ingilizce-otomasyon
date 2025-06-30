@@ -227,8 +227,8 @@ namespace EnglishAutomationApp.Views.Pages
                 word.Pronunciation = string.IsNullOrWhiteSpace(pronunciationTextBox.Text) ? null : pronunciationTextBox.Text.Trim();
                 word.ExampleSentence = string.IsNullOrWhiteSpace(exampleSentenceTextBox.Text) ? null : exampleSentenceTextBox.Text.Trim();
                 word.ExampleSentenceTurkish = string.IsNullOrWhiteSpace(exampleSentenceTurkishTextBox.Text) ? null : exampleSentenceTurkishTextBox.Text.Trim();
-                word.Difficulty = Enum.Parse<WordDifficulty>(difficultyComboBox.SelectedItem.ToString());
-                word.PartOfSpeech = Enum.Parse<PartOfSpeech>(partOfSpeechComboBox.SelectedItem.ToString());
+                word.Difficulty = Enum.Parse<WordDifficulty>(difficultyComboBox.SelectedItem?.ToString() ?? "Beginner");
+                word.PartOfSpeech = Enum.Parse<PartOfSpeech>(partOfSpeechComboBox.SelectedItem?.ToString() ?? "Noun");
                 word.Category = string.IsNullOrWhiteSpace(categoryTextBox.Text) ? null : categoryTextBox.Text.Trim();
 
                 if (editingWord == null)
