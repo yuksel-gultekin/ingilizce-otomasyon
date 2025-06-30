@@ -261,9 +261,8 @@ namespace EnglishAutomationApp.Views.Pages
             };
 
             // Practice button
-            var practiceButton = ModernUIHelper.CreateModernButton("Practice", ModernUIHelper.Colors.Primary);
-            practiceButton.Size = new Size(80, 30);
-            practiceButton.Location = new Point(card.Width - 100, 25);
+            var practiceButton = ModernUIHelper.CreateIconButton("Practice", "📝", ModernUIHelper.Colors.Primary, 100, 32);
+            practiceButton.Location = new Point(card.Width - 110, 25);
             practiceButton.Tag = word;
             practiceButton.Click += PracticeButton_Click;
 

@@ -132,19 +132,16 @@ namespace EnglishAutomationApp.Views.Pages
                 Padding = new Padding(ModernUIHelper.Spacing.Large)
             };
 
-            previousButton = ModernUIHelper.CreateModernButton("← Previous", ModernUIHelper.Colors.TextMuted);
+            previousButton = ModernUIHelper.CreateIconButton("Previous", "←", ModernUIHelper.Colors.TextMuted, 140);
             previousButton.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Medium);
-            previousButton.Width = 120;
             previousButton.Click += PreviousButton_Click;
 
-            nextButton = ModernUIHelper.CreateModernButton("Next →", ModernUIHelper.Colors.Primary);
+            nextButton = ModernUIHelper.CreateIconButton("Next", "→", ModernUIHelper.Colors.Primary, 140);
             nextButton.Location = new Point(200, ModernUIHelper.Spacing.Medium);
-            nextButton.Width = 120;
             nextButton.Click += NextButton_Click;
 
-            completeButton = ModernUIHelper.CreateModernButton("Complete Course", ModernUIHelper.Colors.Success);
+            completeButton = ModernUIHelper.CreateIconButton("Complete Course", "🎓", ModernUIHelper.Colors.Success, 180);
             completeButton.Location = new Point(350, ModernUIHelper.Spacing.Medium);
-            completeButton.Width = 150;
             completeButton.Visible = false;
             completeButton.Click += CompleteButton_Click;
 

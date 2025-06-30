@@ -76,8 +76,8 @@ namespace EnglishAutomationApp.Views
             welcomeLabel.BackColor = ModernUIHelper.Colors.Primary;
             welcomeLabel.TextAlign = ContentAlignment.MiddleRight;
             welcomeLabel.Dock = DockStyle.Right;
-            welcomeLabel.Width = 300;
-            welcomeLabel.Padding = new Padding(ModernUIHelper.Spacing.Medium);
+            welcomeLabel.Width = 350;
+            welcomeLabel.Padding = new Padding(ModernUIHelper.Spacing.Large);
 
             // Add welcome label to menu strip
             var welcomeItem = new ToolStripControlHost(welcomeLabel);

@@ -67,7 +67,7 @@ namespace EnglishAutomationApp.Helpers
         }
 
         // Helper Methods
-        public static Button CreateModernButton(string text, Color? backgroundColor = null, Color? textColor = null)
+        public static Button CreateModernButton(string text, Color? backgroundColor = null, Color? textColor = null, int width = 120, int height = 40)
         {
             var button = new Button
             {
@@ -77,24 +77,54 @@ namespace EnglishAutomationApp.Helpers
                 BackColor = backgroundColor ?? Colors.Primary,
                 ForeColor = textColor ?? Color.White,
                 Cursor = Cursors.Hand,
-                Padding = new Padding(Spacing.Medium, Spacing.Small, Spacing.Medium, Spacing.Small),
-                MinimumSize = new Size(100, 36)
+                Size = new Size(width, height),
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseVisualStyleBackColor = false
             };
 
             button.FlatAppearance.BorderSize = 0;
-
-            // Hover effects
-            button.MouseEnter += (s, e) => {
-                button.BackColor = backgroundColor == Colors.Primary ? Colors.PrimaryDark : 
-                                 backgroundColor == Colors.Secondary ? Colors.SecondaryLight :
-                                 ControlPaint.Light(backgroundColor ?? Colors.Primary, 0.1f);
-            };
-
-            button.MouseLeave += (s, e) => {
-                button.BackColor = backgroundColor ?? Colors.Primary;
-            };
+            button.FlatAppearance.MouseDownBackColor = GetDarkerColor(backgroundColor ?? Colors.Primary);
+            button.FlatAppearance.MouseOverBackColor = GetLighterColor(backgroundColor ?? Colors.Primary);
 
             return button;
+        }
+
+        public static Button CreateIconButton(string text, string icon, Color? backgroundColor = null, int width = 140, int height = 40)
+        {
+            var button = CreateModernButton($"{icon} {text}", backgroundColor, null, width, height);
+            return button;
+        }
+
+        public static Button CreateSmallButton(string text, Color? backgroundColor = null)
+        {
+            var button = CreateModernButton(text, backgroundColor, null, 80, 32);
+            button.Font = Fonts.Small;
+            return button;
+        }
+
+        public static Button CreateLargeButton(string text, Color? backgroundColor = null)
+        {
+            var button = CreateModernButton(text, backgroundColor, null, 160, 48);
+            button.Font = Fonts.Heading4;
+            return button;
+        }
+
+        private static Color GetDarkerColor(Color color)
+        {
+            return Color.FromArgb(
+                Math.Max(0, color.R - 30),
+                Math.Max(0, color.G - 30),
+                Math.Max(0, color.B - 30)
+            );
+        }
+
+        private static Color GetLighterColor(Color color)
+        {
+            return Color.FromArgb(
+                Math.Min(255, color.R + 20),
+                Math.Min(255, color.G + 20),
+                Math.Min(255, color.B + 20)
+            );
         }
 
         public static Panel CreateCard(int padding = 0)

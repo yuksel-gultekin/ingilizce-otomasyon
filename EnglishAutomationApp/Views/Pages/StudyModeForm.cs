@@ -166,36 +166,31 @@ namespace EnglishAutomationApp.Views.Pages
             };
 
             // Show Answer button
-            showAnswerButton = ModernUIHelper.CreateModernButton("Show Answer", ModernUIHelper.Colors.Primary);
+            showAnswerButton = ModernUIHelper.CreateIconButton("Show Answer", "👁️", ModernUIHelper.Colors.Primary, 140);
             showAnswerButton.Location = new Point(50, ModernUIHelper.Spacing.Medium);
-            showAnswerButton.Width = 120;
             showAnswerButton.Click += ShowAnswerButton_Click;
 
             // Correct button (initially hidden)
-            correctButton = ModernUIHelper.CreateModernButton("✓ Correct", ModernUIHelper.Colors.Success);
-            correctButton.Location = new Point(180, ModernUIHelper.Spacing.Medium);
-            correctButton.Width = 100;
+            correctButton = ModernUIHelper.CreateIconButton("Correct", "✓", ModernUIHelper.Colors.Success, 120);
+            correctButton.Location = new Point(200, ModernUIHelper.Spacing.Medium);
             correctButton.Visible = false;
             correctButton.Click += CorrectButton_Click;
 
             // Incorrect button (initially hidden)
-            incorrectButton = ModernUIHelper.CreateModernButton("✗ Incorrect", ModernUIHelper.Colors.Error);
-            incorrectButton.Location = new Point(290, ModernUIHelper.Spacing.Medium);
-            incorrectButton.Width = 100;
+            incorrectButton = ModernUIHelper.CreateIconButton("Incorrect", "✗", ModernUIHelper.Colors.Error, 120);
+            incorrectButton.Location = new Point(330, ModernUIHelper.Spacing.Medium);
             incorrectButton.Visible = false;
             incorrectButton.Click += IncorrectButton_Click;
 
             // Next button (initially hidden)
-            nextButton = ModernUIHelper.CreateModernButton("Next →", ModernUIHelper.Colors.Primary);
-            nextButton.Location = new Point(400, ModernUIHelper.Spacing.Medium);
-            nextButton.Width = 80;
+            nextButton = ModernUIHelper.CreateIconButton("Next", "→", ModernUIHelper.Colors.Primary, 100);
+            nextButton.Location = new Point(460, ModernUIHelper.Spacing.Medium);
             nextButton.Visible = false;
             nextButton.Click += NextButton_Click;
 
             // Finish button (initially hidden)
-            finishButton = ModernUIHelper.CreateModernButton("Finish", ModernUIHelper.Colors.Secondary);
-            finishButton.Location = new Point(490, ModernUIHelper.Spacing.Medium);
-            finishButton.Width = 80;
+            finishButton = ModernUIHelper.CreateIconButton("Finish", "🏁", ModernUIHelper.Colors.Secondary, 100);
+            finishButton.Location = new Point(460, ModernUIHelper.Spacing.Medium);
             finishButton.Visible = false;
             finishButton.Click += FinishButton_Click;
 

@@ -38,7 +38,7 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Form properties
             this.Text = editingWord == null ? "Add New Word" : "Edit Word";
-            this.Size = new Size(500, 600);
+            this.Size = new Size(600, 700);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -52,47 +52,47 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void CreateFormControls()
         {
-            var yPosition = 20;
-            var labelWidth = 150;
-            var textBoxWidth = 300;
-            var spacing = 35;
+            var yPosition = 30;
+            var labelWidth = 160;
+            var textBoxWidth = 350;
+            var spacing = 45;
 
             // English Word
             var englishWordLabel = ModernUIHelper.CreateBodyText("English Word:");
-            englishWordLabel.Location = new Point(20, yPosition);
+            englishWordLabel.Location = new Point(30, yPosition);
             englishWordLabel.Width = labelWidth;
 
             englishWordTextBox = ModernUIHelper.CreateModernTextBox();
-            englishWordTextBox.Location = new Point(180, yPosition);
+            englishWordTextBox.Location = new Point(200, yPosition);
             englishWordTextBox.Width = textBoxWidth;
 
             yPosition += spacing;
 
             // Turkish Meaning
             var turkishMeaningLabel = ModernUIHelper.CreateBodyText("Turkish Meaning:");
-            turkishMeaningLabel.Location = new Point(20, yPosition);
+            turkishMeaningLabel.Location = new Point(30, yPosition);
             turkishMeaningLabel.Width = labelWidth;
 
             turkishMeaningTextBox = ModernUIHelper.CreateModernTextBox();
-            turkishMeaningTextBox.Location = new Point(180, yPosition);
+            turkishMeaningTextBox.Location = new Point(200, yPosition);
             turkishMeaningTextBox.Width = textBoxWidth;
 
             yPosition += spacing;
 
             // Pronunciation
             var pronunciationLabel = ModernUIHelper.CreateBodyText("Pronunciation:");
-            pronunciationLabel.Location = new Point(20, yPosition);
+            pronunciationLabel.Location = new Point(30, yPosition);
             pronunciationLabel.Width = labelWidth;
 
             pronunciationTextBox = ModernUIHelper.CreateModernTextBox();
-            pronunciationTextBox.Location = new Point(180, yPosition);
+            pronunciationTextBox.Location = new Point(200, yPosition);
             pronunciationTextBox.Width = textBoxWidth;
 
             yPosition += spacing;
 
             // Example Sentence
             var exampleSentenceLabel = ModernUIHelper.CreateBodyText("Example Sentence:");
-            exampleSentenceLabel.Location = new Point(20, yPosition);
+            exampleSentenceLabel.Location = new Point(30, yPosition);
             exampleSentenceLabel.Width = labelWidth;
 
             exampleSentenceTextBox = new TextBox
@@ -101,18 +101,18 @@ namespace EnglishAutomationApp.Views.Pages
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = ModernUIHelper.Colors.Surface,
                 ForeColor = ModernUIHelper.Colors.TextPrimary,
-                Location = new Point(180, yPosition),
+                Location = new Point(200, yPosition),
                 Width = textBoxWidth,
-                Height = 60,
+                Height = 70,
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical
             };
 
-            yPosition += 70;
+            yPosition += 80;
 
             // Example Sentence Turkish
             var exampleSentenceTurkishLabel = ModernUIHelper.CreateBodyText("Turkish Translation:");
-            exampleSentenceTurkishLabel.Location = new Point(20, yPosition);
+            exampleSentenceTurkishLabel.Location = new Point(30, yPosition);
             exampleSentenceTurkishLabel.Width = labelWidth;
 
             exampleSentenceTurkishTextBox = new TextBox
@@ -121,26 +121,26 @@ namespace EnglishAutomationApp.Views.Pages
                 BorderStyle = BorderStyle.FixedSingle,
                 BackColor = ModernUIHelper.Colors.Surface,
                 ForeColor = ModernUIHelper.Colors.TextPrimary,
-                Location = new Point(180, yPosition),
+                Location = new Point(200, yPosition),
                 Width = textBoxWidth,
-                Height = 60,
+                Height = 70,
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical
             };
 
-            yPosition += 70;
+            yPosition += 80;
 
             // Difficulty
             var difficultyLabel = ModernUIHelper.CreateBodyText("Difficulty:");
-            difficultyLabel.Location = new Point(20, yPosition);
+            difficultyLabel.Location = new Point(30, yPosition);
             difficultyLabel.Width = labelWidth;
 
             difficultyComboBox = new ComboBox
             {
                 Font = ModernUIHelper.Fonts.Body,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Location = new Point(180, yPosition),
-                Width = 150
+                Location = new Point(200, yPosition),
+                Width = 180
             };
             difficultyComboBox.Items.AddRange(new[] { "Beginner", "Intermediate", "Advanced" });
             difficultyComboBox.SelectedIndex = 0;
@@ -149,15 +149,15 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Part of Speech
             var partOfSpeechLabel = ModernUIHelper.CreateBodyText("Part of Speech:");
-            partOfSpeechLabel.Location = new Point(20, yPosition);
+            partOfSpeechLabel.Location = new Point(30, yPosition);
             partOfSpeechLabel.Width = labelWidth;
 
             partOfSpeechComboBox = new ComboBox
             {
                 Font = ModernUIHelper.Fonts.Body,
                 DropDownStyle = ComboBoxStyle.DropDownList,
-                Location = new Point(180, yPosition),
-                Width = 150
+                Location = new Point(200, yPosition),
+                Width = 180
             };
             partOfSpeechComboBox.Items.AddRange(new[] { "Noun", "Verb", "Adjective", "Adverb", "Pronoun", "Preposition", "Conjunction", "Interjection" });
             partOfSpeechComboBox.SelectedIndex = 0;
@@ -166,24 +166,22 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Category
             var categoryLabel = ModernUIHelper.CreateBodyText("Category:");
-            categoryLabel.Location = new Point(20, yPosition);
+            categoryLabel.Location = new Point(30, yPosition);
             categoryLabel.Width = labelWidth;
 
             categoryTextBox = ModernUIHelper.CreateModernTextBox();
-            categoryTextBox.Location = new Point(180, yPosition);
+            categoryTextBox.Location = new Point(200, yPosition);
             categoryTextBox.Width = textBoxWidth;
 
-            yPosition += spacing + 20;
+            yPosition += spacing + 30;
 
             // Buttons
-            saveButton = ModernUIHelper.CreateModernButton("Save", ModernUIHelper.Colors.Primary);
-            saveButton.Location = new Point(280, yPosition);
-            saveButton.Width = 100;
+            saveButton = ModernUIHelper.CreateLargeButton("💾 Save", ModernUIHelper.Colors.Primary);
+            saveButton.Location = new Point(320, yPosition);
             saveButton.Click += SaveButton_Click;
 
-            cancelButton = ModernUIHelper.CreateModernButton("Cancel", ModernUIHelper.Colors.TextMuted);
-            cancelButton.Location = new Point(390, yPosition);
-            cancelButton.Width = 100;
+            cancelButton = ModernUIHelper.CreateLargeButton("❌ Cancel", ModernUIHelper.Colors.TextMuted);
+            cancelButton.Location = new Point(490, yPosition);
             cancelButton.Click += CancelButton_Click;
 
             // Add all controls to form

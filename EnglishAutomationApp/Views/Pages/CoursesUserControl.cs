@@ -292,10 +292,9 @@ namespace EnglishAutomationApp.Views.Pages
             };
 
             // Start Button
-            var startButton = ModernUIHelper.CreateModernButton("Start Learning", ModernUIHelper.Colors.Primary);
+            var startButton = ModernUIHelper.CreateLargeButton("Start Learning", ModernUIHelper.Colors.Primary);
             startButton.Location = new Point(0, card.Height - 60);
             startButton.Width = card.Width - 40;
-            startButton.Height = 40;
             startButton.Tag = course;
             startButton.Click += StartCourseButton_Click;
 

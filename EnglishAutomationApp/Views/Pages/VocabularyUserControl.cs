@@ -115,27 +115,23 @@ namespace EnglishAutomationApp.Views.Pages
             difficultyFilter.SelectedIndexChanged += DifficultyFilter_SelectedIndexChanged;
 
             // Add word button
-            addWordButton = ModernUIHelper.CreateModernButton("+ Add Word", ModernUIHelper.Colors.Secondary);
+            addWordButton = ModernUIHelper.CreateIconButton("Add Word", "+", ModernUIHelper.Colors.Secondary, 120);
             addWordButton.Location = new Point(500, ModernUIHelper.Spacing.Small);
-            addWordButton.Width = 100;
             addWordButton.Click += AddWordButton_Click;
 
             // Study mode button
-            studyModeButton = ModernUIHelper.CreateModernButton("📚 Study Mode", ModernUIHelper.Colors.Primary);
-            studyModeButton.Location = new Point(610, ModernUIHelper.Spacing.Small);
-            studyModeButton.Width = 120;
+            studyModeButton = ModernUIHelper.CreateIconButton("Study Mode", "📚", ModernUIHelper.Colors.Primary, 140);
+            studyModeButton.Location = new Point(630, ModernUIHelper.Spacing.Small);
             studyModeButton.Click += StudyModeButton_Click;
 
             // Review button
-            var reviewButton = ModernUIHelper.CreateModernButton("🔄 Review", ModernUIHelper.Colors.Secondary);
-            reviewButton.Location = new Point(740, ModernUIHelper.Spacing.Small);
-            reviewButton.Width = 100;
+            var reviewButton = ModernUIHelper.CreateIconButton("Review", "🔄", ModernUIHelper.Colors.Secondary, 120);
+            reviewButton.Location = new Point(780, ModernUIHelper.Spacing.Small);
             reviewButton.Click += ReviewButton_Click;
 
             // Stats button
-            var statsButton = ModernUIHelper.CreateModernButton("📊 Stats", ModernUIHelper.Colors.Warning);
-            statsButton.Location = new Point(850, ModernUIHelper.Spacing.Small);
-            statsButton.Width = 80;
+            var statsButton = ModernUIHelper.CreateIconButton("Stats", "📊", ModernUIHelper.Colors.Warning, 100);
+            statsButton.Location = new Point(910, ModernUIHelper.Spacing.Small);
             statsButton.Click += StatsButton_Click;
 
             toolbarPanel.Controls.AddRange(new Control[]
@@ -293,15 +289,13 @@ namespace EnglishAutomationApp.Views.Pages
             };
 
             // Edit button
-            var editButton = ModernUIHelper.CreateModernButton("Edit", ModernUIHelper.Colors.Primary);
-            editButton.Size = new Size(60, 25);
-            editButton.Location = new Point(card.Width - 180, card.Height - 35);
+            var editButton = ModernUIHelper.CreateSmallButton("Edit", ModernUIHelper.Colors.Primary);
+            editButton.Location = new Point(card.Width - 170, card.Height - 40);
             editButton.Click += (s, e) => EditWord(word);
 
             // Delete button
-            var deleteButton = ModernUIHelper.CreateModernButton("Delete", ModernUIHelper.Colors.Error);
-            deleteButton.Size = new Size(60, 25);
-            deleteButton.Location = new Point(card.Width - 110, card.Height - 35);
+            var deleteButton = ModernUIHelper.CreateSmallButton("Delete", ModernUIHelper.Colors.Error);
+            deleteButton.Location = new Point(card.Width - 85, card.Height - 40);
             deleteButton.Click += (s, e) => DeleteWord(word);
 
             card.Controls.AddRange(new Control[]
