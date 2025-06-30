@@ -10,16 +10,16 @@ namespace EnglishAutomationApp.Views.Pages
     public partial class AddEditWordForm : Form
     {
         private VocabularyWord? editingWord;
-        private TextBox englishWordTextBox;
-        private TextBox turkishMeaningTextBox;
-        private TextBox pronunciationTextBox;
-        private TextBox exampleSentenceTextBox;
-        private TextBox exampleSentenceTurkishTextBox;
-        private ComboBox difficultyComboBox;
-        private ComboBox partOfSpeechComboBox;
-        private TextBox categoryTextBox;
-        private Button saveButton;
-        private Button cancelButton;
+        private TextBox englishWordTextBox = null!;
+        private TextBox turkishMeaningTextBox = null!;
+        private TextBox pronunciationTextBox = null!;
+        private TextBox exampleSentenceTextBox = null!;
+        private TextBox exampleSentenceTurkishTextBox = null!;
+        private ComboBox difficultyComboBox = null!;
+        private ComboBox partOfSpeechComboBox = null!;
+        private TextBox categoryTextBox = null!;
+        private Button saveButton = null!;
+        private Button cancelButton = null!;
 
         public AddEditWordForm(VocabularyWord? word = null)
         {

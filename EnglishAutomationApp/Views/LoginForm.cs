@@ -9,21 +9,21 @@ namespace EnglishAutomationApp.Views
 {
     public partial class LoginForm : Form
     {
-        private TextBox emailTextBox;
-        private TextBox passwordTextBox;
-        private Button loginButton;
-        private Button registerButton;
-        private Label messageLabel;
-        private Label titleLabel;
-        private Label subtitleLabel;
-        private Label emailLabel;
-        private Label passwordLabel;
-        private Panel mainPanel;
-        private Panel inputPanel;
-        private PictureBox logoBox;
-        private CheckBox rememberMeCheckBox;
-        private LinkLabel forgotPasswordLabel;
-        private System.Windows.Forms.Timer fadeTimer;
+        private TextBox emailTextBox = null!;
+        private TextBox passwordTextBox = null!;
+        private Button loginButton = null!;
+        private Button registerButton = null!;
+        private Label messageLabel = null!;
+        private Label titleLabel = null!;
+        private Label subtitleLabel = null!;
+        private Label emailLabel = null!;
+        private Label passwordLabel = null!;
+        private Panel mainPanel = null!;
+        private Panel inputPanel = null!;
+        private PictureBox logoBox = null!;
+        private CheckBox rememberMeCheckBox = null!;
+        private LinkLabel forgotPasswordLabel = null!;
+        private System.Windows.Forms.Timer fadeTimer = null!;
         private float opacity = 0f;
 
         public LoginForm()
@@ -213,24 +213,33 @@ namespace EnglishAutomationApp.Views
             textBox.Paint += (s, e) =>
             {
                 var tb = s as TextBox;
-                using (var pen = new Pen(Color.FromArgb(71, 85, 105), 1)) // Slate-600
+                if (tb != null)
                 {
-                    e.Graphics.DrawRectangle(pen, 0, 0, tb.Width - 1, tb.Height - 1);
+                    using (var pen = new Pen(Color.FromArgb(71, 85, 105), 1)) // Slate-600
+                    {
+                        e.Graphics.DrawRectangle(pen, 0, 0, tb.Width - 1, tb.Height - 1);
+                    }
                 }
             };
 
             textBox.Enter += (s, e) =>
             {
                 var tb = s as TextBox;
-                tb.BackColor = Color.FromArgb(71, 85, 105); // Slate-600
-                tb.Invalidate();
+                if (tb != null)
+                {
+                    tb.BackColor = Color.FromArgb(71, 85, 105); // Slate-600
+                    tb.Invalidate();
+                }
             };
 
             textBox.Leave += (s, e) =>
             {
                 var tb = s as TextBox;
-                tb.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
-                tb.Invalidate();
+                if (tb != null)
+                {
+                    tb.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+                    tb.Invalidate();
+                }
             };
         }
 
@@ -251,7 +260,7 @@ namespace EnglishAutomationApp.Views
             this.Shown += (s, e) => fadeTimer.Start();
         }
 
-        private void LogoBox_Paint(object sender, PaintEventArgs e)
+        private void LogoBox_Paint(object? sender, PaintEventArgs e)
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -275,7 +284,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void MainPanel_Paint(object sender, PaintEventArgs e)
+        private void MainPanel_Paint(object? sender, PaintEventArgs e)
         {
             var g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -296,7 +305,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void LoginButton_Paint(object sender, PaintEventArgs e)
+        private void LoginButton_Paint(object? sender, PaintEventArgs e)
         {
             var button = sender as Button;
             var g = e.Graphics;
@@ -329,12 +338,12 @@ namespace EnglishAutomationApp.Views
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
         }
 
-        private void LoginButton_MouseEnter(object sender, EventArgs e)
+        private void LoginButton_MouseEnter(object? sender, EventArgs e)
         {
             loginButton.Invalidate();
         }
 
-        private void LoginButton_MouseLeave(object sender, EventArgs e)
+        private void LoginButton_MouseLeave(object? sender, EventArgs e)
         {
             loginButton.Invalidate();
         }
@@ -365,7 +374,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private async void LoginButton_Click(object sender, EventArgs e)
+        private async void LoginButton_Click(object? sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(emailTextBox.Text) || 
                 string.IsNullOrWhiteSpace(passwordTextBox.Text))
@@ -421,7 +430,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void RegisterButton_Click(object sender, EventArgs e)
+        private void RegisterButton_Click(object? sender, EventArgs e)
         {
             var registerForm = new RegisterForm();
             registerForm.ShowDialog(this);

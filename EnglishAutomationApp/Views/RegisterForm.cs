@@ -9,15 +9,15 @@ namespace EnglishAutomationApp.Views
 {
     public partial class RegisterForm : Form
     {
-        private TextBox firstNameTextBox;
-        private TextBox lastNameTextBox;
-        private TextBox emailTextBox;
-        private TextBox passwordTextBox;
-        private TextBox confirmPasswordTextBox;
-        private Button registerButton;
-        private Button cancelButton;
-        private Label messageLabel;
-        private Label titleLabel;
+        private TextBox firstNameTextBox = null!;
+        private TextBox lastNameTextBox = null!;
+        private TextBox emailTextBox = null!;
+        private TextBox passwordTextBox = null!;
+        private TextBox confirmPasswordTextBox = null!;
+        private Button registerButton = null!;
+        private Button cancelButton = null!;
+        private Label messageLabel = null!;
+        private Label titleLabel = null!;
 
         public RegisterForm()
         {
@@ -166,7 +166,7 @@ namespace EnglishAutomationApp.Views
             this.ResumeLayout(false);
         }
 
-        private async void RegisterButton_Click(object sender, EventArgs e)
+        private async void RegisterButton_Click(object? sender, EventArgs e)
         {
             if (!ValidateForm())
                 return;
@@ -206,7 +206,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object? sender, EventArgs e)
         {
             this.Close();
         }

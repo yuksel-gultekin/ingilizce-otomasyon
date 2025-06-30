@@ -12,16 +12,16 @@ namespace EnglishAutomationApp.Views.Pages
 {
     public partial class VocabularyUserControl : UserControl
     {
-        private Panel headerPanel;
-        private Panel toolbarPanel;
-        private Panel contentPanel;
-        private FlowLayoutPanel wordsPanel;
-        private TextBox searchBox;
-        private ComboBox categoryFilter;
-        private ComboBox difficultyFilter;
-        private Button addWordButton;
-        private Button studyModeButton;
-        private Label statsLabel;
+        private Panel headerPanel = null!;
+        private Panel toolbarPanel = null!;
+        private Panel contentPanel = null!;
+        private FlowLayoutPanel wordsPanel = null!;
+        private TextBox searchBox = null!;
+        private ComboBox categoryFilter = null!;
+        private ComboBox difficultyFilter = null!;
+        private Button addWordButton = null!;
+        private Button studyModeButton = null!;
+        private Label statsLabel = null!;
 
         private List<VocabularyWord> allWords = new List<VocabularyWord>();
         private List<VocabularyWord> filteredWords = new List<VocabularyWord>();
@@ -318,17 +318,17 @@ namespace EnglishAutomationApp.Views.Pages
         }
 
         // Event Handlers
-        private void SearchBox_TextChanged(object sender, EventArgs e)
+        private void SearchBox_TextChanged(object? sender, EventArgs e)
         {
             ApplyFilters();
         }
 
-        private void CategoryFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private void CategoryFilter_SelectedIndexChanged(object? sender, EventArgs e)
         {
             ApplyFilters();
         }
 
-        private void DifficultyFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private void DifficultyFilter_SelectedIndexChanged(object? sender, EventArgs e)
         {
             ApplyFilters();
         }
@@ -361,7 +361,7 @@ namespace EnglishAutomationApp.Views.Pages
             DisplayWords();
         }
 
-        private void AddWordButton_Click(object sender, EventArgs e)
+        private void AddWordButton_Click(object? sender, EventArgs e)
         {
             var addWordForm = new AddEditWordForm();
             if (addWordForm.ShowDialog() == DialogResult.OK)
@@ -370,7 +370,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void StudyModeButton_Click(object sender, EventArgs e)
+        private void StudyModeButton_Click(object? sender, EventArgs e)
         {
             if (filteredWords.Any())
             {
@@ -413,7 +413,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private async void ReviewButton_Click(object sender, EventArgs e)
+        private async void ReviewButton_Click(object? sender, EventArgs e)
         {
             if (AuthenticationService.CurrentUser == null)
             {
@@ -445,7 +445,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private async void StatsButton_Click(object sender, EventArgs e)
+        private async void StatsButton_Click(object? sender, EventArgs e)
         {
             if (AuthenticationService.CurrentUser == null)
             {

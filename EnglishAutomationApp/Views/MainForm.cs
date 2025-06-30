@@ -9,11 +9,11 @@ namespace EnglishAutomationApp.Views
 {
     public partial class MainForm : Form
     {
-        private MenuStrip menuStrip;
-        private StatusStrip statusStrip;
-        private ToolStripStatusLabel statusLabel;
-        private Panel contentPanel;
-        private Label welcomeLabel;
+        private MenuStrip menuStrip = null!;
+        private StatusStrip statusStrip = null!;
+        private ToolStripStatusLabel statusLabel = null!;
+        private Panel contentPanel = null!;
+        private Label welcomeLabel = null!;
 
         public MainForm()
         {
@@ -131,31 +131,31 @@ namespace EnglishAutomationApp.Views
         }
 
         // Menu Event Handlers
-        private void DashboardMenuItem_Click(object sender, EventArgs e)
+        private void DashboardMenuItem_Click(object? sender, EventArgs e)
         {
             ShowDashboard();
             UpdateStatus("Dashboard");
         }
 
-        private void CoursesMenuItem_Click(object sender, EventArgs e)
+        private void CoursesMenuItem_Click(object? sender, EventArgs e)
         {
             ShowUserControl(new CoursesUserControl());
             UpdateStatus("Courses");
         }
 
-        private void VocabularyMenuItem_Click(object sender, EventArgs e)
+        private void VocabularyMenuItem_Click(object? sender, EventArgs e)
         {
             ShowUserControl(new VocabularyUserControl());
             UpdateStatus("Vocabulary");
         }
 
-        private void ProgressMenuItem_Click(object sender, EventArgs e)
+        private void ProgressMenuItem_Click(object? sender, EventArgs e)
         {
             ShowUserControl(new ProgressUserControl());
             UpdateStatus("Progress");
         }
 
-        private void AchievementsMenuItem_Click(object sender, EventArgs e)
+        private void AchievementsMenuItem_Click(object? sender, EventArgs e)
         {
             ShowUserControl(new AchievementsUserControl());
             UpdateStatus("Achievements");
@@ -163,7 +163,7 @@ namespace EnglishAutomationApp.Views
 
 
 
-        private void AdminMenuItem_Click(object sender, EventArgs e)
+        private void AdminMenuItem_Click(object? sender, EventArgs e)
         {
             if (AuthenticationService.IsAdmin)
             {
@@ -177,13 +177,13 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void AboutMenuItem_Click(object sender, EventArgs e)
+        private void AboutMenuItem_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("English Automation Platform v1.0\n\nA comprehensive English learning platform with automation features.", 
                 "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void LogoutMenuItem_Click(object sender, EventArgs e)
+        private void LogoutMenuItem_Click(object? sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout", 
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -198,7 +198,7 @@ namespace EnglishAutomationApp.Views
             }
         }
 
-        private void ExitMenuItem_Click(object sender, EventArgs e)
+        private void ExitMenuItem_Click(object? sender, EventArgs e)
         {
             Application.Exit();
         }
