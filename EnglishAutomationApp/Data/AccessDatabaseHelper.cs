@@ -87,7 +87,8 @@ namespace EnglishAutomationApp.Data
             try
             {
                 using var cmd = new OleDbCommand(checkSql, connection);
-                var count = (int)cmd.ExecuteScalar();
+                var result = cmd.ExecuteScalar();
+                var count = result != null ? (int)result : 0;
                 tableExists = count > 0;
             }
             catch
@@ -187,21 +188,21 @@ namespace EnglishAutomationApp.Data
 
             var sql = "SELECT * FROM Users WHERE Email = ? AND IsActive = True";
             using var command = new OleDbCommand(sql, connection);
-            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("?", email);
 
             using var reader = await command.ExecuteReaderAsync();
             if (await reader.ReadAsync())
             {
                 return new User
                 {
-                    Id = reader.GetInt32("Id"),
-                    Email = reader.GetString("Email"),
-                    PasswordHash = reader.GetString("PasswordHash"),
-                    FirstName = reader.GetString("FirstName"),
-                    LastName = reader.GetString("LastName"),
-                    Role = reader.GetString("Role"),
-                    IsActive = reader.GetBoolean("IsActive"),
-                    CreatedDate = reader.GetDateTime("CreatedDate")
+                    Id = reader.GetInt32(0), // Id
+                    Email = reader.GetString(1), // Email
+                    PasswordHash = reader.GetString(2), // PasswordHash
+                    FirstName = reader.GetString(3), // FirstName
+                    LastName = reader.GetString(4), // LastName
+                    Role = reader.GetString(5), // Role
+                    IsActive = reader.GetBoolean(6), // IsActive
+                    CreatedDate = reader.GetDateTime(7) // CreatedDate
                 };
             }
             return null;
@@ -218,13 +219,13 @@ namespace EnglishAutomationApp.Data
                 var sql = @"INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
                            VALUES (?, ?, ?, ?, ?, ?, ?)";
                 using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-                command.Parameters.AddWithValue("@FirstName", user.FirstName);
-                command.Parameters.AddWithValue("@LastName", user.LastName);
-                command.Parameters.AddWithValue("@Role", user.Role);
-                command.Parameters.AddWithValue("@IsActive", user.IsActive);
-                command.Parameters.AddWithValue("@CreatedDate", user.CreatedDate);
+                command.Parameters.AddWithValue("?", user.Email);
+                command.Parameters.AddWithValue("?", user.PasswordHash);
+                command.Parameters.AddWithValue("?", user.FirstName);
+                command.Parameters.AddWithValue("?", user.LastName);
+                command.Parameters.AddWithValue("?", user.Role);
+                command.Parameters.AddWithValue("?", user.IsActive);
+                command.Parameters.AddWithValue("?", user.CreatedDate);
 
                 await command.ExecuteNonQueryAsync();
                 return true;
@@ -251,19 +252,19 @@ namespace EnglishAutomationApp.Data
             {
                 courses.Add(new Course
                 {
-                    Id = reader.GetInt32("Id"),
-                    Title = reader.GetString("Title"),
-                    Description = reader.IsDBNull("Description") ? null : reader.GetString("Description"),
-                    Content = reader.IsDBNull("Content") ? null : reader.GetString("Content"),
-                    Level = (CourseLevel)reader.GetInt32("Level"),
-                    Type = (CourseType)reader.GetInt32("Type"),
-                    Price = reader.IsDBNull("Price") ? null : reader.GetDecimal("Price"),
-                    OrderIndex = reader.IsDBNull("OrderIndex") ? null : reader.GetInt32("OrderIndex"),
-                    EstimatedDurationMinutes = reader.IsDBNull("EstimatedDurationMinutes") ? null : reader.GetInt32("EstimatedDurationMinutes"),
-                    Prerequisites = reader.IsDBNull("Prerequisites") ? null : reader.GetString("Prerequisites"),
-                    Color = reader.IsDBNull("Color") ? null : reader.GetString("Color"),
-                    IsActive = reader.GetBoolean("IsActive"),
-                    CreatedDate = reader.GetDateTime("CreatedDate")
+                    Id = reader.GetInt32(0), // Id
+                    Title = reader.GetString(1), // Title
+                    Description = reader.IsDBNull(2) ? null : reader.GetString(2), // Description
+                    Content = reader.IsDBNull(3) ? null : reader.GetString(3), // Content
+                    Level = (CourseLevel)reader.GetInt32(4), // Level
+                    Type = (CourseType)reader.GetInt32(5), // Type
+                    Price = reader.IsDBNull(6) ? null : reader.GetDecimal(6), // Price
+                    OrderIndex = reader.IsDBNull(7) ? null : reader.GetInt32(7), // OrderIndex
+                    EstimatedDurationMinutes = reader.IsDBNull(8) ? null : reader.GetInt32(8), // EstimatedDurationMinutes
+                    Prerequisites = reader.IsDBNull(9) ? null : reader.GetString(9), // Prerequisites
+                    Color = reader.IsDBNull(10) ? null : reader.GetString(10), // Color
+                    IsActive = reader.GetBoolean(11), // IsActive
+                    CreatedDate = reader.GetDateTime(12) // CreatedDate
                 });
             }
             return courses;
@@ -285,16 +286,16 @@ namespace EnglishAutomationApp.Data
             {
                 words.Add(new VocabularyWord
                 {
-                    Id = reader.GetInt32("Id"),
-                    EnglishWord = reader.GetString("EnglishWord"),
-                    TurkishMeaning = reader.GetString("TurkishMeaning"),
-                    Pronunciation = reader.IsDBNull("Pronunciation") ? null : reader.GetString("Pronunciation"),
-                    ExampleSentence = reader.IsDBNull("ExampleSentence") ? null : reader.GetString("ExampleSentence"),
-                    ExampleSentenceTurkish = reader.IsDBNull("ExampleSentenceTurkish") ? null : reader.GetString("ExampleSentenceTurkish"),
-                    Difficulty = (WordDifficulty)reader.GetInt32("Difficulty"),
-                    PartOfSpeech = (PartOfSpeech)reader.GetInt32("PartOfSpeech"),
-                    Category = reader.IsDBNull("Category") ? null : reader.GetString("Category"),
-                    CreatedDate = reader.GetDateTime("CreatedDate")
+                    Id = reader.GetInt32(0), // Id
+                    EnglishWord = reader.GetString(1), // EnglishWord
+                    TurkishMeaning = reader.GetString(2), // TurkishMeaning
+                    Pronunciation = reader.IsDBNull(3) ? null : reader.GetString(3), // Pronunciation
+                    ExampleSentence = reader.IsDBNull(4) ? null : reader.GetString(4), // ExampleSentence
+                    ExampleSentenceTurkish = reader.IsDBNull(5) ? null : reader.GetString(5), // ExampleSentenceTurkish
+                    Difficulty = (WordDifficulty)reader.GetInt32(6), // Difficulty
+                    PartOfSpeech = (PartOfSpeech)reader.GetInt32(7), // PartOfSpeech
+                    Category = reader.IsDBNull(8) ? null : reader.GetString(8), // Category
+                    CreatedDate = reader.GetDateTime(9) // CreatedDate
                 });
             }
             return words;
@@ -311,15 +312,15 @@ namespace EnglishAutomationApp.Data
                 var sql = @"INSERT INTO VocabularyWords (EnglishWord, TurkishMeaning, Pronunciation, ExampleSentence, ExampleSentenceTurkish, Difficulty, PartOfSpeech, Category, CreatedDate)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("@EnglishWord", word.EnglishWord);
-                command.Parameters.AddWithValue("@TurkishMeaning", word.TurkishMeaning);
-                command.Parameters.AddWithValue("@Pronunciation", word.Pronunciation ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@ExampleSentence", word.ExampleSentence ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@ExampleSentenceTurkish", word.ExampleSentenceTurkish ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@Difficulty", (int)word.Difficulty);
-                command.Parameters.AddWithValue("@PartOfSpeech", (int)word.PartOfSpeech);
-                command.Parameters.AddWithValue("@Category", word.Category ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@CreatedDate", word.CreatedDate);
+                command.Parameters.AddWithValue("?", word.EnglishWord);
+                command.Parameters.AddWithValue("?", word.TurkishMeaning);
+                command.Parameters.AddWithValue("?", word.Pronunciation ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("?", word.ExampleSentence ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("?", word.ExampleSentenceTurkish ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("?", (int)word.Difficulty);
+                command.Parameters.AddWithValue("?", (int)word.PartOfSpeech);
+                command.Parameters.AddWithValue("?", word.Category ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("?", word.CreatedDate);
 
                 await command.ExecuteNonQueryAsync();
                 return true;
