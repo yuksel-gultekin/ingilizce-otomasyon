@@ -143,6 +143,11 @@ namespace EnglishAutomationApp.Data
 
             // Create unique index for Users.Email
             await ExecuteNonQueryAsync(connection, "CREATE UNIQUE INDEX IX_Users_Email ON Users(Email)");
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Could not create Access database. Please ensure Microsoft Access Database Engine is installed. Error: {ex.Message}");
+            }
         }
 
         private static async Task ExecuteNonQueryAsync(OleDbConnection connection, string sql)

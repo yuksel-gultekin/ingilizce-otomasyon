@@ -29,8 +29,5 @@ namespace EnglishAutomationApp.Data
         {
             await AccessDatabaseHelper.InitializeDatabaseAsync();
         }
-
-
-    }
     }
 }
