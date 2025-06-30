@@ -31,7 +31,7 @@ namespace EnglishAutomationApp.Views
             // Form properties
             this.Text = "Register - English Automation Platform";
             this.Size = new Size(450, 650);
-            this.StartPosition = FormStartPosition.CenterOwner;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.BackColor = Color.FromArgb(240, 240, 240);
