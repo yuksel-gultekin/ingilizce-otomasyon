@@ -4,9 +4,9 @@ namespace EnglishAutomationApp.Models
 {
     public enum WordDifficulty
     {
-        Easy = 1,
-        Medium = 2,
-        Hard = 3
+        Beginner = 1,
+        Intermediate = 2,
+        Advanced = 3
     }
 
     public enum PartOfSpeech

@@ -232,9 +232,6 @@ namespace EnglishAutomationApp.Views
             ProgressMenuItem_Click(null, null);
         }
 
-        public void NavigateToPaymentsPage()
-        {
-            PaymentsMenuItem_Click(null, null);
-        }
+
     }
 }
