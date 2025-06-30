@@ -10,43 +10,13 @@ namespace EnglishAutomationApp.Data
 {
     public static class AccessDatabaseHelper
     {
+
         private static string GetConnectionString()
         {
-            var dbPath = GetDatabasePath();
-
-            // Create directory if it doesn't exist
-            var directory = Path.GetDirectoryName(dbPath);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory!);
-                System.Windows.Forms.MessageBox.Show($"Created directory: {directory}", "Debug - Directory Created");
-            }
-
-            // Use ACE provider for .accdb files
+            var dbPath = @"C:\Users\Administrator\Documents\Database2.accdb";
             return $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
         }
 
-        private static string GetDatabasePath()
-        {
-            try
-            {
-                // Use a more accessible location
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var appFolder = Path.Combine(appDataPath, "EnglishAutomationApp");
-                var dbPath = Path.Combine(appFolder, "database.accdb");
-
-                System.Windows.Forms.MessageBox.Show($"App Data Path: {appDataPath}\nApp Folder: {appFolder}\nDB Path: {dbPath}", "Debug - Paths");
-
-                return dbPath;
-            }
-            catch (Exception ex)
-            {
-                // Fallback to application directory
-                var fallbackPath = Path.Combine(System.Windows.Forms.Application.StartupPath, "database.accdb");
-                System.Windows.Forms.MessageBox.Show($"Error getting LocalApplicationData path: {ex.Message}\nUsing fallback: {fallbackPath}", "Debug - Fallback");
-                return fallbackPath;
-            }
-        }
 
         public static async Task InitializeDatabaseAsync()
         {
@@ -113,8 +83,8 @@ namespace EnglishAutomationApp.Data
                         CreatedDate DATETIME DEFAULT Now()
                     )";
 
-            // Create VocabularyWords table
-            var createVocabularyTable = @"
+                // Create VocabularyWords table
+                var createVocabularyTable = @"
                 CREATE TABLE VocabularyWords (
                     Id AUTOINCREMENT PRIMARY KEY,
                     EnglishWord TEXT(255) NOT NULL,
@@ -128,8 +98,8 @@ namespace EnglishAutomationApp.Data
                     CreatedDate DATETIME DEFAULT Now()
                 )";
 
-            // Create UserProgress table
-            var createUserProgressTable = @"
+                // Create UserProgress table
+                var createUserProgressTable = @"
                 CREATE TABLE UserProgress (
                     Id AUTOINCREMENT PRIMARY KEY,
                     UserId INTEGER NOT NULL,
@@ -143,8 +113,8 @@ namespace EnglishAutomationApp.Data
                     FOREIGN KEY (CourseId) REFERENCES Courses(Id)
                 )";
 
-            // Create UserVocabulary table
-            var createUserVocabularyTable = @"
+                // Create UserVocabulary table
+                var createUserVocabularyTable = @"
                 CREATE TABLE UserVocabulary (
                     Id AUTOINCREMENT PRIMARY KEY,
                     UserId INTEGER NOT NULL,
@@ -157,15 +127,15 @@ namespace EnglishAutomationApp.Data
                     FOREIGN KEY (VocabularyWordId) REFERENCES VocabularyWords(Id)
                 )";
 
-            // Execute table creation commands
-            await ExecuteNonQueryAsync(connection, createUsersTable);
-            await ExecuteNonQueryAsync(connection, createCoursesTable);
-            await ExecuteNonQueryAsync(connection, createVocabularyTable);
-            await ExecuteNonQueryAsync(connection, createUserProgressTable);
-            await ExecuteNonQueryAsync(connection, createUserVocabularyTable);
+                // Execute table creation commands
+                await ExecuteNonQueryAsync(connection, createUsersTable);
+                await ExecuteNonQueryAsync(connection, createCoursesTable);
+                await ExecuteNonQueryAsync(connection, createVocabularyTable);
+                await ExecuteNonQueryAsync(connection, createUserProgressTable);
+                await ExecuteNonQueryAsync(connection, createUserVocabularyTable);
 
-            // Create unique index for Users.Email
-            await ExecuteNonQueryAsync(connection, "CREATE UNIQUE INDEX IX_Users_Email ON Users(Email)");
+                // Create unique index for Users.Email
+                await ExecuteNonQueryAsync(connection, "CREATE UNIQUE INDEX IX_Users_Email ON Users(Email)");
             }
             catch (Exception ex)
             {
@@ -189,7 +159,7 @@ namespace EnglishAutomationApp.Data
             var adminSql = @"
                 INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
-            
+
             using var adminCommand = new OleDbCommand(adminSql, connection);
             adminCommand.Parameters.AddWithValue("@Email", "admin@englishautomation.com");
             adminCommand.Parameters.AddWithValue("@PasswordHash", BCrypt.Net.BCrypt.HashPassword("admin123"));
@@ -202,7 +172,7 @@ namespace EnglishAutomationApp.Data
 
             // Seed courses
             await SeedCoursesAsync(connection);
-            
+
             // Seed vocabulary words
             await SeedVocabularyAsync(connection);
         }
@@ -211,14 +181,14 @@ namespace EnglishAutomationApp.Data
         {
             var courses = new[]
             {
-                new { Title = "Basic English Grammar", Description = "Fundamental rules and structures of English grammar", 
-                      Content = "In this course you will learn the basics of English grammar...", Level = 0, Type = 0, 
+                new { Title = "Basic English Grammar", Description = "Fundamental rules and structures of English grammar",
+                      Content = "In this course you will learn the basics of English grammar...", Level = 0, Type = 0,
                       Price = 99.99m, OrderIndex = 1, Duration = 120, Prerequisites = "No prior knowledge required", Color = "#4CAF50" },
-                new { Title = "Daily Life Vocabulary", Description = "Essential English words used in daily life", 
-                      Content = "In this course you will learn the most commonly used English words in daily life...", Level = 0, Type = 1, 
+                new { Title = "Daily Life Vocabulary", Description = "Essential English words used in daily life",
+                      Content = "In this course you will learn the most commonly used English words in daily life...", Level = 0, Type = 1,
                       Price = 79.99m, OrderIndex = 2, Duration = 90, Prerequisites = "No prior knowledge required", Color = "#2196F3" },
-                new { Title = "English Speaking Practice", Description = "Basic speaking skills and pronunciation exercises", 
-                      Content = "In this course you will develop your English speaking skills and improve your pronunciation...", Level = 1, Type = 2, 
+                new { Title = "English Speaking Practice", Description = "Basic speaking skills and pronunciation exercises",
+                      Content = "In this course you will develop your English speaking skills and improve your pronunciation...", Level = 1, Type = 2,
                       Price = 149.99m, OrderIndex = 3, Duration = 180, Prerequisites = "Complete Basic English Grammar course", Color = "#FF9800" }
             };
 
@@ -227,7 +197,7 @@ namespace EnglishAutomationApp.Data
                 var sql = @"
                     INSERT INTO Courses (Title, Description, Content, Level, Type, Price, OrderIndex, EstimatedDurationMinutes, Prerequisites, Color, IsActive, CreatedDate)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                
+
                 using var command = new OleDbCommand(sql, connection);
                 command.Parameters.AddWithValue("@Title", course.Title);
                 command.Parameters.AddWithValue("@Description", course.Description);
@@ -261,7 +231,7 @@ namespace EnglishAutomationApp.Data
                 var sql = @"
                     INSERT INTO VocabularyWords (EnglishWord, TurkishMeaning, Pronunciation, ExampleSentence, ExampleSentenceTurkish, Difficulty, PartOfSpeech, Category, CreatedDate)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                
+
                 using var command = new OleDbCommand(sql, connection);
                 command.Parameters.AddWithValue("@English", word.English);
                 command.Parameters.AddWithValue("@Turkish", word.Turkish);
@@ -316,7 +286,7 @@ namespace EnglishAutomationApp.Data
                 var sql = @"
                     INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
                     VALUES (?, ?, ?, ?, ?, ?, ?)";
-                
+
                 using var command = new OleDbCommand(sql, connection);
                 command.Parameters.AddWithValue("@Email", user.Email);
                 command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
@@ -325,7 +295,7 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("@Role", user.Role);
                 command.Parameters.AddWithValue("@IsActive", user.IsActive);
                 command.Parameters.AddWithValue("@CreatedDate", user.CreatedDate);
-                
+
                 await command.ExecuteNonQueryAsync();
                 return true;
             }
