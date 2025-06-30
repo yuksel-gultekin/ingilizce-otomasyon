@@ -147,7 +147,7 @@ namespace EnglishAutomationApp.Data
             CREATE TABLE Courses (
                 Id COUNTER PRIMARY KEY,
                 Title TEXT(255),
-                [Description] MEMO,
+                Desc MEMO,
                 Content MEMO,
                 Level INTEGER,
                 Type INTEGER,
