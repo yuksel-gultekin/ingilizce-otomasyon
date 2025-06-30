@@ -88,6 +88,7 @@ namespace EnglishAutomationApp.Views.Pages
             searchBox = ModernUIHelper.CreateModernTextBox("Search words...");
             searchBox.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small);
             searchBox.Width = 200;
+            searchBox.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             searchBox.TextChanged += SearchBox_TextChanged;
 
             // Category filter
@@ -96,7 +97,8 @@ namespace EnglishAutomationApp.Views.Pages
                 Font = ModernUIHelper.Fonts.Body,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Location = new Point(240, ModernUIHelper.Spacing.Small),
-                Width = 120
+                Width = 120,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             categoryFilter.Items.Add("All Categories");
             categoryFilter.SelectedIndex = 0;
@@ -108,7 +110,8 @@ namespace EnglishAutomationApp.Views.Pages
                 Font = ModernUIHelper.Fonts.Body,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Location = new Point(370, ModernUIHelper.Spacing.Small),
-                Width = 120
+                Width = 120,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left
             };
             difficultyFilter.Items.AddRange(new[] { "All Levels", "Beginner", "Intermediate", "Advanced" });
             difficultyFilter.SelectedIndex = 0;
@@ -117,21 +120,25 @@ namespace EnglishAutomationApp.Views.Pages
             // Add word button
             addWordButton = ModernUIHelper.CreateIconButton("Add Word", "+", ModernUIHelper.Colors.Secondary, 120);
             addWordButton.Location = new Point(500, ModernUIHelper.Spacing.Small);
+            addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             addWordButton.Click += AddWordButton_Click;
 
             // Study mode button
             studyModeButton = ModernUIHelper.CreateIconButton("Study Mode", "📚", ModernUIHelper.Colors.Primary, 140);
             studyModeButton.Location = new Point(630, ModernUIHelper.Spacing.Small);
+            studyModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             studyModeButton.Click += StudyModeButton_Click;
 
             // Review button
             var reviewButton = ModernUIHelper.CreateIconButton("Review", "🔄", ModernUIHelper.Colors.Secondary, 120);
             reviewButton.Location = new Point(780, ModernUIHelper.Spacing.Small);
+            reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             reviewButton.Click += ReviewButton_Click;
 
             // Stats button
             var statsButton = ModernUIHelper.CreateIconButton("Stats", "📊", ModernUIHelper.Colors.Warning, 100);
             statsButton.Location = new Point(910, ModernUIHelper.Spacing.Small);
+            statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             statsButton.Click += StatsButton_Click;
 
             toolbarPanel.Controls.AddRange(new Control[]
@@ -273,7 +280,8 @@ namespace EnglishAutomationApp.Views.Pages
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(card.Width - 180, 10),
                 Size = new Size(70, 20),
-                Padding = new Padding(4)
+                Padding = new Padding(4),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             var categoryLabel = new Label
@@ -285,17 +293,20 @@ namespace EnglishAutomationApp.Views.Pages
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(card.Width - 100, 10),
                 Size = new Size(80, 20),
-                Padding = new Padding(4)
+                Padding = new Padding(4),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             // Edit button
             var editButton = ModernUIHelper.CreateSmallButton("Edit", ModernUIHelper.Colors.Primary);
             editButton.Location = new Point(card.Width - 170, card.Height - 40);
+            editButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             editButton.Click += (s, e) => EditWord(word);
 
             // Delete button
             var deleteButton = ModernUIHelper.CreateSmallButton("Delete", ModernUIHelper.Colors.Error);
             deleteButton.Location = new Point(card.Width - 85, card.Height - 40);
+            deleteButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             deleteButton.Click += (s, e) => DeleteWord(word);
 
             card.Controls.AddRange(new Control[]

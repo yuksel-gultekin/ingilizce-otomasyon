@@ -28,6 +28,7 @@ namespace EnglishAutomationApp.Views
             // Form properties
             this.Text = "English Learning Platform";
             this.Size = new Size(1200, 700);
+            this.MinimumSize = new Size(1000, 600);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.WindowState = FormWindowState.Maximized;
             ModernUIHelper.ApplyModernFormStyle(this);

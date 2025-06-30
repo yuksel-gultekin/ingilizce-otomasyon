@@ -8,7 +8,6 @@ using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
 using EnglishAutomationApp.Services;
 using EnglishAutomationApp.Helpers;
-using Microsoft.EntityFrameworkCore;
 
 namespace EnglishAutomationApp.Views.Pages
 {
@@ -146,11 +145,7 @@ namespace EnglishAutomationApp.Views.Pages
         {
             try
             {
-                using var context = new AppDbContext();
-                allCourses = await context.Courses
-                    .Where(c => c.IsActive)
-                    .OrderBy(c => c.OrderIndex)
-                    .ToListAsync();
+                allCourses = await AccessDatabaseHelper.GetAllCoursesAsync();
 
                 filteredCourses = allCourses.ToList();
                 UpdateStatsLabel();

@@ -30,119 +30,151 @@ namespace EnglishAutomationApp.Views
 
             // Form properties
             this.Text = "Register - English Automation Platform";
-            this.Size = new Size(450, 650);
+            this.Size = new Size(480, 680);
+            this.MinimumSize = new Size(450, 650);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.BackColor = Color.FromArgb(240, 240, 240);
+            this.BackColor = Color.FromArgb(15, 23, 42); // Slate-900
 
             // Title Label
             titleLabel = new Label();
-            titleLabel.Text = "🚀 Create New Account";
-            titleLabel.Font = new Font("Segoe UI", 18, FontStyle.Bold);
-            titleLabel.ForeColor = Color.FromArgb(102, 126, 234);
+            titleLabel.Text = "Create New Account";
+            titleLabel.Font = new Font("Segoe UI", 24, FontStyle.Bold);
+            titleLabel.ForeColor = Color.White;
             titleLabel.TextAlign = ContentAlignment.MiddleCenter;
-            titleLabel.Location = new Point(50, 30);
-            titleLabel.Size = new Size(350, 40);
+            titleLabel.Location = new Point(40, 30);
+            titleLabel.Size = new Size(400, 50);
+            titleLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Main Panel
             var mainPanel = new Panel();
-            mainPanel.BackColor = Color.White;
-            mainPanel.Location = new Point(50, 90);
-            mainPanel.Size = new Size(350, 480);
+            mainPanel.BackColor = Color.FromArgb(30, 41, 59); // Slate-800
+            mainPanel.Location = new Point(40, 100);
+            mainPanel.Size = new Size(400, 500);
+            mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
 
             // First Name
             var firstNameLabel = new Label();
-            firstNameLabel.Text = "First Name:";
-            firstNameLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            firstNameLabel.Location = new Point(30, 30);
-            firstNameLabel.Size = new Size(100, 25);
+            firstNameLabel.Text = "FIRST NAME";
+            firstNameLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            firstNameLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
+            firstNameLabel.Location = new Point(40, 40);
+            firstNameLabel.Size = new Size(320, 20);
 
             firstNameTextBox = new TextBox();
             firstNameTextBox.Font = new Font("Segoe UI", 12);
-            firstNameTextBox.Location = new Point(30, 55);
-            firstNameTextBox.Size = new Size(290, 30);
+            firstNameTextBox.Location = new Point(40, 65);
+            firstNameTextBox.Size = new Size(320, 35);
+            firstNameTextBox.BorderStyle = BorderStyle.None;
+            firstNameTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            firstNameTextBox.ForeColor = Color.White;
+            firstNameTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Last Name
             var lastNameLabel = new Label();
-            lastNameLabel.Text = "Last Name:";
-            lastNameLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            lastNameLabel.Location = new Point(30, 95);
-            lastNameLabel.Size = new Size(100, 25);
+            lastNameLabel.Text = "LAST NAME";
+            lastNameLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            lastNameLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
+            lastNameLabel.Location = new Point(40, 115);
+            lastNameLabel.Size = new Size(320, 20);
 
             lastNameTextBox = new TextBox();
             lastNameTextBox.Font = new Font("Segoe UI", 12);
-            lastNameTextBox.Location = new Point(30, 120);
-            lastNameTextBox.Size = new Size(290, 30);
+            lastNameTextBox.Location = new Point(40, 140);
+            lastNameTextBox.Size = new Size(320, 35);
+            lastNameTextBox.BorderStyle = BorderStyle.None;
+            lastNameTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            lastNameTextBox.ForeColor = Color.White;
+            lastNameTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Email
             var emailLabel = new Label();
-            emailLabel.Text = "Email:";
-            emailLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            emailLabel.Location = new Point(30, 160);
-            emailLabel.Size = new Size(100, 25);
+            emailLabel.Text = "EMAIL ADDRESS";
+            emailLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            emailLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
+            emailLabel.Location = new Point(40, 190);
+            emailLabel.Size = new Size(320, 20);
 
             emailTextBox = new TextBox();
             emailTextBox.Font = new Font("Segoe UI", 12);
-            emailTextBox.Location = new Point(30, 185);
-            emailTextBox.Size = new Size(290, 30);
+            emailTextBox.Location = new Point(40, 215);
+            emailTextBox.Size = new Size(320, 35);
+            emailTextBox.BorderStyle = BorderStyle.None;
+            emailTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            emailTextBox.ForeColor = Color.White;
+            emailTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Password
             var passwordLabel = new Label();
-            passwordLabel.Text = "Password:";
-            passwordLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            passwordLabel.Location = new Point(30, 225);
-            passwordLabel.Size = new Size(100, 25);
+            passwordLabel.Text = "PASSWORD";
+            passwordLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            passwordLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
+            passwordLabel.Location = new Point(40, 265);
+            passwordLabel.Size = new Size(320, 20);
 
             passwordTextBox = new TextBox();
             passwordTextBox.Font = new Font("Segoe UI", 12);
-            passwordTextBox.Location = new Point(30, 250);
-            passwordTextBox.Size = new Size(290, 30);
+            passwordTextBox.Location = new Point(40, 290);
+            passwordTextBox.Size = new Size(320, 35);
+            passwordTextBox.BorderStyle = BorderStyle.None;
+            passwordTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            passwordTextBox.ForeColor = Color.White;
             passwordTextBox.UseSystemPasswordChar = true;
+            passwordTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Confirm Password
             var confirmPasswordLabel = new Label();
-            confirmPasswordLabel.Text = "Confirm Password:";
-            confirmPasswordLabel.Font = new Font("Segoe UI", 10, FontStyle.Bold);
-            confirmPasswordLabel.Location = new Point(30, 290);
-            confirmPasswordLabel.Size = new Size(150, 25);
+            confirmPasswordLabel.Text = "CONFIRM PASSWORD";
+            confirmPasswordLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            confirmPasswordLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
+            confirmPasswordLabel.Location = new Point(40, 340);
+            confirmPasswordLabel.Size = new Size(320, 20);
 
             confirmPasswordTextBox = new TextBox();
             confirmPasswordTextBox.Font = new Font("Segoe UI", 12);
-            confirmPasswordTextBox.Location = new Point(30, 315);
-            confirmPasswordTextBox.Size = new Size(290, 30);
+            confirmPasswordTextBox.Location = new Point(40, 365);
+            confirmPasswordTextBox.Size = new Size(320, 35);
+            confirmPasswordTextBox.BorderStyle = BorderStyle.None;
+            confirmPasswordTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            confirmPasswordTextBox.ForeColor = Color.White;
             confirmPasswordTextBox.UseSystemPasswordChar = true;
+            confirmPasswordTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Register Button
             registerButton = new Button();
-            registerButton.Text = "🎯 Create Account";
+            registerButton.Text = "Create Account";
             registerButton.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            registerButton.BackColor = Color.FromArgb(102, 126, 234);
+            registerButton.BackColor = Color.FromArgb(99, 102, 241); // Indigo-500
             registerButton.ForeColor = Color.White;
             registerButton.FlatStyle = FlatStyle.Flat;
             registerButton.FlatAppearance.BorderSize = 0;
-            registerButton.Location = new Point(30, 365);
-            registerButton.Size = new Size(140, 40);
+            registerButton.Location = new Point(40, 420);
+            registerButton.Size = new Size(150, 45);
+            registerButton.Cursor = Cursors.Hand;
             registerButton.Click += RegisterButton_Click;
 
             // Cancel Button
             cancelButton = new Button();
             cancelButton.Text = "Cancel";
-            cancelButton.Font = new Font("Segoe UI", 10);
-            cancelButton.BackColor = Color.Gray;
-            cancelButton.ForeColor = Color.White;
+            cancelButton.Font = new Font("Segoe UI", 11);
+            cancelButton.BackColor = Color.Transparent;
+            cancelButton.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
             cancelButton.FlatStyle = FlatStyle.Flat;
-            cancelButton.FlatAppearance.BorderSize = 0;
-            cancelButton.Location = new Point(180, 365);
-            cancelButton.Size = new Size(140, 40);
+            cancelButton.FlatAppearance.BorderSize = 1;
+            cancelButton.FlatAppearance.BorderColor = Color.FromArgb(148, 163, 184);
+            cancelButton.Location = new Point(210, 420);
+            cancelButton.Size = new Size(150, 45);
+            cancelButton.Cursor = Cursors.Hand;
             cancelButton.Click += CancelButton_Click;
 
             // Message Label
             messageLabel = new Label();
-            messageLabel.Font = new Font("Segoe UI", 9);
-            messageLabel.Location = new Point(30, 415);
-            messageLabel.Size = new Size(290, 50);
+            messageLabel.Font = new Font("Segoe UI", 10);
+            messageLabel.Location = new Point(40, 480);
+            messageLabel.Size = new Size(320, 40);
             messageLabel.TextAlign = ContentAlignment.MiddleCenter;
+            messageLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
             // Add controls to main panel
             mainPanel.Controls.Add(firstNameLabel);

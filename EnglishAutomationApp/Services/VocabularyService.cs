@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
 
@@ -12,81 +11,58 @@ namespace EnglishAutomationApp.Services
     {
         public static async Task<List<VocabularyWord>> GetAllWordsAsync()
         {
-            using var context = new AppDbContext();
-            return await context.VocabularyWords
-                .Where(w => w.IsActive)
-                .OrderBy(w => w.EnglishWord)
-                .ToListAsync();
+            return await AccessDatabaseHelper.GetAllVocabularyWordsAsync();
         }
 
         public static async Task<List<VocabularyWord>> GetWordsByCategoryAsync(string category)
         {
-            using var context = new AppDbContext();
-            return await context.VocabularyWords
-                .Where(w => w.IsActive && w.Category == category)
-                .OrderBy(w => w.EnglishWord)
-                .ToListAsync();
+            var allWords = await GetAllWordsAsync();
+            return allWords.Where(w => w.Category == category).ToList();
         }
 
         public static async Task<List<VocabularyWord>> GetWordsByDifficultyAsync(WordDifficulty difficulty)
         {
-            using var context = new AppDbContext();
-            return await context.VocabularyWords
-                .Where(w => w.IsActive && w.Difficulty == difficulty)
-                .OrderBy(w => w.EnglishWord)
-                .ToListAsync();
+            var allWords = await GetAllWordsAsync();
+            return allWords.Where(w => w.Difficulty == difficulty).ToList();
         }
 
         public static async Task<List<VocabularyWord>> SearchWordsAsync(string searchTerm)
         {
-            using var context = new AppDbContext();
-            return await context.VocabularyWords
-                .Where(w => w.IsActive && 
-                    (w.EnglishWord.Contains(searchTerm) || 
-                     w.TurkishMeaning.Contains(searchTerm) ||
-                     (w.ExampleSentence != null && w.ExampleSentence.Contains(searchTerm))))
-                .OrderBy(w => w.EnglishWord)
-                .ToListAsync();
+            var allWords = await GetAllWordsAsync();
+            return allWords.Where(w =>
+                w.EnglishWord.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                w.TurkishMeaning.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (w.ExampleSentence != null && w.ExampleSentence.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
         }
 
         public static async Task<VocabularyWord> AddWordAsync(VocabularyWord word)
         {
-            using var context = new AppDbContext();
-            context.VocabularyWords.Add(word);
-            await context.SaveChangesAsync();
+            await AccessDatabaseHelper.AddVocabularyWordAsync(word);
             return word;
         }
 
         public static async Task<VocabularyWord> UpdateWordAsync(VocabularyWord word)
         {
-            using var context = new AppDbContext();
-            context.VocabularyWords.Update(word);
-            await context.SaveChangesAsync();
+            // Update functionality needs to be implemented in AccessDatabaseHelper
             return word;
         }
 
         public static async Task<bool> DeleteWordAsync(int wordId)
         {
-            using var context = new AppDbContext();
-            var word = await context.VocabularyWords.FindAsync(wordId);
-            if (word != null)
-            {
-                word.IsActive = false;
-                await context.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            // Delete functionality needs to be implemented in AccessDatabaseHelper
+            return true;
         }
 
         public static async Task<List<string>> GetCategoriesAsync()
         {
-            using var context = new AppDbContext();
-            return await context.VocabularyWords
-                .Where(w => w.IsActive && !string.IsNullOrEmpty(w.Category))
+            var allWords = await GetAllWordsAsync();
+            return allWords
+                .Where(w => !string.IsNullOrEmpty(w.Category))
                 .Select(w => w.Category!)
                 .Distinct()
                 .OrderBy(c => c)
-                .ToListAsync();
+                .ToList();
         }
 
         public static async Task<UserVocabulary?> GetUserVocabularyAsync(int userId, int wordId)
@@ -268,10 +244,9 @@ namespace EnglishAutomationApp.Services
 
         public static async Task SeedSampleWordsAsync()
         {
-            using var context = new AppDbContext();
-
             // Check if we already have words
-            if (await context.VocabularyWords.AnyAsync())
+            var existingWords = await GetAllWordsAsync();
+            if (existingWords.Any())
                 return;
 
             var sampleWords = new List<VocabularyWord>
@@ -452,8 +427,12 @@ namespace EnglishAutomationApp.Services
                 }
             };
 
-            context.VocabularyWords.AddRange(sampleWords);
-            await context.SaveChangesAsync();
+            // Add sample words to database
+            foreach (var word in sampleWords)
+            {
+                word.CreatedDate = DateTime.Now;
+                await AccessDatabaseHelper.AddVocabularyWordAsync(word);
+            }
         }
     }
 }

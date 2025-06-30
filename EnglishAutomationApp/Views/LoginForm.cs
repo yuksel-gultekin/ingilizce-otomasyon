@@ -39,7 +39,8 @@ namespace EnglishAutomationApp.Views
 
             // Form properties - Modern styling
             this.Text = "English Automation Platform";
-            this.Size = new Size(500, 700);
+            this.Size = new Size(520, 720);
+            this.MinimumSize = new Size(480, 680);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
             this.BackColor = Color.FromArgb(15, 23, 42); // Slate-900
@@ -49,8 +50,9 @@ namespace EnglishAutomationApp.Views
             // Logo/Icon placeholder
             logoBox = new PictureBox();
             logoBox.Size = new Size(80, 80);
-            logoBox.Location = new Point((this.Width - logoBox.Width) / 2, 60);
+            logoBox.Location = new Point((this.Width - 80) / 2, 60);
             logoBox.BackColor = Color.FromArgb(99, 102, 241); // Indigo-500
+            logoBox.Anchor = AnchorStyles.Top;
             logoBox.Paint += LogoBox_Paint;
 
             // Title Label - Modern typography
@@ -59,8 +61,9 @@ namespace EnglishAutomationApp.Views
             titleLabel.Font = new Font("Segoe UI", 28, FontStyle.Bold);
             titleLabel.ForeColor = Color.White;
             titleLabel.TextAlign = ContentAlignment.MiddleCenter;
-            titleLabel.Location = new Point(50, 160);
+            titleLabel.Location = new Point(60, 160);
             titleLabel.Size = new Size(400, 50);
+            titleLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Subtitle Label
             subtitleLabel = new Label();
@@ -68,21 +71,24 @@ namespace EnglishAutomationApp.Views
             subtitleLabel.Font = new Font("Segoe UI", 11);
             subtitleLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
             subtitleLabel.TextAlign = ContentAlignment.MiddleCenter;
-            subtitleLabel.Location = new Point(50, 210);
+            subtitleLabel.Location = new Point(60, 210);
             subtitleLabel.Size = new Size(400, 25);
+            subtitleLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Main Panel - Card-like container
             mainPanel = new Panel();
             mainPanel.BackColor = Color.FromArgb(30, 41, 59); // Slate-800
             mainPanel.Location = new Point(60, 260);
-            mainPanel.Size = new Size(380, 380);
+            mainPanel.Size = new Size(400, 380);
+            mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             mainPanel.Paint += MainPanel_Paint;
 
             // Input Panel - Container for form fields
             inputPanel = new Panel();
             inputPanel.BackColor = Color.Transparent;
-            inputPanel.Location = new Point(40, 40);
+            inputPanel.Location = new Point(50, 40);
             inputPanel.Size = new Size(300, 280);
+            inputPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Email Label
             emailLabel = new Label();
@@ -167,7 +173,8 @@ namespace EnglishAutomationApp.Views
             registerButton.FlatAppearance.BorderSize = 1;
             registerButton.FlatAppearance.BorderColor = Color.FromArgb(99, 102, 241);
             registerButton.Location = new Point(60, 660);
-            registerButton.Size = new Size(380, 35);
+            registerButton.Size = new Size(400, 35);
+            registerButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             registerButton.Cursor = Cursors.Hand;
             registerButton.Click += RegisterButton_Click;
 

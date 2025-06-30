@@ -131,7 +131,7 @@ namespace EnglishAutomationApp.Views.Pages
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select Database Backup File";
-            openFileDialog.Filter = "Database files (*.db)|*.db|All files (*.*)|*.*";
+            openFileDialog.Filter = "Access Database files (*.accdb)|*.accdb|All files (*.*)|*.*";
             openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
