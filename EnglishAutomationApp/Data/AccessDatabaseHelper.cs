@@ -254,13 +254,13 @@ namespace EnglishAutomationApp.Data
                 {
                     Id = reader.GetInt32(0), // Id
                     Title = reader.GetString(1), // Title
-                    Description = reader.IsDBNull(2) ? null : reader.GetString(2), // Description
-                    Content = reader.IsDBNull(3) ? null : reader.GetString(3), // Content
+                    Description = reader.IsDBNull(2) ? string.Empty : reader.GetString(2), // Description
+                    Content = reader.IsDBNull(3) ? string.Empty : reader.GetString(3), // Content
                     Level = (CourseLevel)reader.GetInt32(4), // Level
                     Type = (CourseType)reader.GetInt32(5), // Type
-                    Price = reader.IsDBNull(6) ? null : reader.GetDecimal(6), // Price
-                    OrderIndex = reader.IsDBNull(7) ? null : reader.GetInt32(7), // OrderIndex
-                    EstimatedDurationMinutes = reader.IsDBNull(8) ? null : reader.GetInt32(8), // EstimatedDurationMinutes
+                    Price = reader.IsDBNull(6) ? 0 : reader.GetDecimal(6), // Price
+                    OrderIndex = reader.IsDBNull(7) ? 0 : reader.GetInt32(7), // OrderIndex
+                    EstimatedDurationMinutes = reader.IsDBNull(8) ? 0 : reader.GetInt32(8), // EstimatedDurationMinutes
                     Prerequisites = reader.IsDBNull(9) ? null : reader.GetString(9), // Prerequisites
                     Color = reader.IsDBNull(10) ? null : reader.GetString(10), // Color
                     IsActive = reader.GetBoolean(11), // IsActive
