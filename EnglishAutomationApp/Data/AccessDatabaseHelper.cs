@@ -11,7 +11,8 @@ namespace EnglishAutomationApp.Data
     {
         private static string GetConnectionString()
         {
-            var dbPath = @"C:\Users\Administrator\Documents\Database2.accdb";
+            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Database2.accdb");
+
             return $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
         }
 
