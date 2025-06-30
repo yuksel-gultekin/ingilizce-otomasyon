@@ -61,7 +61,6 @@ namespace EnglishAutomationApp.Models
         public string? Color { get; set; }
 
         // Navigation Properties
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
         public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
         public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 

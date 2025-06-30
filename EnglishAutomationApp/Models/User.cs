@@ -35,7 +35,6 @@ namespace EnglishAutomationApp.Models
         public DateTime? LastLoginDate { get; set; }
 
         // Navigation Properties
-        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
         public virtual ICollection<UserProgress> UserProgresses { get; set; } = new List<UserProgress>();
 
         // Computed Properties

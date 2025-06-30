@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using EnglishAutomationApp.Services;
 using EnglishAutomationApp.Views.Pages;
+using EnglishAutomationApp.Helpers;
 
 namespace EnglishAutomationApp.Views
 {
@@ -25,17 +26,17 @@ namespace EnglishAutomationApp.Views
             this.SuspendLayout();
 
             // Form properties
-            this.Text = "English Automation Platform";
+            this.Text = "English Learning Platform";
             this.Size = new Size(1200, 700);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.WindowState = FormWindowState.Maximized;
-            this.BackColor = Color.FromArgb(240, 240, 240);
+            ModernUIHelper.ApplyModernFormStyle(this);
 
             // Menu Strip
             menuStrip = new MenuStrip();
-            menuStrip.BackColor = Color.FromArgb(102, 126, 234);
+            menuStrip.BackColor = ModernUIHelper.Colors.Primary;
             menuStrip.ForeColor = Color.White;
-            menuStrip.Font = new Font("Segoe UI", 10);
+            menuStrip.Font = ModernUIHelper.Fonts.Body;
 
             // File Menu
             var fileMenu = new ToolStripMenuItem("File");
@@ -52,7 +53,6 @@ namespace EnglishAutomationApp.Views
             // Tools Menu
             var toolsMenu = new ToolStripMenuItem("Tools");
             toolsMenu.DropDownItems.Add("🏆 Achievements", null, AchievementsMenuItem_Click);
-            toolsMenu.DropDownItems.Add("💳 Payments", null, PaymentsMenuItem_Click);
 
             // Admin Menu (will be shown only for admin users)
             var adminMenu = new ToolStripMenuItem("Admin");
@@ -71,13 +71,13 @@ namespace EnglishAutomationApp.Views
 
             // Welcome Label
             welcomeLabel = new Label();
-            welcomeLabel.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+            welcomeLabel.Font = ModernUIHelper.Fonts.BodyBold;
             welcomeLabel.ForeColor = Color.White;
-            welcomeLabel.BackColor = Color.FromArgb(102, 126, 234);
+            welcomeLabel.BackColor = ModernUIHelper.Colors.Primary;
             welcomeLabel.TextAlign = ContentAlignment.MiddleRight;
             welcomeLabel.Dock = DockStyle.Right;
             welcomeLabel.Width = 300;
-            welcomeLabel.Padding = new Padding(10);
+            welcomeLabel.Padding = new Padding(ModernUIHelper.Spacing.Medium);
 
             // Add welcome label to menu strip
             var welcomeItem = new ToolStripControlHost(welcomeLabel);
@@ -87,13 +87,16 @@ namespace EnglishAutomationApp.Views
             // Content Panel
             contentPanel = new Panel();
             contentPanel.Dock = DockStyle.Fill;
-            contentPanel.BackColor = Color.White;
-            contentPanel.Padding = new Padding(20);
+            contentPanel.BackColor = ModernUIHelper.Colors.Background;
+            contentPanel.Padding = new Padding(ModernUIHelper.Spacing.Large);
 
             // Status Strip
             statusStrip = new StatusStrip();
+            statusStrip.BackColor = ModernUIHelper.Colors.SurfaceVariant;
+            statusStrip.ForeColor = ModernUIHelper.Colors.TextSecondary;
             statusLabel = new ToolStripStatusLabel();
             statusLabel.Text = "Ready";
+            statusLabel.Font = ModernUIHelper.Fonts.Small;
             statusStrip.Items.Add(statusLabel);
 
             // Add controls to form
@@ -158,11 +161,7 @@ namespace EnglishAutomationApp.Views
             UpdateStatus("Achievements");
         }
 
-        private void PaymentsMenuItem_Click(object sender, EventArgs e)
-        {
-            ShowUserControl(new PaymentsUserControl());
-            UpdateStatus("Payments");
-        }
+
 
         private void AdminMenuItem_Click(object sender, EventArgs e)
         {

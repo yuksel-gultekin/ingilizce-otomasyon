@@ -8,7 +8,7 @@ namespace EnglishAutomationApp.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Payment> Payments { get; set; }
+
         public DbSet<UserProgress> UserProgresses { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
@@ -80,23 +80,7 @@ namespace EnglishAutomationApp.Data
                 entity.Property(e => e.Level).HasConversion<int>();
             });
 
-            // Payment entity configuration
-            modelBuilder.Entity<Payment>(entity =>
-            {
-                entity.Property(e => e.Amount).HasColumnType("decimal(10,2)");
-                entity.Property(e => e.Status).HasConversion<int>();
-                entity.Property(e => e.PaymentDate).HasDefaultValueSql("datetime('now')");
-                
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Payments)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(d => d.Course)
-                    .WithMany(p => p.Payments)
-                    .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
 
             // UserProgress entity configuration
             modelBuilder.Entity<UserProgress>(entity =>
