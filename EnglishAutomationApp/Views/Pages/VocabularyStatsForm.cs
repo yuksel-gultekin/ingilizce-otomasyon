@@ -13,11 +13,11 @@ namespace EnglishAutomationApp.Views.Pages
     public partial class VocabularyStatsForm : Form
     {
         private int userId;
-        private Panel headerPanel;
-        private Panel statsPanel;
-        private Panel weakWordsPanel;
-        private FlowLayoutPanel statsCardsPanel;
-        private FlowLayoutPanel weakWordsCardsPanel;
+        private Panel headerPanel = null!;
+        private Panel statsPanel = null!;
+        private Panel weakWordsPanel = null!;
+        private FlowLayoutPanel statsCardsPanel = null!;
+        private FlowLayoutPanel weakWordsCardsPanel = null!;
 
         public VocabularyStatsForm(int userId)
         {
@@ -285,7 +285,7 @@ namespace EnglishAutomationApp.Views.Pages
             };
         }
 
-        private void PracticeButton_Click(object sender, EventArgs e)
+        private void PracticeButton_Click(object? sender, EventArgs e)
         {
             var button = sender as Button;
             var word = button?.Tag as VocabularyWord;

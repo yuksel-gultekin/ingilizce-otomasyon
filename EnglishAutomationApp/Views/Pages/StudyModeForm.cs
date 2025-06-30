@@ -11,27 +11,27 @@ namespace EnglishAutomationApp.Views.Pages
 {
     public partial class StudyModeForm : Form
     {
-        private List<VocabularyWord> words;
+        private List<VocabularyWord> words = null!;
         private int currentWordIndex = 0;
         private int correctAnswers = 0;
 
         private bool isReviewMode = false;
 
-        private Panel headerPanel;
-        private Panel cardPanel;
-        private Panel buttonPanel;
-        private Label progressLabel;
-        private Label scoreLabel;
-        private Label modeLabel;
-        private Label wordLabel;
-        private Label meaningLabel;
-        private Label pronunciationLabel;
-        private Label exampleLabel;
-        private Button showAnswerButton;
-        private Button correctButton;
-        private Button incorrectButton;
-        private Button nextButton;
-        private Button finishButton;
+        private Panel headerPanel = null!;
+        private Panel cardPanel = null!;
+        private Panel buttonPanel = null!;
+        private Label progressLabel = null!;
+        private Label scoreLabel = null!;
+        private Label modeLabel = null!;
+        private Label wordLabel = null!;
+        private Label meaningLabel = null!;
+        private Label pronunciationLabel = null!;
+        private Label exampleLabel = null!;
+        private Button showAnswerButton = null!;
+        private Button correctButton = null!;
+        private Button incorrectButton = null!;
+        private Button nextButton = null!;
+        private Button finishButton = null!;
 
         public StudyModeForm(List<VocabularyWord> studyWords, bool isReviewMode = false)
         {

@@ -11,15 +11,15 @@ namespace EnglishAutomationApp.Views.Pages
 {
     public partial class DashboardUserControl : UserControl
     {
-        private Label welcomeLabel;
-        private Label totalCoursesLabel;
-        private Label completedCoursesLabel;
-        private Label studyTimeLabel;
-        private Label vocabularyCountLabel;
-        private Button browseCoursesButton;
-        private Button studyVocabularyButton;
-        private Button viewProgressButton;
-        private ListBox recentActivityListBox;
+        private Label welcomeLabel = null!;
+        private Label totalCoursesLabel = null!;
+        private Label completedCoursesLabel = null!;
+        private Label studyTimeLabel = null!;
+        private Label vocabularyCountLabel = null!;
+        private Button browseCoursesButton = null!;
+        private Button studyVocabularyButton = null!;
+        private Button viewProgressButton = null!;
+        private ListBox recentActivityListBox = null!;
 
         public DashboardUserControl()
         {
@@ -251,7 +251,7 @@ namespace EnglishAutomationApp.Views.Pages
         }
 
         // Event Handlers
-        private void BrowseCoursesButton_Click(object sender, EventArgs e)
+        private void BrowseCoursesButton_Click(object? sender, EventArgs e)
         {
             var mainForm = this.FindForm() as MainForm;
             if (mainForm != null)
@@ -260,7 +260,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void StudyVocabularyButton_Click(object sender, EventArgs e)
+        private void StudyVocabularyButton_Click(object? sender, EventArgs e)
         {
             var mainForm = this.FindForm() as MainForm;
             if (mainForm != null)
@@ -269,7 +269,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void ViewProgressButton_Click(object sender, EventArgs e)
+        private void ViewProgressButton_Click(object? sender, EventArgs e)
         {
             var mainForm = this.FindForm() as MainForm;
             if (mainForm != null)

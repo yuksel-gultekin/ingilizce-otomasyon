@@ -213,7 +213,7 @@ namespace EnglishAutomationApp.Views.Pages
             categoryTextBox.Text = editingWord.Category ?? "";
         }
 
-        private async void SaveButton_Click(object sender, EventArgs e)
+        private async void SaveButton_Click(object? sender, EventArgs e)
         {
             if (!ValidateInput())
                 return;
@@ -250,7 +250,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object? sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();

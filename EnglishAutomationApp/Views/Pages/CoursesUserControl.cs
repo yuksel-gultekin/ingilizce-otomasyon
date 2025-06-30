@@ -14,14 +14,14 @@ namespace EnglishAutomationApp.Views.Pages
 {
     public partial class CoursesUserControl : UserControl
     {
-        private Panel headerPanel;
-        private Panel toolbarPanel;
-        private Panel contentPanel;
-        private FlowLayoutPanel coursesPanel;
-        private ComboBox levelFilterComboBox;
-        private ComboBox typeFilterComboBox;
-        private TextBox searchTextBox;
-        private Label statsLabel;
+        private Panel headerPanel = null!;
+        private Panel toolbarPanel = null!;
+        private Panel contentPanel = null!;
+        private FlowLayoutPanel coursesPanel = null!;
+        private ComboBox levelFilterComboBox = null!;
+        private ComboBox typeFilterComboBox = null!;
+        private TextBox searchTextBox = null!;
+        private Label statsLabel = null!;
 
         private List<Course> allCourses = new List<Course>();
         private List<Course> filteredCourses = new List<Course>();
@@ -318,7 +318,7 @@ namespace EnglishAutomationApp.Views.Pages
             };
         }
 
-        private void StartCourseButton_Click(object sender, EventArgs e)
+        private void StartCourseButton_Click(object? sender, EventArgs e)
         {
             var button = sender as Button;
             var course = button?.Tag as Course;

@@ -8,19 +8,19 @@ namespace EnglishAutomationApp.Views.Pages
 {
     public partial class CourseContentForm : Form
     {
-        private Course course;
-        private Panel headerPanel;
-        private Panel contentPanel;
-        private Panel navigationPanel;
-        private RichTextBox contentTextBox;
-        private Button previousButton;
-        private Button nextButton;
-        private Button completeButton;
-        private Label progressLabel;
-        private ProgressBar progressBar;
+        private Course course = null!;
+        private Panel headerPanel = null!;
+        private Panel contentPanel = null!;
+        private Panel navigationPanel = null!;
+        private RichTextBox contentTextBox = null!;
+        private Button previousButton = null!;
+        private Button nextButton = null!;
+        private Button completeButton = null!;
+        private Label progressLabel = null!;
+        private ProgressBar progressBar = null!;
 
         private int currentLessonIndex = 0;
-        private string[] lessons;
+        private string[] lessons = null!;
 
         public CourseContentForm(Course selectedCourse)
         {
@@ -599,7 +599,7 @@ Remember: Everyone's opinion matters, and it's okay to disagree respectfully!";
             }
         }
 
-        private void PreviousButton_Click(object sender, EventArgs e)
+        private void PreviousButton_Click(object? sender, EventArgs e)
         {
             if (currentLessonIndex > 0)
             {
@@ -609,7 +609,7 @@ Remember: Everyone's opinion matters, and it's okay to disagree respectfully!";
             }
         }
 
-        private void NextButton_Click(object sender, EventArgs e)
+        private void NextButton_Click(object? sender, EventArgs e)
         {
             if (currentLessonIndex < lessons.Length - 1)
             {
@@ -619,7 +619,7 @@ Remember: Everyone's opinion matters, and it's okay to disagree respectfully!";
             }
         }
 
-        private void CompleteButton_Click(object sender, EventArgs e)
+        private void CompleteButton_Click(object? sender, EventArgs e)
         {
             var result = MessageBox.Show(
                 $"Congratulations! You have completed '{course.Title}'!\n\n" +
