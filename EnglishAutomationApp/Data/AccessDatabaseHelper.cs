@@ -110,53 +110,62 @@ namespace EnglishAutomationApp.Data
 
         private static async Task CreateTablesAsync(OleDbConnection connection)
         {
-            var createUsersTable = @"
-                CREATE TABLE Users (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    Email TEXT(255) NOT NULL,
-                    PasswordHash TEXT(255) NOT NULL,
-                    FirstName TEXT(100) NOT NULL,
-                    LastName TEXT(100) NOT NULL,
-                    Role TEXT(50) DEFAULT 'User',
-                    IsActive YESNO DEFAULT True,
-                    CreatedDate DATETIME DEFAULT Now()
-                )";
-            await ExecuteNonQueryAsync(connection, createUsersTable);
+            try
+            {
+                // Create Users table with simpler syntax
+                var createUsersTable = @"
+                    CREATE TABLE Users (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        Email TEXT(255),
+                        PasswordHash TEXT(255),
+                        FirstName TEXT(100),
+                        LastName TEXT(100),
+                        Role TEXT(50),
+                        IsActive YESNO,
+                        CreatedDate DATETIME
+                    )";
+                await ExecuteNonQueryAsync(connection, createUsersTable);
 
-            // Courses table
+            // Courses table with simpler syntax
             var createCoursesTable = @"
                 CREATE TABLE Courses (
                     Id AUTOINCREMENT PRIMARY KEY,
-                    Title TEXT(255) NOT NULL,
+                    Title TEXT(255),
                     Description TEXT,
                     Content MEMO,
-                    Level INTEGER NOT NULL,
-                    Type INTEGER NOT NULL,
+                    Level INTEGER,
+                    Type INTEGER,
                     Price CURRENCY,
                     OrderIndex INTEGER,
                     EstimatedDurationMinutes INTEGER,
                     Prerequisites TEXT,
                     Color TEXT(20),
-                    IsActive YESNO DEFAULT True,
-                    CreatedDate DATETIME DEFAULT Now()
+                    IsActive YESNO,
+                    CreatedDate DATETIME
                 )";
             await ExecuteNonQueryAsync(connection, createCoursesTable);
 
-            // VocabularyWords table
+            // VocabularyWords table with simpler syntax
             var createVocabularyTable = @"
                 CREATE TABLE VocabularyWords (
                     Id AUTOINCREMENT PRIMARY KEY,
-                    EnglishWord TEXT(255) NOT NULL,
-                    TurkishMeaning TEXT(255) NOT NULL,
+                    EnglishWord TEXT(255),
+                    TurkishMeaning TEXT(255),
                     Pronunciation TEXT(255),
                     ExampleSentence MEMO,
                     ExampleSentenceTurkish MEMO,
-                    Difficulty INTEGER NOT NULL,
-                    PartOfSpeech INTEGER NOT NULL,
+                    Difficulty INTEGER,
+                    PartOfSpeech INTEGER,
                     Category TEXT(100),
-                    CreatedDate DATETIME DEFAULT Now()
+                    CreatedDate DATETIME
                 )";
             await ExecuteNonQueryAsync(connection, createVocabularyTable);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Tablo oluşturma hatası: {ex.Message}", "Hata");
+                throw;
+            }
         }
 
         private static async Task SeedDataAsync(OleDbConnection connection)
