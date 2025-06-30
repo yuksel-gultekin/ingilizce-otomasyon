@@ -126,9 +126,21 @@ namespace EnglishAutomationApp.Views.Pages
             studyModeButton.Width = 120;
             studyModeButton.Click += StudyModeButton_Click;
 
+            // Review button
+            var reviewButton = ModernUIHelper.CreateModernButton("🔄 Review", ModernUIHelper.Colors.Secondary);
+            reviewButton.Location = new Point(740, ModernUIHelper.Spacing.Small);
+            reviewButton.Width = 100;
+            reviewButton.Click += ReviewButton_Click;
+
+            // Stats button
+            var statsButton = ModernUIHelper.CreateModernButton("📊 Stats", ModernUIHelper.Colors.Warning);
+            statsButton.Location = new Point(850, ModernUIHelper.Spacing.Small);
+            statsButton.Width = 80;
+            statsButton.Click += StatsButton_Click;
+
             toolbarPanel.Controls.AddRange(new Control[]
             {
-                searchBox, categoryFilter, difficultyFilter, addWordButton, studyModeButton
+                searchBox, categoryFilter, difficultyFilter, addWordButton, studyModeButton, reviewButton, statsButton
             });
         }
 
@@ -182,14 +194,28 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void UpdateStatsLabel()
+        private async void UpdateStatsLabel()
         {
             var totalWords = allWords.Count;
             var displayedWords = filteredWords.Count;
 
             if (AuthenticationService.CurrentUser != null)
             {
-                statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                try
+                {
+                    var userStats = await VocabularyService.GetUserStatsAsync(AuthenticationService.CurrentUser.Id);
+                    var learnedWords = userStats.GetValueOrDefault("TotalWordsLearned", 0);
+                    var masteredWords = userStats.GetValueOrDefault("MasteredWords", 0);
+                    var currentStreak = userStats.GetValueOrDefault("CurrentStreak", 0);
+
+                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} | " +
+                                     $"Learned: {learnedWords} | Mastered: {masteredWords} | " +
+                                     $"Streak: {currentStreak} days 🔥";
+                }
+                catch
+                {
+                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                }
             }
             else
             {
@@ -390,6 +416,59 @@ namespace EnglishAutomationApp.Views.Pages
                     MessageBox.Show($"Error deleting word: {ex.Message}", "Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        private async void ReviewButton_Click(object sender, EventArgs e)
+        {
+            if (AuthenticationService.CurrentUser == null)
+            {
+                MessageBox.Show("Please login to use the review feature.", "Login Required",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                var wordsForReview = await VocabularyService.GetWordsForReviewAsync(AuthenticationService.CurrentUser.Id);
+
+                if (wordsForReview.Any())
+                {
+                    var reviewForm = new StudyModeForm(wordsForReview, isReviewMode: true);
+                    reviewForm.ShowDialog();
+                    LoadDataAsync(); // Refresh to update stats
+                }
+                else
+                {
+                    MessageBox.Show("Great job! No words need review right now. Come back later!",
+                        "No Review Needed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading review words: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void StatsButton_Click(object sender, EventArgs e)
+        {
+            if (AuthenticationService.CurrentUser == null)
+            {
+                MessageBox.Show("Please login to view your statistics.", "Login Required",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            try
+            {
+                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id);
+                statsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading statistics: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

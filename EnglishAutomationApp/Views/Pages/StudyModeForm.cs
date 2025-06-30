@@ -15,12 +15,14 @@ namespace EnglishAutomationApp.Views.Pages
         private int currentWordIndex = 0;
         private int correctAnswers = 0;
         private bool showingAnswer = false;
+        private bool isReviewMode = false;
 
         private Panel headerPanel;
         private Panel cardPanel;
         private Panel buttonPanel;
         private Label progressLabel;
         private Label scoreLabel;
+        private Label modeLabel;
         private Label wordLabel;
         private Label meaningLabel;
         private Label pronunciationLabel;
@@ -31,8 +33,9 @@ namespace EnglishAutomationApp.Views.Pages
         private Button nextButton;
         private Button finishButton;
 
-        public StudyModeForm(List<VocabularyWord> studyWords)
+        public StudyModeForm(List<VocabularyWord> studyWords, bool isReviewMode = false)
         {
+            this.isReviewMode = isReviewMode;
             words = studyWords.OrderBy(x => Guid.NewGuid()).ToList(); // Shuffle words
             InitializeComponent();
             ShowCurrentWord();
@@ -43,7 +46,7 @@ namespace EnglishAutomationApp.Views.Pages
             this.SuspendLayout();
 
             // Form properties
-            this.Text = "Study Mode - Vocabulary Practice";
+            this.Text = isReviewMode ? "Review Mode - Spaced Repetition" : "Study Mode - Vocabulary Practice";
             this.Size = new Size(600, 500);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -73,15 +76,24 @@ namespace EnglishAutomationApp.Views.Pages
                 Padding = new Padding(ModernUIHelper.Spacing.Large)
             };
 
-            var titleLabel = ModernUIHelper.CreateHeading("📚 Study Mode", 3);
+            var titleLabel = ModernUIHelper.CreateHeading(isReviewMode ? "🔄 Review Mode" : "📚 Study Mode", 3);
             titleLabel.ForeColor = Color.White;
             titleLabel.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small);
+
+            modeLabel = new Label
+            {
+                Text = isReviewMode ? "Spaced Repetition Review" : "Learning New Words",
+                Font = ModernUIHelper.Fonts.Small,
+                ForeColor = Color.White,
+                Location = new Point(ModernUIHelper.Spacing.Large, 35),
+                AutoSize = true
+            };
 
             progressLabel = new Label
             {
                 Font = ModernUIHelper.Fonts.Body,
                 ForeColor = Color.White,
-                Location = new Point(200, ModernUIHelper.Spacing.Small),
+                Location = new Point(250, ModernUIHelper.Spacing.Small),
                 AutoSize = true
             };
 
@@ -89,11 +101,11 @@ namespace EnglishAutomationApp.Views.Pages
             {
                 Font = ModernUIHelper.Fonts.Body,
                 ForeColor = Color.White,
-                Location = new Point(350, ModernUIHelper.Spacing.Small),
+                Location = new Point(400, ModernUIHelper.Spacing.Small),
                 AutoSize = true
             };
 
-            headerPanel.Controls.AddRange(new Control[] { titleLabel, progressLabel, scoreLabel });
+            headerPanel.Controls.AddRange(new Control[] { titleLabel, modeLabel, progressLabel, scoreLabel });
         }
 
         private void CreateCardPanel()
