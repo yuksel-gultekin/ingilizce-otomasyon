@@ -1,47 +1,68 @@
 using System;
-using System.Collections.Generic;
 using System.Data.OleDb;
 using System.IO;
 using System.Threading.Tasks;
-using EnglishAutomationApp.Models;
+using System.Windows.Forms; // Forms kullanıyorsan
 
 namespace EnglishAutomationApp.Data
 {
     public static class AccessDatabaseHelper
     {
+        private static string GetDatabasePath()
+        {
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            return Path.Combine(documents, "eng-otomasyon.accdb");
+        }
+
         private static string GetConnectionString()
         {
-            var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Database2.accdb");
-
+            var dbPath = GetDatabasePath();
             return $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};Persist Security Info=False;";
         }
 
         public static async Task InitializeDatabaseAsync()
         {
-            var connectionString = GetConnectionString();
+            var dbPath = GetDatabasePath();
 
-            // Dosya var mı?
-            if (!File.Exists(@"C:\Users\Administrator\Documents\Database2.accdb"))
+            if (!File.Exists(dbPath))
             {
-                System.Windows.Forms.MessageBox.Show("Access database bulunamadı!", "Hata");
-                return;
+                MessageBox.Show($"Database bulunamadı. Yeni dosya oluşturuluyor: {dbPath}", "Bilgi");
+
+                CreateEmptyAccessDatabase(dbPath);
+                MessageBox.Show("Boş Access dosyası oluşturuldu!", "Bilgi");
+            }
+            else
+            {
+                MessageBox.Show("Access database zaten var. Bağlanılıyor...", "Bilgi");
             }
 
-            using var connection = new OleDbConnection(connectionString);
+            using var connection = new OleDbConnection(GetConnectionString());
             await connection.OpenAsync();
 
-            // Gerekirse tablo yoksa oluştur
             await EnsureTablesExistAsync(connection);
 
-            System.Windows.Forms.MessageBox.Show("Veritabanı bağlantısı başarılı!", "Bilgi");
+            MessageBox.Show("Veritabanı hazır!", "Bilgi");
+        }
+
+        private static void CreateEmptyAccessDatabase(string dbPath)
+        {
+            try
+            {
+                var cat = new ADOX.Catalog();
+                cat.Create($@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ADOX ile oluşturma hatası: {ex.Message}", "Hata");
+                throw;
+            }
         }
 
         private static async Task EnsureTablesExistAsync(OleDbConnection connection)
         {
-            // Basit kontrol: "Users" tablosu var mı
             var tableExists = false;
-
             var checkSql = "SELECT COUNT(*) FROM MSysObjects WHERE Type=1 AND Name='Users'";
+
             try
             {
                 using var cmd = new OleDbCommand(checkSql, connection);
@@ -55,10 +76,10 @@ namespace EnglishAutomationApp.Data
 
             if (!tableExists)
             {
-                System.Windows.Forms.MessageBox.Show("'Users' tablosu bulunamadı. Oluşturuluyor...", "Bilgi");
+                MessageBox.Show("'Users' tablosu bulunamadı. Tablolar oluşturuluyor...", "Bilgi");
                 await CreateTablesAsync(connection);
                 await SeedDataAsync(connection);
-                System.Windows.Forms.MessageBox.Show("Tablolar oluşturuldu ve örnek veri eklendi.", "Bilgi");
+                MessageBox.Show("Tablolar oluşturuldu ve örnek veri eklendi!", "Bilgi");
             }
         }
 
@@ -75,9 +96,9 @@ namespace EnglishAutomationApp.Data
                     IsActive YESNO DEFAULT True,
                     CreatedDate DATETIME DEFAULT Now()
                 )";
-
             await ExecuteNonQueryAsync(connection, createUsersTable);
 
+            // Diğer tabloları da ekle
             var createCoursesTable = @"
                 CREATE TABLE Courses (
                     Id AUTOINCREMENT PRIMARY KEY,
@@ -95,46 +116,6 @@ namespace EnglishAutomationApp.Data
                     CreatedDate DATETIME DEFAULT Now()
                 )";
             await ExecuteNonQueryAsync(connection, createCoursesTable);
-
-            var createVocabularyTable = @"
-                CREATE TABLE VocabularyWords (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    EnglishWord TEXT(255) NOT NULL,
-                    TurkishMeaning TEXT(255) NOT NULL,
-                    Pronunciation TEXT(255),
-                    ExampleSentence MEMO,
-                    ExampleSentenceTurkish MEMO,
-                    Difficulty INTEGER NOT NULL,
-                    PartOfSpeech INTEGER NOT NULL,
-                    Category TEXT(100),
-                    CreatedDate DATETIME DEFAULT Now()
-                )";
-            await ExecuteNonQueryAsync(connection, createVocabularyTable);
-
-            var createUserProgressTable = @"
-                CREATE TABLE UserProgress (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    UserId INTEGER NOT NULL,
-                    CourseId INTEGER NOT NULL,
-                    Status INTEGER DEFAULT 0,
-                    ProgressPercentage INTEGER DEFAULT 0,
-                    TimeSpentMinutes INTEGER DEFAULT 0,
-                    StartDate DATETIME,
-                    CompletionDate DATETIME
-                )";
-            await ExecuteNonQueryAsync(connection, createUserProgressTable);
-
-            var createUserVocabularyTable = @"
-                CREATE TABLE UserVocabulary (
-                    Id AUTOINCREMENT PRIMARY KEY,
-                    UserId INTEGER NOT NULL,
-                    VocabularyWordId INTEGER NOT NULL,
-                    IsLearned YESNO DEFAULT False,
-                    CorrectAnswers INTEGER DEFAULT 0,
-                    IncorrectAnswers INTEGER DEFAULT 0,
-                    LastPracticeDate DATETIME
-                )";
-            await ExecuteNonQueryAsync(connection, createUserVocabularyTable);
         }
 
         private static async Task SeedDataAsync(OleDbConnection connection)
@@ -144,7 +125,7 @@ namespace EnglishAutomationApp.Data
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             using var adminCommand = new OleDbCommand(adminSql, connection);
-            adminCommand.Parameters.AddWithValue("@Email", "admin@englishautomation.com");
+            adminCommand.Parameters.AddWithValue("@Email", "admin@engotomasyon.com");
             adminCommand.Parameters.AddWithValue("@PasswordHash", BCrypt.Net.BCrypt.HashPassword("admin123"));
             adminCommand.Parameters.AddWithValue("@FirstName", "Admin");
             adminCommand.Parameters.AddWithValue("@LastName", "User");
