@@ -23,7 +23,7 @@ namespace EnglishAutomationApp.Views
         private PictureBox logoBox;
         private CheckBox rememberMeCheckBox;
         private LinkLabel forgotPasswordLabel;
-        private Timer fadeTimer;
+        private System.Windows.Forms.Timer fadeTimer;
         private float opacity = 0f;
 
         public LoginForm()
@@ -236,7 +236,7 @@ namespace EnglishAutomationApp.Views
 
         private void SetupFadeInAnimation()
         {
-            fadeTimer = new Timer();
+            fadeTimer = new System.Windows.Forms.Timer();
             fadeTimer.Interval = 20;
             fadeTimer.Tick += (s, e) =>
             {
@@ -389,7 +389,7 @@ namespace EnglishAutomationApp.Views
                     ShowMessage(result.Message, Color.FromArgb(34, 197, 94)); // Green-500
                     
                     // Fade out animation before opening main form
-                    var fadeOutTimer = new Timer();
+                    var fadeOutTimer = new System.Windows.Forms.Timer();
                     fadeOutTimer.Interval = 20;
                     fadeOutTimer.Tick += (s, args) =>
                     {
@@ -433,7 +433,7 @@ namespace EnglishAutomationApp.Views
             messageLabel.ForeColor = color;
             
             // Add fade-in animation for messages
-            var messageTimer = new Timer();
+            var messageTimer = new System.Windows.Forms.Timer();
             messageTimer.Interval = 3000;
             messageTimer.Tick += (s, e) =>
             {
