@@ -147,10 +147,10 @@ namespace EnglishAutomationApp.Data
             CREATE TABLE Courses (
                 Id COUNTER PRIMARY KEY,
                 Title TEXT(255),
-                Desc MEMO,
-                Content MEMO,
-                Level INTEGER,
-                Type INTEGER,
+                DescriptionText TEXT(255),
+                ContentText TEXT(255),
+                CourseLevel INTEGER,
+                CourseType INTEGER,
                 Price CURRENCY,
                 OrderIndex INTEGER,
                 EstimatedDurationMinutes INTEGER,
@@ -159,6 +159,7 @@ namespace EnglishAutomationApp.Data
                 IsActive YESNO,
                 CreatedDate DATETIME
             )";
+
 
                 await ExecuteNonQueryAsync(connection, createCoursesTable);
 
