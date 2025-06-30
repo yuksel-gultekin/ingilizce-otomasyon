@@ -43,7 +43,7 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Database Info
             var dbInfoLabel = new Label();
-            dbInfoLabel.Text = AccessDatabaseHelper.GetDatabaseInfo();
+            dbInfoLabel.Text = Data.AccessDatabaseHelper.GetDatabaseInfo();
             dbInfoLabel.Font = new Font("Segoe UI", 10);
             dbInfoLabel.Location = new Point(30, 70);
             dbInfoLabel.Size = new Size(680, 100);
@@ -91,7 +91,7 @@ namespace EnglishAutomationApp.Views.Pages
                              $"Framework: .NET 9.0\n" +
                              $"UI: Windows Forms\n" +
                              $"Database: SQLite (Access-like)\n" +
-                             $"Database Size: {AccessDatabaseHelper.GetDatabaseSizeFormatted()}";
+                             $"Database Size: {Data.AccessDatabaseHelper.GetDatabaseSizeFormatted()}";
             systemInfo.Font = new Font("Segoe UI", 10);
             systemInfo.Location = new Point(30, 280);
             systemInfo.Size = new Size(680, 100);
@@ -113,7 +113,7 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void BackupButton_Click(object? sender, EventArgs e)
         {
-            AccessDatabaseHelper.BackupDatabase();
+            Data.AccessDatabaseHelper.BackupDatabase();
         }
 
         private void CompactButton_Click(object? sender, EventArgs e)
@@ -123,7 +123,7 @@ namespace EnglishAutomationApp.Views.Pages
 
             if (result == DialogResult.Yes)
             {
-                AccessDatabaseHelper.CompactDatabase();
+                Data.AccessDatabaseHelper.CompactDatabase();
             }
         }
 
@@ -141,7 +141,7 @@ namespace EnglishAutomationApp.Views.Pages
 
                 if (result == DialogResult.Yes)
                 {
-                    AccessDatabaseHelper.RestoreDatabase(openFileDialog.FileName);
+                    Data.AccessDatabaseHelper.RestoreDatabase(openFileDialog.FileName);
                 }
             }
         }

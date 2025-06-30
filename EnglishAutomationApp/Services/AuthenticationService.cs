@@ -20,7 +20,7 @@ namespace EnglishAutomationApp.Services
         {
             try
             {
-                var user = await AccessDatabaseHelper.GetUserByEmailAsync(email);
+                var user = await Data.AccessDatabaseHelper.GetUserByEmailAsync(email);
 
                 if (user == null)
                 {
@@ -52,7 +52,7 @@ namespace EnglishAutomationApp.Services
             try
             {
                 // Email check
-                var existingUser = await AccessDatabaseHelper.GetUserByEmailAsync(email);
+                var existingUser = await Data.AccessDatabaseHelper.GetUserByEmailAsync(email);
 
                 if (existingUser != null)
                 {
@@ -77,7 +77,7 @@ namespace EnglishAutomationApp.Services
                     CreatedDate = DateTime.Now
                 };
 
-                var success = await AccessDatabaseHelper.CreateUserAsync(newUser);
+                var success = await Data.AccessDatabaseHelper.CreateUserAsync(newUser);
 
                 if (success)
                 {
@@ -103,7 +103,7 @@ namespace EnglishAutomationApp.Services
 
             try
             {
-                var user = await AccessDatabaseHelper.GetUserByEmailAsync(CurrentUser.Email);
+                var user = await Data.AccessDatabaseHelper.GetUserByEmailAsync(CurrentUser.Email);
                 if (user == null)
                 {
                     return (false, "User not found.");
@@ -137,7 +137,7 @@ namespace EnglishAutomationApp.Services
         {
             try
             {
-                var user = await AccessDatabaseHelper.GetUserByEmailAsync(email);
+                var user = await Data.AccessDatabaseHelper.GetUserByEmailAsync(email);
 
                 if (user == null)
                 {

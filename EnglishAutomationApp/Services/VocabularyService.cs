@@ -11,7 +11,7 @@ namespace EnglishAutomationApp.Services
     {
         public static async Task<List<VocabularyWord>> GetAllWordsAsync()
         {
-            return await AccessDatabaseHelper.GetAllVocabularyWordsAsync();
+            return await Data.AccessDatabaseHelper.GetAllVocabularyWordsAsync();
         }
 
         public static async Task<List<VocabularyWord>> GetWordsByCategoryAsync(string category)
@@ -38,7 +38,7 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<VocabularyWord> AddWordAsync(VocabularyWord word)
         {
-            await AccessDatabaseHelper.AddVocabularyWordAsync(word);
+            await Data.AccessDatabaseHelper.AddVocabularyWordAsync(word);
             return word;
         }
 
@@ -334,7 +334,7 @@ namespace EnglishAutomationApp.Services
             foreach (var word in sampleWords)
             {
                 word.CreatedDate = DateTime.Now;
-                await AccessDatabaseHelper.AddVocabularyWordAsync(word);
+                await Data.AccessDatabaseHelper.AddVocabularyWordAsync(word);
             }
         }
     }

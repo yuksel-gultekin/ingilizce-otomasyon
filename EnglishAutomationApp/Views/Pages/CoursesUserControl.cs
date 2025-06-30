@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
 using EnglishAutomationApp.Services;
+using EnglishAutomationApp.Helpers;
 
 namespace EnglishAutomationApp.Views.Pages
 {
@@ -144,7 +145,7 @@ namespace EnglishAutomationApp.Views.Pages
         {
             try
             {
-                allCourses = await AccessDatabaseHelper.GetAllCoursesAsync();
+                allCourses = await Data.AccessDatabaseHelper.GetAllCoursesAsync();
 
                 filteredCourses = allCourses.ToList();
                 UpdateStatsLabel();

@@ -204,8 +204,8 @@ namespace EnglishAutomationApp.Views.Pages
                 if (AuthenticationService.CurrentUser == null) return;
 
                 // Load statistics from Access DB
-                var allCourses = await AccessDatabaseHelper.GetAllCoursesAsync();
-                var allWords = await AccessDatabaseHelper.GetAllVocabularyWordsAsync();
+                var allCourses = await Data.AccessDatabaseHelper.GetAllCoursesAsync();
+                var allWords = await Data.AccessDatabaseHelper.GetAllVocabularyWordsAsync();
 
                 var totalCourses = allCourses.Count;
                 var completedCourses = 0; // User progress functionality needs to be implemented
