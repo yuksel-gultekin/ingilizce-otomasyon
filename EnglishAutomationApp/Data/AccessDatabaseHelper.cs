@@ -27,24 +27,17 @@ namespace EnglishAutomationApp.Data
         {
             var dbPath = GetDatabasePath();
 
+
+            // Create database file if it doesn't exist
             if (!File.Exists(dbPath))
             {
-                MessageBox.Show($"Database bulunamadı. Yeni dosya oluşturuluyor: {dbPath}", "Bilgi");
-
                 CreateEmptyAccessDatabase(dbPath);
-                MessageBox.Show("Boş Access dosyası oluşturuldu!", "Bilgi");
-            }
-            else
-            {
-                MessageBox.Show("Access database zaten var. Bağlanılıyor...", "Bilgi");
             }
 
+            // Connect and ensure tables exist
             using var connection = new OleDbConnection(GetConnectionString());
             await connection.OpenAsync();
-
             await EnsureTablesExistAsync(connection);
-
-            MessageBox.Show("Veritabanı hazır!", "Bilgi");
         }
 
         private static void CreateEmptyAccessDatabase(string dbPath)
@@ -58,50 +51,59 @@ namespace EnglishAutomationApp.Data
                     Directory.CreateDirectory(directory!);
                 }
 
-                // Create Access database using OleDb connection
-                var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};";
-                using var connection = new OleDbConnection(connectionString);
-                connection.Open();
+                // Try to create Access database using ADOX (if available)
+                try
+                {
+                    // Use ADOX to create proper Access database
+                    dynamic catalog = Activator.CreateInstance(Type.GetTypeFromProgID("ADOX.Catalog")!);
+                    catalog.Create($@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};");
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(catalog);
+                }
+                catch
+                {
+                    // Fallback: Create using OleDb connection
+                    var connectionString = $@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};";
+                    using var connection = new OleDbConnection(connectionString);
+                    connection.Open();
 
-                // Create and drop a temporary table to initialize the database
-                var createTempTable = "CREATE TABLE TempInit (Id AUTOINCREMENT PRIMARY KEY)";
-                using var command = new OleDbCommand(createTempTable, connection);
-                command.ExecuteNonQuery();
+                    // Create and drop a temporary table to initialize the database
+                    var createTempTable = "CREATE TABLE TempInit (Id AUTOINCREMENT PRIMARY KEY)";
+                    using var command = new OleDbCommand(createTempTable, connection);
+                    command.ExecuteNonQuery();
 
-                var dropTempTable = "DROP TABLE TempInit";
-                using var dropCommand = new OleDbCommand(dropTempTable, connection);
-                dropCommand.ExecuteNonQuery();
+                    var dropTempTable = "DROP TABLE TempInit";
+                    using var dropCommand = new OleDbCommand(dropTempTable, connection);
+                    dropCommand.ExecuteNonQuery();
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Database oluşturma hatası: {ex.Message}", "Hata");
-                throw;
+                throw new InvalidOperationException($"Access database oluşturulamadı. Microsoft Access Database Engine yüklü olduğundan emin olun. Hata: {ex.Message}");
             }
         }
 
         private static async Task EnsureTablesExistAsync(OleDbConnection connection)
         {
             var tableExists = false;
-            var checkSql = "SELECT COUNT(*) FROM MSysObjects WHERE Type=1 AND Name='Users'";
 
+            // Check if Users table exists by trying to query it
             try
             {
+                var checkSql = "SELECT COUNT(*) FROM Users";
                 using var cmd = new OleDbCommand(checkSql, connection);
-                var result = cmd.ExecuteScalar();
-                var count = result != null ? (int)result : 0;
-                tableExists = count > 0;
+                var result = await cmd.ExecuteScalarAsync();
+                tableExists = result != null; // If query succeeds, table exists
             }
             catch
             {
+                // If query fails, table doesn't exist
                 tableExists = false;
             }
 
             if (!tableExists)
             {
-                MessageBox.Show("'Users' tablosu bulunamadı. Tablolar oluşturuluyor...", "Bilgi");
                 await CreateTablesAsync(connection);
                 await SeedDataAsync(connection);
-                MessageBox.Show("Tablolar oluşturuldu ve örnek veri eklendi!", "Bilgi");
             }
         }
 
@@ -163,13 +165,13 @@ namespace EnglishAutomationApp.Data
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             using var adminCommand = new OleDbCommand(adminSql, connection);
-            adminCommand.Parameters.AddWithValue("@Email", "admin@engotomasyon.com");
-            adminCommand.Parameters.AddWithValue("@PasswordHash", BCrypt.Net.BCrypt.HashPassword("admin123"));
-            adminCommand.Parameters.AddWithValue("@FirstName", "Admin");
-            adminCommand.Parameters.AddWithValue("@LastName", "User");
-            adminCommand.Parameters.AddWithValue("@Role", "Admin");
-            adminCommand.Parameters.AddWithValue("@IsActive", true);
-            adminCommand.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
+            adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
+            adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
+            adminCommand.Parameters.AddWithValue("?", "Admin");
+            adminCommand.Parameters.AddWithValue("?", "User");
+            adminCommand.Parameters.AddWithValue("?", "Admin");
+            adminCommand.Parameters.AddWithValue("?", true);
+            adminCommand.Parameters.AddWithValue("?", DateTime.Now);
             await adminCommand.ExecuteNonQueryAsync();
         }
 
