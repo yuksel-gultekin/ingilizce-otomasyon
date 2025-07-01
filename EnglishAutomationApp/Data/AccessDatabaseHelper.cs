@@ -75,7 +75,7 @@ namespace EnglishAutomationApp.Data
                 PartOfSpeech INTEGER,
                 Category TEXT(100),
                 AudioUrl TEXT(255),
-                IsActive YESNO,
+                IsActive INTEGER,
                 CreatedDate DATETIME
             )";
                 await ExecuteNonQueryAsync(connection, createVocabularyTable);
@@ -89,7 +89,7 @@ namespace EnglishAutomationApp.Data
                 FirstName TEXT(100),
                 LastName TEXT(100),
                 Role TEXT(50),
-                IsActive YESNO,
+                IsActive INTEGER,
                 CreatedDate DATETIME
             )";
                 await ExecuteNonQueryAsync(connection, createUsersTable);
@@ -108,7 +108,7 @@ namespace EnglishAutomationApp.Data
                 EstimatedDurationMinutes INTEGER,
                 Prerequisites TEXT(255),
                 Color TEXT(20),
-                IsActive YESNO,
+                IsActive INTEGER,
                 CreatedDate DATETIME
             )";
 
@@ -162,13 +162,13 @@ namespace EnglishAutomationApp.Data
         VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             using var adminCommand = new OleDbCommand(adminSql, connection);
-            adminCommand.Parameters.AddWithValue("@p1", "admin@engotomasyon.com");
-            adminCommand.Parameters.AddWithValue("@p2", BCrypt.Net.BCrypt.HashPassword("admin123"));
-            adminCommand.Parameters.AddWithValue("@p3", "Admin");
-            adminCommand.Parameters.AddWithValue("@p4", "User");
-            adminCommand.Parameters.AddWithValue("@p5", "Admin");
-            adminCommand.Parameters.AddWithValue("@p6", true);
-            adminCommand.Parameters.AddWithValue("@p7", DateTime.Now);
+            adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
+            adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
+            adminCommand.Parameters.AddWithValue("?", "Admin");
+            adminCommand.Parameters.AddWithValue("?", "User");
+            adminCommand.Parameters.AddWithValue("?", "Admin");
+            adminCommand.Parameters.AddWithValue("?", 1); // true = 1
+            adminCommand.Parameters.AddWithValue("?", DateTime.Now);
 
             await adminCommand.ExecuteNonQueryAsync();
 
@@ -205,7 +205,7 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("?", word.PartOfSpeech);
                 command.Parameters.AddWithValue("?", word.Category);
                 command.Parameters.AddWithValue("?", DBNull.Value); // AudioUrl
-                command.Parameters.AddWithValue("?", true); // IsActive
+                command.Parameters.AddWithValue("?", 1); // IsActive = true
                 command.Parameters.AddWithValue("?", DateTime.Now);
 
                 await command.ExecuteNonQueryAsync();
@@ -216,9 +216,9 @@ namespace EnglishAutomationApp.Data
         {
             var sampleCourses = new[]
             {
-                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals", Level = 1, Type = 2, Price = 0.0m, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
-                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Learn the basic grammar structures", Level = 1, Type = 1, Price = 0.0m, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
-                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations", Level = 2, Type = 3, Price = 0.0m, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" }
+                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals", Level = 1, Type = 2, Price = 0.00, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
+                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Learn the basic grammar structures", Level = 1, Type = 1, Price = 0.00, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
+                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations", Level = 2, Type = 3, Price = 0.00, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" }
             };
 
             var sql = @"INSERT INTO Courses (Title, DescriptionText, ContentText, CourseLevel, CourseType, Price, OrderIndex, EstimatedDurationMinutes, Prerequisites, Color, IsActive, CreatedDate)
@@ -232,12 +232,12 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("?", course.Content);
                 command.Parameters.AddWithValue("?", course.Level);
                 command.Parameters.AddWithValue("?", course.Type);
-                command.Parameters.AddWithValue("?", course.Price);
+                command.Parameters.AddWithValue("?", (decimal)course.Price);
                 command.Parameters.AddWithValue("?", course.OrderIndex);
                 command.Parameters.AddWithValue("?", course.Duration);
-                command.Parameters.AddWithValue("?", course.Prerequisites);
+                command.Parameters.AddWithValue("?", string.IsNullOrEmpty(course.Prerequisites) ? (object)DBNull.Value : course.Prerequisites);
                 command.Parameters.AddWithValue("?", course.Color);
-                command.Parameters.AddWithValue("?", true); // IsActive
+                command.Parameters.AddWithValue("?", 1); // IsActive = true
                 command.Parameters.AddWithValue("?", DateTime.Now);
 
                 await command.ExecuteNonQueryAsync();
@@ -257,7 +257,7 @@ namespace EnglishAutomationApp.Data
             using var connection = new OleDbConnection(connectionString);
             await connection.OpenAsync();
 
-            var sql = "SELECT * FROM Users WHERE Email = ? AND IsActive = True";
+            var sql = "SELECT * FROM Users WHERE Email = ? AND IsActive = 1";
             using var command = new OleDbCommand(sql, connection);
             command.Parameters.AddWithValue("?", email);
 
@@ -272,7 +272,7 @@ namespace EnglishAutomationApp.Data
                     FirstName = reader.GetString(3), // FirstName
                     LastName = reader.GetString(4), // LastName
                     Role = reader.GetString(5), // Role
-                    IsActive = reader.GetBoolean(6), // IsActive
+                    IsActive = reader.GetInt32(6) == 1, // IsActive
                     CreatedDate = reader.GetDateTime(7) // CreatedDate
                 };
             }
@@ -295,7 +295,7 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("?", user.FirstName);
                 command.Parameters.AddWithValue("?", user.LastName);
                 command.Parameters.AddWithValue("?", user.Role);
-                command.Parameters.AddWithValue("?", user.IsActive);
+                command.Parameters.AddWithValue("?", user.IsActive ? 1 : 0);
                 command.Parameters.AddWithValue("?", user.CreatedDate);
 
                 await command.ExecuteNonQueryAsync();
@@ -315,7 +315,7 @@ namespace EnglishAutomationApp.Data
             using var connection = new OleDbConnection(connectionString);
             await connection.OpenAsync();
 
-            var sql = "SELECT * FROM Courses WHERE IsActive = True ORDER BY OrderIndex";
+            var sql = "SELECT * FROM Courses WHERE IsActive = 1 ORDER BY OrderIndex";
             using var command = new OleDbCommand(sql, connection);
             using var reader = await command.ExecuteReaderAsync();
 
@@ -334,7 +334,7 @@ namespace EnglishAutomationApp.Data
                     EstimatedDurationMinutes = reader.IsDBNull(8) ? 0 : reader.GetInt32(8), // EstimatedDurationMinutes
                     Prerequisites = reader.IsDBNull(9) ? null : reader.GetString(9), // Prerequisites
                     Color = reader.IsDBNull(10) ? null : reader.GetString(10), // Color
-                    IsActive = reader.GetBoolean(11), // IsActive
+                    IsActive = reader.GetInt32(11) == 1, // IsActive
                     CreatedDate = reader.GetDateTime(12) // CreatedDate
                 });
             }
@@ -349,7 +349,7 @@ namespace EnglishAutomationApp.Data
             using var connection = new OleDbConnection(connectionString);
             await connection.OpenAsync();
 
-            var sql = "SELECT * FROM VocabularyWords WHERE IsActive = True ORDER BY EnglishWord";
+            var sql = "SELECT * FROM VocabularyWords WHERE IsActive = 1 ORDER BY EnglishWord";
             using var command = new OleDbCommand(sql, connection);
             using var reader = await command.ExecuteReaderAsync();
 
@@ -367,7 +367,7 @@ namespace EnglishAutomationApp.Data
                     PartOfSpeech = (PartOfSpeech)reader.GetInt32(7), // PartOfSpeech
                     Category = reader.IsDBNull(8) ? null : reader.GetString(8), // Category
                     AudioUrl = reader.IsDBNull(9) ? null : reader.GetString(9), // AudioUrl
-                    IsActive = reader.GetBoolean(10), // IsActive
+                    IsActive = reader.GetInt32(10) == 1, // IsActive
                     CreatedDate = reader.GetDateTime(11) // CreatedDate
                 });
             }
@@ -394,7 +394,7 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("?", (int)word.PartOfSpeech);
                 command.Parameters.AddWithValue("?", word.Category ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("?", word.AudioUrl ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", word.IsActive);
+                command.Parameters.AddWithValue("?", word.IsActive ? 1 : 0);
                 command.Parameters.AddWithValue("?", word.CreatedDate);
 
                 await command.ExecuteNonQueryAsync();
