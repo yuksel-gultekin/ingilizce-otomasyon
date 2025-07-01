@@ -39,7 +39,8 @@ namespace EnglishAutomationApp.Views.Pages
             var welcomePanel = new Panel();
             welcomePanel.BackColor = Color.FromArgb(102, 126, 234);
             welcomePanel.Location = new Point(20, 20);
-            welcomePanel.Size = new Size(760, 120);
+            welcomePanel.Size = new Size(this.Width - 40, 120);
+            welcomePanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             welcomeLabel = new Label();
             welcomeLabel.Text = "Welcome to English Automation! 🌟";
@@ -61,7 +62,8 @@ namespace EnglishAutomationApp.Views.Pages
             // Statistics Panel
             var statsPanel = new Panel();
             statsPanel.Location = new Point(20, 160);
-            statsPanel.Size = new Size(760, 120);
+            statsPanel.Size = new Size(this.Width - 40, 120);
+            statsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Total Courses Card
             var totalCoursesPanel = CreateStatCard("📚", "0", "Total Courses", new Point(0, 0));
@@ -88,7 +90,8 @@ namespace EnglishAutomationApp.Views.Pages
             var actionsPanel = new Panel();
             actionsPanel.BackColor = Color.White;
             actionsPanel.Location = new Point(20, 300);
-            actionsPanel.Size = new Size(760, 100);
+            actionsPanel.Size = new Size(this.Width - 40, 100);
+            actionsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             var actionsLabel = new Label();
             actionsLabel.Text = "Quick Actions";
@@ -135,7 +138,8 @@ namespace EnglishAutomationApp.Views.Pages
             var recentActivityPanel = new Panel();
             recentActivityPanel.BackColor = Color.White;
             recentActivityPanel.Location = new Point(20, 420);
-            recentActivityPanel.Size = new Size(760, 200);
+            recentActivityPanel.Size = new Size(this.Width - 40, 200);
+            recentActivityPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             var recentActivityLabel = new Label();
             recentActivityLabel.Text = "Recent Activity";

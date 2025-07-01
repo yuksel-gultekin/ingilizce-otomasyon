@@ -30,8 +30,8 @@ namespace EnglishAutomationApp.Views
 
             // Form properties
             this.Text = "Register - English Automation Platform";
-            this.Size = new Size(480, 680);
-            this.MinimumSize = new Size(450, 650);
+            this.Size = new Size(500, 700);
+            this.MinimumSize = new Size(480, 680);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -43,16 +43,16 @@ namespace EnglishAutomationApp.Views
             titleLabel.Font = new Font("Segoe UI", 24, FontStyle.Bold);
             titleLabel.ForeColor = Color.White;
             titleLabel.TextAlign = ContentAlignment.MiddleCenter;
-            titleLabel.Location = new Point(40, 30);
+            titleLabel.Location = new Point(50, 30);
             titleLabel.Size = new Size(400, 50);
             titleLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // Main Panel
             var mainPanel = new Panel();
             mainPanel.BackColor = Color.FromArgb(30, 41, 59); // Slate-800
-            mainPanel.Location = new Point(40, 100);
-            mainPanel.Size = new Size(400, 500);
-            mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+            mainPanel.Location = new Point(50, 100);
+            mainPanel.Size = new Size(400, 540);
+            mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 
             // First Name
             var firstNameLabel = new Label();
@@ -65,8 +65,8 @@ namespace EnglishAutomationApp.Views
             firstNameTextBox = new TextBox();
             firstNameTextBox.Font = new Font("Segoe UI", 12);
             firstNameTextBox.Location = new Point(40, 65);
-            firstNameTextBox.Size = new Size(320, 35);
-            firstNameTextBox.BorderStyle = BorderStyle.None;
+            firstNameTextBox.Size = new Size(320, 30);
+            firstNameTextBox.BorderStyle = BorderStyle.FixedSingle;
             firstNameTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             firstNameTextBox.ForeColor = Color.White;
             firstNameTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -76,14 +76,14 @@ namespace EnglishAutomationApp.Views
             lastNameLabel.Text = "LAST NAME";
             lastNameLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             lastNameLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
-            lastNameLabel.Location = new Point(40, 115);
+            lastNameLabel.Location = new Point(40, 100);
             lastNameLabel.Size = new Size(320, 20);
 
             lastNameTextBox = new TextBox();
             lastNameTextBox.Font = new Font("Segoe UI", 12);
-            lastNameTextBox.Location = new Point(40, 140);
-            lastNameTextBox.Size = new Size(320, 35);
-            lastNameTextBox.BorderStyle = BorderStyle.None;
+            lastNameTextBox.Location = new Point(40, 120);
+            lastNameTextBox.Size = new Size(320, 30);
+            lastNameTextBox.BorderStyle = BorderStyle.FixedSingle;
             lastNameTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             lastNameTextBox.ForeColor = Color.White;
             lastNameTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -93,14 +93,14 @@ namespace EnglishAutomationApp.Views
             emailLabel.Text = "EMAIL ADDRESS";
             emailLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             emailLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
-            emailLabel.Location = new Point(40, 190);
+            emailLabel.Location = new Point(40, 160);
             emailLabel.Size = new Size(320, 20);
 
             emailTextBox = new TextBox();
             emailTextBox.Font = new Font("Segoe UI", 12);
-            emailTextBox.Location = new Point(40, 215);
-            emailTextBox.Size = new Size(320, 35);
-            emailTextBox.BorderStyle = BorderStyle.None;
+            emailTextBox.Location = new Point(40, 180);
+            emailTextBox.Size = new Size(320, 30);
+            emailTextBox.BorderStyle = BorderStyle.FixedSingle;
             emailTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             emailTextBox.ForeColor = Color.White;
             emailTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -110,14 +110,14 @@ namespace EnglishAutomationApp.Views
             passwordLabel.Text = "PASSWORD";
             passwordLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             passwordLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
-            passwordLabel.Location = new Point(40, 265);
+            passwordLabel.Location = new Point(40, 220);
             passwordLabel.Size = new Size(320, 20);
 
             passwordTextBox = new TextBox();
             passwordTextBox.Font = new Font("Segoe UI", 12);
-            passwordTextBox.Location = new Point(40, 290);
-            passwordTextBox.Size = new Size(320, 35);
-            passwordTextBox.BorderStyle = BorderStyle.None;
+            passwordTextBox.Location = new Point(40, 240);
+            passwordTextBox.Size = new Size(320, 30);
+            passwordTextBox.BorderStyle = BorderStyle.FixedSingle;
             passwordTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             passwordTextBox.ForeColor = Color.White;
             passwordTextBox.UseSystemPasswordChar = true;
@@ -128,14 +128,14 @@ namespace EnglishAutomationApp.Views
             confirmPasswordLabel.Text = "CONFIRM PASSWORD";
             confirmPasswordLabel.Font = new Font("Segoe UI", 9, FontStyle.Bold);
             confirmPasswordLabel.ForeColor = Color.FromArgb(148, 163, 184); // Slate-400
-            confirmPasswordLabel.Location = new Point(40, 340);
+            confirmPasswordLabel.Location = new Point(40, 280);
             confirmPasswordLabel.Size = new Size(320, 20);
 
             confirmPasswordTextBox = new TextBox();
             confirmPasswordTextBox.Font = new Font("Segoe UI", 12);
-            confirmPasswordTextBox.Location = new Point(40, 365);
-            confirmPasswordTextBox.Size = new Size(320, 35);
-            confirmPasswordTextBox.BorderStyle = BorderStyle.None;
+            confirmPasswordTextBox.Location = new Point(40, 300);
+            confirmPasswordTextBox.Size = new Size(320, 30);
+            confirmPasswordTextBox.BorderStyle = BorderStyle.FixedSingle;
             confirmPasswordTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             confirmPasswordTextBox.ForeColor = Color.White;
             confirmPasswordTextBox.UseSystemPasswordChar = true;
@@ -149,7 +149,7 @@ namespace EnglishAutomationApp.Views
             registerButton.ForeColor = Color.White;
             registerButton.FlatStyle = FlatStyle.Flat;
             registerButton.FlatAppearance.BorderSize = 0;
-            registerButton.Location = new Point(40, 420);
+            registerButton.Location = new Point(40, 360);
             registerButton.Size = new Size(150, 45);
             registerButton.Cursor = Cursors.Hand;
             registerButton.Click += RegisterButton_Click;
@@ -163,7 +163,7 @@ namespace EnglishAutomationApp.Views
             cancelButton.FlatStyle = FlatStyle.Flat;
             cancelButton.FlatAppearance.BorderSize = 1;
             cancelButton.FlatAppearance.BorderColor = Color.FromArgb(148, 163, 184);
-            cancelButton.Location = new Point(210, 420);
+            cancelButton.Location = new Point(210, 360);
             cancelButton.Size = new Size(150, 45);
             cancelButton.Cursor = Cursors.Hand;
             cancelButton.Click += CancelButton_Click;
@@ -171,8 +171,8 @@ namespace EnglishAutomationApp.Views
             // Message Label
             messageLabel = new Label();
             messageLabel.Font = new Font("Segoe UI", 10);
-            messageLabel.Location = new Point(40, 480);
-            messageLabel.Size = new Size(320, 40);
+            messageLabel.Location = new Point(40, 420);
+            messageLabel.Size = new Size(320, 60);
             messageLabel.TextAlign = ContentAlignment.MiddleCenter;
             messageLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 
@@ -216,25 +216,25 @@ namespace EnglishAutomationApp.Views
 
                 if (result.Success)
                 {
-                    ShowMessage(result.Message, Color.Green);
-                    
+                    ShowMessage(result.Message, Color.FromArgb(34, 197, 94)); // Green-500
+
                     // Wait 2 seconds and close form
                     await Task.Delay(2000);
                     this.Close();
                 }
                 else
                 {
-                    ShowMessage(result.Message, Color.Red);
+                    ShowMessage(result.Message, Color.FromArgb(248, 113, 113)); // Red-400
                 }
             }
             catch (Exception ex)
             {
-                ShowMessage($"Unexpected error: {ex.Message}", Color.Red);
+                ShowMessage($"Unexpected error: {ex.Message}", Color.FromArgb(248, 113, 113)); // Red-400
             }
             finally
             {
                 registerButton.Enabled = true;
-                registerButton.Text = "🎯 Create Account";
+                registerButton.Text = "Create Account";
             }
         }
 
@@ -248,7 +248,7 @@ namespace EnglishAutomationApp.Views
             // First name check
             if (string.IsNullOrWhiteSpace(firstNameTextBox.Text))
             {
-                ShowMessage("Please enter your first name.", Color.Red);
+                ShowMessage("Please enter your first name.", Color.FromArgb(248, 113, 113)); // Red-400
                 firstNameTextBox.Focus();
                 return false;
             }
@@ -256,7 +256,7 @@ namespace EnglishAutomationApp.Views
             // Last name check
             if (string.IsNullOrWhiteSpace(lastNameTextBox.Text))
             {
-                ShowMessage("Please enter your last name.", Color.Red);
+                ShowMessage("Please enter your last name.", Color.FromArgb(248, 113, 113)); // Red-400
                 lastNameTextBox.Focus();
                 return false;
             }
@@ -264,14 +264,14 @@ namespace EnglishAutomationApp.Views
             // Email check
             if (string.IsNullOrWhiteSpace(emailTextBox.Text))
             {
-                ShowMessage("Please enter your email address.", Color.Red);
+                ShowMessage("Please enter your email address.", Color.FromArgb(248, 113, 113)); // Red-400
                 emailTextBox.Focus();
                 return false;
             }
 
             if (!IsValidEmail(emailTextBox.Text))
             {
-                ShowMessage("Please enter a valid email address.", Color.Red);
+                ShowMessage("Please enter a valid email address.", Color.FromArgb(248, 113, 113)); // Red-400
                 emailTextBox.Focus();
                 return false;
             }
@@ -279,14 +279,14 @@ namespace EnglishAutomationApp.Views
             // Password check
             if (string.IsNullOrWhiteSpace(passwordTextBox.Text))
             {
-                ShowMessage("Please enter your password.", Color.Red);
+                ShowMessage("Please enter your password.", Color.FromArgb(248, 113, 113)); // Red-400
                 passwordTextBox.Focus();
                 return false;
             }
 
             if (passwordTextBox.Text.Length < 6)
             {
-                ShowMessage("Password must be at least 6 characters long.", Color.Red);
+                ShowMessage("Password must be at least 6 characters long.", Color.FromArgb(248, 113, 113)); // Red-400
                 passwordTextBox.Focus();
                 return false;
             }
@@ -294,7 +294,7 @@ namespace EnglishAutomationApp.Views
             // Confirm password check
             if (passwordTextBox.Text != confirmPasswordTextBox.Text)
             {
-                ShowMessage("Passwords do not match.", Color.Red);
+                ShowMessage("Passwords do not match.", Color.FromArgb(248, 113, 113)); // Red-400
                 confirmPasswordTextBox.Focus();
                 return false;
             }

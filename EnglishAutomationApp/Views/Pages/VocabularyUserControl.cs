@@ -78,12 +78,13 @@ namespace EnglishAutomationApp.Views.Pages
             toolbarPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 60,
+                Height = 100, // Increased height for two rows
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 Padding = new Padding(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small,
                                     ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small)
             };
 
+            // First row - Search and filters
             // Search box
             searchBox = ModernUIHelper.CreateModernTextBox("Search words...");
             searchBox.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small);
@@ -117,28 +118,29 @@ namespace EnglishAutomationApp.Views.Pages
             difficultyFilter.SelectedIndex = 0;
             difficultyFilter.SelectedIndexChanged += DifficultyFilter_SelectedIndexChanged;
 
+            // Second row - Action buttons
             // Add word button
             addWordButton = ModernUIHelper.CreateIconButton("Add Word", "+", ModernUIHelper.Colors.Secondary, 120);
-            addWordButton.Location = new Point(500, ModernUIHelper.Spacing.Small);
-            addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            addWordButton.Location = new Point(ModernUIHelper.Spacing.Large, 50);
+            addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             addWordButton.Click += AddWordButton_Click;
 
             // Study mode button
             studyModeButton = ModernUIHelper.CreateIconButton("Study Mode", "📚", ModernUIHelper.Colors.Primary, 140);
-            studyModeButton.Location = new Point(630, ModernUIHelper.Spacing.Small);
-            studyModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            studyModeButton.Location = new Point(160, 50);
+            studyModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             studyModeButton.Click += StudyModeButton_Click;
 
             // Review button
             var reviewButton = ModernUIHelper.CreateIconButton("Review", "🔄", ModernUIHelper.Colors.Secondary, 120);
-            reviewButton.Location = new Point(780, ModernUIHelper.Spacing.Small);
-            reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            reviewButton.Location = new Point(320, 50);
+            reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             reviewButton.Click += ReviewButton_Click;
 
             // Stats button
             var statsButton = ModernUIHelper.CreateIconButton("Stats", "📊", ModernUIHelper.Colors.Warning, 100);
-            statsButton.Location = new Point(910, ModernUIHelper.Spacing.Small);
-            statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            statsButton.Location = new Point(460, 50);
+            statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             statsButton.Click += StatsButton_Click;
 
             toolbarPanel.Controls.AddRange(new Control[]
