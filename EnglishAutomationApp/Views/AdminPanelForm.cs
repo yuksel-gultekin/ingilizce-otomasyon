@@ -10,9 +10,6 @@ namespace EnglishAutomationApp.Views
         private Panel sidebarPanel = null!;
         private Panel contentPanel = null!;
         private Button usersButton = null!;
-        private Button coursesButton = null!;
-        private Button vocabularyButton = null!;
-        private Button settingsButton = null!;
         private Button logoutButton = null!;
         private Label titleLabel = null!;
         private ComboBox languageComboBox = null!;
@@ -81,15 +78,6 @@ namespace EnglishAutomationApp.Views
             usersButton = CreateNavButton("👥 User Management", 115);
             usersButton.Click += (s, e) => LoadUsersPanel();
 
-            coursesButton = CreateNavButton("📚 Course Management", 165);
-            coursesButton.Click += (s, e) => LoadCoursesPanel();
-
-            vocabularyButton = CreateNavButton("📖 Vocabulary Management", 215);
-            vocabularyButton.Click += (s, e) => LoadVocabularyPanel();
-
-            settingsButton = CreateNavButton("⚙️ Settings", 265);
-            settingsButton.Click += (s, e) => LoadSettingsPanel();
-
             // Logout button at bottom
             logoutButton = new Button();
             logoutButton.Text = "🚪 Logout";
@@ -108,9 +96,6 @@ namespace EnglishAutomationApp.Views
             sidebarPanel.Controls.Add(languageComboBox);
             sidebarPanel.Controls.Add(titleLabel);
             sidebarPanel.Controls.Add(usersButton);
-            sidebarPanel.Controls.Add(coursesButton);
-            sidebarPanel.Controls.Add(vocabularyButton);
-            sidebarPanel.Controls.Add(settingsButton);
             sidebarPanel.Controls.Add(logoutButton);
         }
 
@@ -146,65 +131,12 @@ namespace EnglishAutomationApp.Views
         private void LoadUsersPanel()
         {
             SetActiveButton(usersButton);
-            LoadAdminControl(new AdminUserControl());
+            var adminUserControl = new AdminUserControl();
+            adminUserControl.SetLanguage(isEnglish);
+            LoadAdminControl(adminUserControl);
         }
 
-        private void LoadCoursesPanel()
-        {
-            SetActiveButton(coursesButton);
-            // Create a simple courses management panel
-            var coursesControl = new UserControl();
-            coursesControl.BackColor = Color.FromArgb(15, 23, 42);
-            coursesControl.Dock = DockStyle.Fill;
 
-            var label = new Label();
-            label.Text = "📚 Course Management\n\nComing soon...";
-            label.Font = new Font("Segoe UI", 16);
-            label.ForeColor = Color.White;
-            label.TextAlign = ContentAlignment.MiddleCenter;
-            label.Dock = DockStyle.Fill;
-
-            coursesControl.Controls.Add(label);
-            LoadAdminControl(coursesControl);
-        }
-
-        private void LoadVocabularyPanel()
-        {
-            SetActiveButton(vocabularyButton);
-            // Create a simple vocabulary management panel
-            var vocabControl = new UserControl();
-            vocabControl.BackColor = Color.FromArgb(15, 23, 42);
-            vocabControl.Dock = DockStyle.Fill;
-
-            var label = new Label();
-            label.Text = "📖 Vocabulary Management\n\nComing soon...";
-            label.Font = new Font("Segoe UI", 16);
-            label.ForeColor = Color.White;
-            label.TextAlign = ContentAlignment.MiddleCenter;
-            label.Dock = DockStyle.Fill;
-
-            vocabControl.Controls.Add(label);
-            LoadAdminControl(vocabControl);
-        }
-
-        private void LoadSettingsPanel()
-        {
-            SetActiveButton(settingsButton);
-            // Create a simple settings panel
-            var settingsControl = new UserControl();
-            settingsControl.BackColor = Color.FromArgb(15, 23, 42);
-            settingsControl.Dock = DockStyle.Fill;
-
-            var label = new Label();
-            label.Text = "⚙️ System Settings\n\nComing soon...";
-            label.Font = new Font("Segoe UI", 16);
-            label.ForeColor = Color.White;
-            label.TextAlign = ContentAlignment.MiddleCenter;
-            label.Dock = DockStyle.Fill;
-
-            settingsControl.Controls.Add(label);
-            LoadAdminControl(settingsControl);
-        }
 
         private void LoadAdminControl(UserControl control)
         {
@@ -216,14 +148,8 @@ namespace EnglishAutomationApp.Views
 
         private void SetActiveButton(Button activeButton)
         {
-            // Reset all buttons
-            foreach (Control control in sidebarPanel.Controls)
-            {
-                if (control is Button btn && btn != logoutButton)
-                {
-                    btn.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
-                }
-            }
+            // Reset users button
+            usersButton.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
 
             // Set active button
             activeButton.BackColor = Color.FromArgb(99, 102, 241); // Indigo-500
@@ -246,6 +172,12 @@ namespace EnglishAutomationApp.Views
         {
             isEnglish = languageComboBox.SelectedIndex == 0;
             UpdateLanguage();
+
+            // Update current admin control language
+            if (currentAdminControl is AdminUserControl adminUserControl)
+            {
+                adminUserControl.SetLanguage(isEnglish);
+            }
         }
 
         private void UpdateLanguage()
@@ -256,9 +188,6 @@ namespace EnglishAutomationApp.Views
                 this.Text = "Admin Panel - English Automation Platform";
                 titleLabel.Text = "🔧 Admin Panel";
                 usersButton.Text = "👥 User Management";
-                coursesButton.Text = "📚 Course Management";
-                vocabularyButton.Text = "📖 Vocabulary Management";
-                settingsButton.Text = "⚙️ Settings";
                 logoutButton.Text = "🚪 Logout";
             }
             else
@@ -267,9 +196,6 @@ namespace EnglishAutomationApp.Views
                 this.Text = "Yönetici Paneli - İngilizce Otomasyon Platformu";
                 titleLabel.Text = "🔧 Yönetici Paneli";
                 usersButton.Text = "👥 Kullanıcı Yönetimi";
-                coursesButton.Text = "📚 Kurs Yönetimi";
-                vocabularyButton.Text = "📖 Kelime Yönetimi";
-                settingsButton.Text = "⚙️ Ayarlar";
                 logoutButton.Text = "🚪 Çıkış";
             }
         }

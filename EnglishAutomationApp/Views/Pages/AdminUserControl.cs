@@ -23,10 +23,19 @@ namespace EnglishAutomationApp.Views.Pages
 
         private List<User> allUsers = new List<User>();
 
+        // Language support
+        private bool isEnglish = true;
+
         public AdminUserControl()
         {
             InitializeComponent();
             LoadUsersAsync();
+        }
+
+        public void SetLanguage(bool english)
+        {
+            isEnglish = english;
+            UpdateLanguage();
         }
 
         private void InitializeComponent()
@@ -232,7 +241,14 @@ namespace EnglishAutomationApp.Views.Pages
             var activeUsers = allUsers.Count(u => u.IsActive);
             var adminUsers = allUsers.Count(u => u.IsAdmin);
 
-            statsLabel.Text = $"Total: {totalUsers} users | Active: {activeUsers} | Admins: {adminUsers}";
+            if (isEnglish)
+            {
+                statsLabel.Text = $"Total: {totalUsers} users | Active: {activeUsers} | Admins: {adminUsers}";
+            }
+            else
+            {
+                statsLabel.Text = $"Toplam: {totalUsers} kullanıcı | Aktif: {activeUsers} | Yönetici: {adminUsers}";
+            }
         }
 
         private void SearchTextBox_TextChanged(object? sender, EventArgs e)
@@ -269,7 +285,7 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void AddUserButton_Click(object? sender, EventArgs e)
         {
-            var addUserForm = new AddUserForm();
+            var addUserForm = new AddUserForm(isEnglish);
             if (addUserForm.ShowDialog() == DialogResult.OK)
             {
                 LoadUsersAsync(); // Refresh the list
@@ -306,6 +322,68 @@ namespace EnglishAutomationApp.Views.Pages
                 {
                     MessageBox.Show("Delete user functionality will be implemented soon.",
                         "Coming Soon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "👥 User Management";
+
+                statsLabel.Text = statsLabel.Text.Replace("Toplam:", "Total:")
+                                                 .Replace("Aktif:", "Active:")
+                                                 .Replace("Yönetici:", "Admins:");
+
+                searchTextBox.PlaceholderText = "Search users by name or email...";
+                addUserButton.Text = "+ Add User";
+                refreshButton.Text = "🔄 Refresh";
+
+                // Update DataGridView headers
+                if (usersDataGridView.Columns.Count > 0)
+                {
+                    usersDataGridView.Columns["Email"].HeaderText = "Email";
+                    usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
+                    usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
+                    usersDataGridView.Columns["Role"].HeaderText = "Role";
+                    usersDataGridView.Columns["IsActive"].HeaderText = "Active";
+                    usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
+                    usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
+                    usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
+                    usersDataGridView.Columns["Edit"].HeaderText = "Edit";
+                    usersDataGridView.Columns["Delete"].HeaderText = "Delete";
+                }
+            }
+            else
+            {
+                // Turkish
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "👥 Kullanıcı Yönetimi";
+
+                statsLabel.Text = statsLabel.Text.Replace("Total:", "Toplam:")
+                                                 .Replace("Active:", "Aktif:")
+                                                 .Replace("Admins:", "Yönetici:");
+
+                searchTextBox.PlaceholderText = "Kullanıcıları ad veya e-posta ile arayın...";
+                addUserButton.Text = "+ Kullanıcı Ekle";
+                refreshButton.Text = "🔄 Yenile";
+
+                // Update DataGridView headers
+                if (usersDataGridView.Columns.Count > 0)
+                {
+                    usersDataGridView.Columns["Email"].HeaderText = "E-posta";
+                    usersDataGridView.Columns["FirstName"].HeaderText = "Ad";
+                    usersDataGridView.Columns["LastName"].HeaderText = "Soyad";
+                    usersDataGridView.Columns["Role"].HeaderText = "Rol";
+                    usersDataGridView.Columns["IsActive"].HeaderText = "Aktif";
+                    usersDataGridView.Columns["IsAdmin"].HeaderText = "Yönetici";
+                    usersDataGridView.Columns["CreatedDate"].HeaderText = "Oluşturma Tarihi";
+                    usersDataGridView.Columns["LastLoginDate"].HeaderText = "Son Giriş";
+                    usersDataGridView.Columns["Edit"].HeaderText = "Düzenle";
+                    usersDataGridView.Columns["Delete"].HeaderText = "Sil";
                 }
             }
         }

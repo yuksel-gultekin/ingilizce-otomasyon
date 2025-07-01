@@ -259,6 +259,15 @@ namespace EnglishAutomationApp.Views
                 this.Text = "English Automation Platform";
                 welcomeLabel.Text = $"Welcome, {AuthenticationService.CurrentUser?.FullName ?? "User"}!";
                 statusLabel.Text = "Ready";
+
+                // Update menu items
+                UpdateMenuLanguage("File", "Learning", "Admin", "Help");
+                UpdateMenuItemsLanguage(
+                    new[] { "Logout", "Exit" },
+                    new[] { "📊 Dashboard", "📚 Courses", "📖 Vocabulary", "📈 Progress" },
+                    new[] { "⚙️ Admin Panel" },
+                    new[] { "About" }
+                );
             }
             else
             {
@@ -266,6 +275,57 @@ namespace EnglishAutomationApp.Views
                 this.Text = "İngilizce Otomasyon Platformu";
                 welcomeLabel.Text = $"Hoş geldiniz, {AuthenticationService.CurrentUser?.FullName ?? "Kullanıcı"}!";
                 statusLabel.Text = "Hazır";
+
+                // Update menu items
+                UpdateMenuLanguage("Dosya", "Öğrenme", "Yönetici", "Yardım");
+                UpdateMenuItemsLanguage(
+                    new[] { "Çıkış Yap", "Kapat" },
+                    new[] { "📊 Kontrol Paneli", "📚 Kurslar", "📖 Kelimeler", "📈 İlerleme" },
+                    new[] { "⚙️ Yönetici Paneli" },
+                    new[] { "Hakkında" }
+                );
+            }
+        }
+
+        private void UpdateMenuLanguage(string file, string learning, string admin, string help)
+        {
+            if (menuStrip.Items.Count >= 4)
+            {
+                menuStrip.Items[0].Text = file;
+                menuStrip.Items[1].Text = learning;
+                menuStrip.Items[2].Text = admin;
+                menuStrip.Items[3].Text = help;
+            }
+        }
+
+        private void UpdateMenuItemsLanguage(string[] fileItems, string[] learningItems, string[] adminItems, string[] helpItems)
+        {
+            // Update File menu items
+            if (menuStrip.Items[0] is ToolStripMenuItem fileMenu && fileMenu.DropDownItems.Count >= 2)
+            {
+                fileMenu.DropDownItems[0].Text = fileItems[0]; // Logout
+                fileMenu.DropDownItems[1].Text = fileItems[1]; // Exit
+            }
+
+            // Update Learning menu items
+            if (menuStrip.Items[1] is ToolStripMenuItem learningMenu && learningMenu.DropDownItems.Count >= 4)
+            {
+                learningMenu.DropDownItems[0].Text = learningItems[0]; // Dashboard
+                learningMenu.DropDownItems[1].Text = learningItems[1]; // Courses
+                learningMenu.DropDownItems[2].Text = learningItems[2]; // Vocabulary
+                learningMenu.DropDownItems[3].Text = learningItems[3]; // Progress
+            }
+
+            // Update Admin menu items
+            if (menuStrip.Items[2] is ToolStripMenuItem adminMenu && adminMenu.DropDownItems.Count >= 1)
+            {
+                adminMenu.DropDownItems[0].Text = adminItems[0]; // Admin Panel
+            }
+
+            // Update Help menu items
+            if (menuStrip.Items[3] is ToolStripMenuItem helpMenu && helpMenu.DropDownItems.Count >= 1)
+            {
+                helpMenu.DropDownItems[0].Text = helpItems[0]; // About
             }
         }
 

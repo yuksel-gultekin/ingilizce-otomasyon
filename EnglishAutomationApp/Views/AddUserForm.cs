@@ -20,9 +20,14 @@ namespace EnglishAutomationApp.Views
         private Button cancelButton = null!;
         private Label messageLabel = null!;
 
-        public AddUserForm()
+        // Language support
+        private bool isEnglish = true;
+
+        public AddUserForm(bool english = true)
         {
+            isEnglish = english;
             InitializeComponent();
+            UpdateLanguage();
         }
 
         private void InitializeComponent()
@@ -264,6 +269,21 @@ namespace EnglishAutomationApp.Views
         {
             messageLabel.Text = message;
             messageLabel.ForeColor = color;
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                this.Text = "Add New User - Admin Panel";
+                // Title is set in InitializeComponent
+            }
+            else
+            {
+                // Turkish
+                this.Text = "Yeni Kullanıcı Ekle - Yönetici Paneli";
+            }
         }
     }
 }
