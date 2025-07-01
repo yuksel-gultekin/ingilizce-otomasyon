@@ -21,20 +21,10 @@ namespace EnglishAutomationApp.Views.Pages
 
         private int currentLessonIndex = 0;
         private string[] lessons = null!;
-        private bool isEnglish = true;
 
         public CourseContentForm(Course selectedCourse)
         {
             course = selectedCourse;
-            isEnglish = true;
-            InitializeComponent();
-            LoadCourseContent();
-        }
-
-        public CourseContentForm(Course selectedCourse, bool english)
-        {
-            course = selectedCourse;
-            isEnglish = english;
             InitializeComponent();
             LoadCourseContent();
         }
@@ -44,7 +34,7 @@ namespace EnglishAutomationApp.Views.Pages
             this.SuspendLayout();
 
             // Form properties
-            this.Text = isEnglish ? $"Course: {course.Title}" : $"Kurs: {course.Title}";
+            this.Text = $"Course: {course.Title}";
             this.Size = new Size(900, 700);
             this.StartPosition = FormStartPosition.CenterParent;
             this.WindowState = FormWindowState.Maximized;
@@ -142,19 +132,15 @@ namespace EnglishAutomationApp.Views.Pages
                 Padding = new Padding(ModernUIHelper.Spacing.Large)
             };
 
-            var previousText = isEnglish ? "Previous" : "Önceki";
-            var nextText = isEnglish ? "Next" : "Sonraki";
-            var completeText = isEnglish ? "Complete Course" : "Kursu Tamamla";
-
-            previousButton = ModernUIHelper.CreateIconButton(previousText, "←", ModernUIHelper.Colors.TextMuted, 140);
+            previousButton = ModernUIHelper.CreateIconButton("Previous", "←", ModernUIHelper.Colors.TextMuted, 140);
             previousButton.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Medium);
             previousButton.Click += PreviousButton_Click;
 
-            nextButton = ModernUIHelper.CreateIconButton(nextText, "→", ModernUIHelper.Colors.Primary, 140);
+            nextButton = ModernUIHelper.CreateIconButton("Next", "→", ModernUIHelper.Colors.Primary, 140);
             nextButton.Location = new Point(200, ModernUIHelper.Spacing.Medium);
             nextButton.Click += NextButton_Click;
 
-            completeButton = ModernUIHelper.CreateIconButton(completeText, "🎓", ModernUIHelper.Colors.Success, 180);
+            completeButton = ModernUIHelper.CreateIconButton("Complete Course", "🎓", ModernUIHelper.Colors.Success, 180);
             completeButton.Location = new Point(350, ModernUIHelper.Spacing.Medium);
             completeButton.Visible = false;
             completeButton.Click += CompleteButton_Click;
@@ -635,13 +621,12 @@ Remember: Everyone's opinion matters, and it's okay to disagree respectfully!";
 
         private void CompleteButton_Click(object? sender, EventArgs e)
         {
-            var message = isEnglish
-                ? $"Congratulations! You have completed '{course.Title}'!\n\nWould you like to see your certificate?"
-                : $"Tebrikler! '{course.Title}' kursunu tamamladınız!\n\nSertifikanızı görmek ister misiniz?";
-
-            var title = isEnglish ? "Course Completed!" : "Kurs Tamamlandı!";
-
-            var result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            var result = MessageBox.Show(
+                $"Congratulations! You have completed '{course.Title}'!\n\n" +
+                "Would you like to see your certificate?",
+                "Course Completed!",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information);
 
             if (result == DialogResult.Yes)
             {
@@ -653,17 +638,15 @@ Remember: Everyone's opinion matters, and it's okay to disagree respectfully!";
 
         private void ShowCertificate()
         {
-            var certificateTitle = isEnglish ? "Certificate of Completion" : "Tamamlama Sertifikası";
-
             var certificateForm = new Form
             {
-                Text = certificateTitle,
+                Text = "Certificate of Completion",
                 Size = new Size(600, 400),
                 StartPosition = FormStartPosition.CenterParent,
                 BackColor = Color.White
             };
 
-            var certificateText = isEnglish ? $@"
+            var certificateText = $@"
 🎓 CERTIFICATE OF COMPLETION 🎓
 
 This certifies that you have successfully completed:
@@ -677,21 +660,7 @@ Date: {DateTime.Now:MMMM dd, yyyy}
 Congratulations on your achievement!
 Keep up the great work in your English learning journey!
 
-English Learning Platform" : $@"
-🎓 TAMAMLAMA SERTİFİKASI 🎓
-
-Bu sertifika aşağıdaki kursu başarıyla tamamladığınızı onaylar:
-
-{course.Title}
-
-Kurs Türü: {GetTurkishCourseType(course.Type)}
-Seviye: {GetTurkishLevel(course.Level)}
-Tarih: {DateTime.Now:dd MMMM yyyy}
-
-Başarınız için tebrikler!
-İngilizce öğrenme yolculuğunuzda harika işler çıkarıyorsunuz!
-
-İngilizce Öğrenme Platformu";
+English Learning Platform";
 
             var label = new Label
             {
@@ -704,32 +673,6 @@ Başarınız için tebrikler!
 
             certificateForm.Controls.Add(label);
             certificateForm.ShowDialog();
-        }
-
-        private string GetTurkishCourseType(CourseType type)
-        {
-            return type switch
-            {
-                CourseType.Grammar => "Gramer",
-                CourseType.Vocabulary => "Kelime",
-                CourseType.Speaking => "Konuşma",
-                CourseType.Listening => "Dinleme",
-                CourseType.Reading => "Okuma",
-                CourseType.Writing => "Yazma",
-                CourseType.Pronunciation => "Telaffuz",
-                _ => type.ToString()
-            };
-        }
-
-        private string GetTurkishLevel(CourseLevel level)
-        {
-            return level switch
-            {
-                CourseLevel.Beginner => "Başlangıç",
-                CourseLevel.Intermediate => "Orta",
-                CourseLevel.Advanced => "İleri",
-                _ => level.ToString()
-            };
         }
     }
 }
