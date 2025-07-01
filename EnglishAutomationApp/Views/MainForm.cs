@@ -219,7 +219,7 @@ namespace EnglishAutomationApp.Views
             // Set language for supported controls
             if (userControl is VocabularyUserControl vocabControl)
             {
-                vocabControl.SetLanguage(isEnglish);
+               // vocabControl.SetLanguage(isEnglish);
             }
             else if (userControl is CoursesUserControl coursesControl)
             {
@@ -253,7 +253,7 @@ namespace EnglishAutomationApp.Views
                 var currentControl = contentPanel.Controls[0];
                 if (currentControl is VocabularyUserControl vocabControl)
                 {
-                    vocabControl.SetLanguage(isEnglish);
+                   // vocabControl.SetLanguage(isEnglish);
                 }
                 else if (currentControl is CoursesUserControl coursesControl)
                 {
