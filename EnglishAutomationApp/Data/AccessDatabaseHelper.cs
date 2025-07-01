@@ -528,14 +528,39 @@ namespace EnglishAutomationApp.Data
                 System.Diagnostics.Debug.WriteLine($"Parameters: Email='{user.Email}', Role='{user.Role}', FirstName='{user.FirstName}', LastName='{user.LastName}', IsActive={user.IsActive}");
 
                 using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("?", user.Email ?? "");
-                command.Parameters.AddWithValue("?", user.PasswordHash ?? "");
-                command.Parameters.AddWithValue("?", user.Role ?? "User");
-                command.Parameters.AddWithValue("?", user.FirstName ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", user.LastName ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", user.IsActive ? 1 : 0);
-                command.Parameters.AddWithValue("?", user.CreatedDate);
-                command.Parameters.AddWithValue("?", user.LastLoginDate ?? (object)DBNull.Value);
+
+                // Email - TEXT(255)
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = user.Email ?? "";
+
+                // PasswordHash - TEXT(255)
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = user.PasswordHash ?? "";
+
+                // Role - TEXT(50)
+                command.Parameters.Add("?", OleDbType.VarChar, 50).Value = user.Role ?? "User";
+
+                // FirstName - TEXT(100) nullable
+                if (string.IsNullOrWhiteSpace(user.FirstName))
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = DBNull.Value;
+                else
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = user.FirstName;
+
+                // LastName - TEXT(100) nullable
+                if (string.IsNullOrWhiteSpace(user.LastName))
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = DBNull.Value;
+                else
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = user.LastName;
+
+                // IsActive - INTEGER
+                command.Parameters.Add("?", OleDbType.Integer).Value = user.IsActive ? 1 : 0;
+
+                // CreatedDate - DATETIME
+                command.Parameters.Add("?", OleDbType.Date).Value = user.CreatedDate;
+
+                // LastLoginDate - DATETIME nullable
+                if (user.LastLoginDate.HasValue)
+                    command.Parameters.Add("?", OleDbType.Date).Value = user.LastLoginDate.Value;
+                else
+                    command.Parameters.Add("?", OleDbType.Date).Value = DBNull.Value;
 
                 System.Diagnostics.Debug.WriteLine("Executing SQL...");
                 var rowsAffected = await command.ExecuteNonQueryAsync();
