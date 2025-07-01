@@ -342,36 +342,7 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void StartCourseButton_Click(object? sender, EventArgs e)
         {
-            var button = sender as Button;
-            var course = button?.Tag as Course;
-
-            if (course == null)
-            {
-                MessageBox.Show("Course not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            // Basit kurs bilgilerini göster
-            var title = isEnglish ? "Course Content" : "Kurs İçeriği";
-            var message = isEnglish ?
-                $"📚 Course: {course.Title}\n\n" +
-                $"📊 Level: {course.LevelText}\n" +
-                $"🎯 Type: {course.TypeText}\n" +
-                $"⏱️ Duration: {course.EstimatedDurationMinutes} minutes\n" +
-                $"💰 Price: {course.PriceText}\n\n" +
-                $"📝 Description:\n{course.Description}\n\n" +
-                $"✅ This course is now available for learning!\n\n" +
-                $"🚀 Click OK to start your learning journey!" :
-                $"📚 Kurs: {course.Title}\n\n" +
-                $"📊 Seviye: {GetTurkishLevel(course.Level)}\n" +
-                $"🎯 Tür: {GetTurkishCourseType(course.Type)}\n" +
-                $"⏱️ Süre: {course.EstimatedDurationMinutes} dakika\n" +
-                $"💰 Fiyat: {(course.Price == 0 ? "ÜCRETSİZ" : course.Price + " TL")}\n\n" +
-                $"📝 Açıklama:\n{course.Description}\n\n" +
-                $"✅ Bu kurs artık öğrenime hazır!\n\n" +
-                $"🚀 Öğrenme yolculuğunuza başlamak için Tamam'a tıklayın!";
-
-            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("BUTON TIKLANDI!", "DEBUG", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private string GetTurkishLevel(CourseLevel level)
