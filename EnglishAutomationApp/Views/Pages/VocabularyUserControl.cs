@@ -202,11 +202,11 @@ namespace EnglishAutomationApp.Views.Pages
                     difficultyFilter.SelectedIndex = 0;
                 }
 
-                // Force UI update on main thread
+                // Force UI update on main thread and trigger search event
                 this.Invoke((MethodInvoker)delegate
                 {
-                    DisplayWords();
-                    UpdateStatsLabel();
+                    // Trigger the search TextChanged event to display all words
+                    SearchBox_TextChanged(searchBox, EventArgs.Empty);
                 });
             }
             catch (Exception ex)
