@@ -95,7 +95,7 @@ namespace EnglishAutomationApp.Views
             mainPanel = new Panel();
             mainPanel.BackColor = Color.FromArgb(30, 41, 59); // Slate-800
             mainPanel.Location = new Point(50, 220);
-            mainPanel.Size = new Size(400, 350);
+            mainPanel.Size = new Size(400, 320);
             mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             mainPanel.Paint += MainPanel_Paint;
 
@@ -118,11 +118,11 @@ namespace EnglishAutomationApp.Views
             emailTextBox = new TextBox();
             emailTextBox.Font = new Font("Segoe UI", 12);
             emailTextBox.Location = new Point(0, 25);
-            emailTextBox.Size = new Size(300, 35);
+            emailTextBox.Size = new Size(300, 32);
             emailTextBox.BorderStyle = BorderStyle.None;
             emailTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             emailTextBox.ForeColor = Color.White;
-            emailTextBox.Padding = new Padding(15, 10, 15, 10);
+            emailTextBox.Padding = new Padding(12, 8, 12, 8);
             emailTextBox.PlaceholderText = "Enter your email";
 
             // Password Label
@@ -137,12 +137,12 @@ namespace EnglishAutomationApp.Views
             passwordTextBox = new TextBox();
             passwordTextBox.Font = new Font("Segoe UI", 12);
             passwordTextBox.Location = new Point(0, 105);
-            passwordTextBox.Size = new Size(300, 35);
+            passwordTextBox.Size = new Size(300, 32);
             passwordTextBox.BorderStyle = BorderStyle.None;
             passwordTextBox.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
             passwordTextBox.ForeColor = Color.White;
             passwordTextBox.UseSystemPasswordChar = true;
-            passwordTextBox.Padding = new Padding(15, 10, 15, 10);
+            passwordTextBox.Padding = new Padding(12, 8, 12, 8);
             passwordTextBox.PlaceholderText = "Enter your password";
 
             // Remember Me Checkbox
@@ -250,14 +250,20 @@ namespace EnglishAutomationApp.Views
 
         private void SetupTextBoxModernStyle(TextBox textBox)
         {
+            // Modern rounded corners style
             textBox.Paint += (s, e) =>
             {
                 var tb = s as TextBox;
                 if (tb != null)
                 {
-                    using (var pen = new Pen(Color.FromArgb(71, 85, 105), 1)) // Slate-600
+                    // Create rounded rectangle background
+                    using (var path = GetRoundedRectangle(new Rectangle(0, 0, tb.Width, tb.Height), 6))
                     {
-                        e.Graphics.DrawRectangle(pen, 0, 0, tb.Width - 1, tb.Height - 1);
+                        using (var brush = new SolidBrush(tb.BackColor))
+                        {
+                            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                            e.Graphics.FillPath(brush, path);
+                        }
                     }
                 }
             };
