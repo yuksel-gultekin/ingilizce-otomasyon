@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using EnglishAutomationApp.Helpers;
 using EnglishAutomationApp.Models;
 using EnglishAutomationApp.Services;
+using StatsForm = EnglishAutomationApp.Views.VocabularyStatsForm;
 
 namespace EnglishAutomationApp.Views.Pages
 {
@@ -493,7 +494,7 @@ namespace EnglishAutomationApp.Views.Pages
             try
             {
                 // Open stats form
-                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id, isEnglish);
+                var statsForm = new StatsForm(AuthenticationService.CurrentUser.Id, isEnglish);
                 statsForm.ShowDialog();
             }
             catch (Exception ex)
