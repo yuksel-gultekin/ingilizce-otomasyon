@@ -188,7 +188,7 @@ namespace EnglishAutomationApp.Views
             registerButton.FlatStyle = FlatStyle.Flat;
             registerButton.FlatAppearance.BorderSize = 1;
             registerButton.FlatAppearance.BorderColor = Color.FromArgb(99, 102, 241);
-            registerButton.Location = new Point(50, 590);
+            registerButton.Location = new Point(50, 555);
             registerButton.Size = new Size(190, 35);
             registerButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             registerButton.Cursor = Cursors.Hand;
@@ -203,7 +203,7 @@ namespace EnglishAutomationApp.Views
             adminPanelButton.FlatStyle = FlatStyle.Flat;
             adminPanelButton.FlatAppearance.BorderSize = 1;
             adminPanelButton.FlatAppearance.BorderColor = Color.FromArgb(245, 158, 11);
-            adminPanelButton.Location = new Point(260, 590);
+            adminPanelButton.Location = new Point(260, 555);
             adminPanelButton.Size = new Size(190, 35);
             adminPanelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             adminPanelButton.Cursor = Cursors.Hand;
