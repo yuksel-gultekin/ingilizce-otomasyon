@@ -405,39 +405,41 @@ namespace EnglishAutomationApp.Views.Pages
                 addUserButton.Text = "+ Add User";
                 refreshButton.Text = "🔄 Refresh";
 
-                // Update DataGridView headers
-                if (usersDataGridView != null && usersDataGridView.Columns != null)
+                var columns = usersDataGridView?.Columns;
+
+                if (columns != null)
                 {
-                    if (usersDataGridView.Columns.Contains("Email"))
-                        usersDataGridView.Columns["Email"].HeaderText = "Email";
+                    if (columns.Contains("Email"))
+                        columns["Email"].HeaderText = "Email";
 
-                    if (usersDataGridView.Columns.Contains("FirstName"))
-                        usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
+                    if (columns.Contains("FirstName"))
+                        columns["FirstName"].HeaderText = "First Name";
 
-                    if (usersDataGridView.Columns.Contains("LastName"))
-                        usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
+                    if (columns.Contains("LastName"))
+                        columns["LastName"].HeaderText = "Last Name";
 
-                    if (usersDataGridView.Columns.Contains("Role"))
-                        usersDataGridView.Columns["Role"].HeaderText = "Role";
+                    if (columns.Contains("Role"))
+                        columns["Role"].HeaderText = "Role";
 
-                    if (usersDataGridView.Columns.Contains("IsActive"))
-                        usersDataGridView.Columns["IsActive"].HeaderText = "Active";
+                    if (columns.Contains("IsActive"))
+                        columns["IsActive"].HeaderText = "Active";
 
-                    if (usersDataGridView.Columns.Contains("IsAdmin"))
-                        usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
+                    if (columns.Contains("IsAdmin"))
+                        columns["IsAdmin"].HeaderText = "Admin";
 
-                    if (usersDataGridView.Columns.Contains("CreatedDate"))
-                        usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
+                    if (columns.Contains("CreatedDate"))
+                        columns["CreatedDate"].HeaderText = "Created Date";
 
-                    if (usersDataGridView.Columns.Contains("LastLoginDate"))
-                        usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
+                    if (columns.Contains("LastLoginDate"))
+                        columns["LastLoginDate"].HeaderText = "Last Login";
 
-                    if (usersDataGridView.Columns.Contains("Edit"))
-                        usersDataGridView.Columns["Edit"].HeaderText = "Edit";
+                    if (columns.Contains("Edit"))
+                        columns["Edit"].HeaderText = "Edit";
 
-                    if (usersDataGridView.Columns.Contains("Delete"))
-                        usersDataGridView.Columns["Delete"].HeaderText = "Delete";
+                    if (columns.Contains("Delete"))
+                        columns["Delete"].HeaderText = "Delete";
                 }
+
             }
             else
             {
