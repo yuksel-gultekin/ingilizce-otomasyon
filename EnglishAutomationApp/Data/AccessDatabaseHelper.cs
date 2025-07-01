@@ -13,16 +13,12 @@ namespace EnglishAutomationApp.Data
     {
         private static string GetDatabasePath()
         {
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var appFolder = Path.Combine(appData, "EnglishAutomationApp");
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            return Path.Combine(documents, "eng-otomasyon.accdb");
 
-            // Create directory if it doesn't exist
-            if (!Directory.Exists(appFolder))
-            {
-                Directory.CreateDirectory(appFolder);
-            }
 
-            return Path.Combine(appFolder, "eng-otomasyon.accdb");
+
+           
         }
 
         private static string GetConnectionString()
