@@ -170,8 +170,15 @@ namespace EnglishAutomationApp.Views.Pages
                 RowHeadersVisible = false
             };
 
-            // Apply modern styling
-            ModernUIHelper.ApplyDataGridViewStyling(wordsDataGridView);
+            // Apply modern styling to DataGridView
+            wordsDataGridView.DefaultCellStyle.BackColor = ModernUIHelper.Colors.Surface;
+            wordsDataGridView.DefaultCellStyle.ForeColor = ModernUIHelper.Colors.TextPrimary;
+            wordsDataGridView.DefaultCellStyle.SelectionBackColor = ModernUIHelper.Colors.Primary;
+            wordsDataGridView.DefaultCellStyle.SelectionForeColor = Color.White;
+            wordsDataGridView.ColumnHeadersDefaultCellStyle.BackColor = ModernUIHelper.Colors.SurfaceVariant;
+            wordsDataGridView.ColumnHeadersDefaultCellStyle.ForeColor = ModernUIHelper.Colors.TextPrimary;
+            wordsDataGridView.ColumnHeadersDefaultCellStyle.Font = ModernUIHelper.Fonts.Body;
+            wordsDataGridView.EnableHeadersVisualStyles = false;
 
             contentPanel.Controls.Add(wordsDataGridView);
         }
