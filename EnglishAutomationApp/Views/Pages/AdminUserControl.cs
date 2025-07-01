@@ -409,34 +409,34 @@ namespace EnglishAutomationApp.Views.Pages
 
                 if (columns != null)
                 {
-                    if (columns.Contains("Email"))
+                    if (columns.Contains("Email") && columns["Email"] != null)
                         columns["Email"].HeaderText = "Email";
 
-                    if (columns.Contains("FirstName"))
+                    if (columns.Contains("FirstName") && columns["FirstName"] != null)
                         columns["FirstName"].HeaderText = "First Name";
 
-                    if (columns.Contains("LastName"))
+                    if (columns.Contains("LastName") && columns["LastName"] != null)
                         columns["LastName"].HeaderText = "Last Name";
 
-                    if (columns.Contains("Role"))
+                    if (columns.Contains("Role") && columns["Role"] != null)
                         columns["Role"].HeaderText = "Role";
 
-                    if (columns.Contains("IsActive"))
+                    if (columns.Contains("IsActive") && columns["IsActive"] != null)
                         columns["IsActive"].HeaderText = "Active";
 
-                    if (columns.Contains("IsAdmin"))
+                    if (columns.Contains("IsAdmin") && columns["IsAdmin"] != null)
                         columns["IsAdmin"].HeaderText = "Admin";
 
-                    if (columns.Contains("CreatedDate"))
+                    if (columns.Contains("CreatedDate") && columns["CreatedDate"] != null)
                         columns["CreatedDate"].HeaderText = "Created Date";
 
-                    if (columns.Contains("LastLoginDate"))
+                    if (columns.Contains("LastLoginDate") && columns["LastLoginDate"] != null)
                         columns["LastLoginDate"].HeaderText = "Last Login";
 
-                    if (columns.Contains("Edit"))
+                    if (columns.Contains("Edit") && columns["Edit"] != null)
                         columns["Edit"].HeaderText = "Edit";
 
-                    if (columns.Contains("Delete"))
+                    if (columns.Contains("Delete") && columns["Delete"] != null)
                         columns["Delete"].HeaderText = "Delete";
                 }
 
