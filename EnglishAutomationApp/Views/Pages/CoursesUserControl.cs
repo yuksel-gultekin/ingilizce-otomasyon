@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
+using EnglishAutomationApp.Views;
 using EnglishAutomationApp.Services;
 using EnglishAutomationApp.Helpers;
 
@@ -340,6 +341,7 @@ namespace EnglishAutomationApp.Views.Pages
             {
                 // Show course content form
                 var courseContentForm = new CourseContentForm(course);
+                courseContentForm.SetLanguage(isEnglish);
                 courseContentForm.ShowDialog();
             }
         }
