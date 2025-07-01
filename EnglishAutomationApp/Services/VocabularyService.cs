@@ -195,11 +195,12 @@ namespace EnglishAutomationApp.Services
 
         public static async Task SeedSampleWordsAsync()
         {
-            // Check if we already have words
-            var existingWords = await GetAllWordsAsync();
-            if (existingWords.Any())
-                return;
+            // Seed data is now handled by AccessDatabaseHelper.SeedDataAsync()
+            // This method is kept for backward compatibility but does nothing
+            await Task.CompletedTask;
+            return; // Exit early since seed data is handled by AccessDatabaseHelper
 
+            // Legacy code below - no longer used
             var sampleWords = new List<VocabularyWord>
             {
                 // Greetings

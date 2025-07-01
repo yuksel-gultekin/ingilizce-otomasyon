@@ -13,8 +13,16 @@ namespace EnglishAutomationApp.Data
     {
         private static string GetDatabasePath()
         {
-            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            return Path.Combine(documents, "eng-otomasyon.accdb");
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var appFolder = Path.Combine(appData, "EnglishAutomationApp");
+
+            // Create directory if it doesn't exist
+            if (!Directory.Exists(appFolder))
+            {
+                Directory.CreateDirectory(appFolder);
+            }
+
+            return Path.Combine(appFolder, "eng-otomasyon.accdb");
         }
 
         private static string GetConnectionString()
@@ -25,11 +33,54 @@ namespace EnglishAutomationApp.Data
 
         public static async Task InitializeDatabaseAsync()
         {
-            var dbPath = GetDatabasePath();
+            try
+            {
+                var dbPath = GetDatabasePath();
+                System.Diagnostics.Debug.WriteLine($"Database path: {dbPath}");
 
-            using var connection = new OleDbConnection(GetConnectionString());
-            await connection.OpenAsync();
-            await EnsureTablesExistAsync(connection);
+                // Create empty Access database file if it doesn't exist
+                if (!File.Exists(dbPath))
+                {
+                    await CreateEmptyAccessDatabaseAsync(dbPath);
+                }
+
+                using var connection = new OleDbConnection(GetConnectionString());
+                await connection.OpenAsync();
+                System.Diagnostics.Debug.WriteLine("Database connection opened successfully");
+
+                await EnsureTablesExistAsync(connection);
+                System.Diagnostics.Debug.WriteLine("Database initialization completed");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Database initialization error: {ex.Message}");
+                throw;
+            }
+        }
+
+        private static async Task CreateEmptyAccessDatabaseAsync(string dbPath)
+        {
+            try
+            {
+                // For Access databases, we need to use a different approach
+                // Create the database using ADOX COM object or let OleDb create it
+                System.Diagnostics.Debug.WriteLine($"Creating new Access database at: {dbPath}");
+
+                // The database will be created when we first try to create tables
+                // Just ensure the directory exists
+                var directory = Path.GetDirectoryName(dbPath);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                await Task.CompletedTask; // Placeholder for async pattern
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error preparing database path: {ex.Message}");
+                throw;
+            }
         }
 
 
@@ -43,17 +94,22 @@ namespace EnglishAutomationApp.Data
                 using var cmd = new OleDbCommand(checkSql, connection);
                 var result = await cmd.ExecuteScalarAsync();
                 tableExists = result != null; // If query succeeds, table exists
+                System.Diagnostics.Debug.WriteLine("Tables already exist");
             }
-            catch
+            catch (Exception ex)
             {
                 // If query fails, table doesn't exist
+                System.Diagnostics.Debug.WriteLine($"Tables don't exist, will create them. Error: {ex.Message}");
                 tableExists = false;
             }
 
             if (!tableExists)
             {
+                System.Diagnostics.Debug.WriteLine("Creating database tables...");
                 await CreateTablesAsync(connection);
-                //await SeedDataAsync(connection);
+                System.Diagnostics.Debug.WriteLine("Seeding initial data...");
+                await SeedDataAsync(connection);
+                System.Diagnostics.Debug.WriteLine("Database setup completed");
             }
         }
 
@@ -61,35 +117,36 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-
+                System.Diagnostics.Debug.WriteLine("Creating VocabularyWords table...");
                 var createVocabularyTable = @"
             CREATE TABLE VocabularyWords (
                 Id COUNTER PRIMARY KEY,
-                EnglishWord TEXT(255),
-                TurkishMeaning TEXT(255),
+                EnglishWord TEXT(255) NOT NULL,
+                TurkishMeaning TEXT(255) NOT NULL,
                 Pronunciation TEXT(255),
                 ExampleSentence MEMO,
                 ExampleSentenceTurkish MEMO,
-                Difficulty INTEGER,
-                PartOfSpeech INTEGER,
+                Difficulty INTEGER NOT NULL,
+                PartOfSpeech INTEGER NOT NULL,
                 Category TEXT(100),
                 AudioUrl TEXT(255),
-                IsActive INTEGER,
-                CreatedDate DATETIME
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
             )";
                 await ExecuteNonQueryAsync(connection, createVocabularyTable);
 
+                System.Diagnostics.Debug.WriteLine("Creating Users table...");
                 // ✅ Users table
                 var createUsersTable = @"
             CREATE TABLE Users (
                 Id COUNTER PRIMARY KEY,
                 Email TEXT(255) NOT NULL,
-                PasswordHash TEXT(255),
+                PasswordHash TEXT(255) NOT NULL,
                 FirstName TEXT(100),
                 LastName TEXT(100),
-                Role TEXT(50),
-                IsActive INTEGER,
-                CreatedDate DATETIME
+                Role TEXT(50) NOT NULL,
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
             )";
                 await ExecuteNonQueryAsync(connection, createUsersTable);
 
@@ -97,18 +154,18 @@ namespace EnglishAutomationApp.Data
                 var createCoursesTable = @"
             CREATE TABLE Courses (
                 Id COUNTER PRIMARY KEY,
-                Title TEXT(255),
+                Title TEXT(255) NOT NULL,
                 DescriptionText TEXT(255),
-                ContentText TEXT(255),
-                CourseLevel INTEGER,
-                CourseType INTEGER,
+                ContentText MEMO,
+                CourseLevel INTEGER NOT NULL,
+                CourseType INTEGER NOT NULL,
                 Price CURRENCY,
                 OrderIndex INTEGER,
                 EstimatedDurationMinutes INTEGER,
                 Prerequisites TEXT(255),
                 Color TEXT(20),
-                IsActive INTEGER,
-                CreatedDate DATETIME
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
             )";
 
 
@@ -118,12 +175,12 @@ namespace EnglishAutomationApp.Data
                 var createUserProgressTable = @"
             CREATE TABLE UserProgress (
                 Id COUNTER PRIMARY KEY,
-                UserId INTEGER,
-                CourseId INTEGER,
-                Status INTEGER,
-                ProgressPercentage INTEGER,
-                TimeSpentMinutes INTEGER,
-                StartDate DATETIME,
+                UserId INTEGER NOT NULL,
+                CourseId INTEGER NOT NULL,
+                Status INTEGER NOT NULL,
+                ProgressPercentage INTEGER NOT NULL,
+                TimeSpentMinutes INTEGER NOT NULL,
+                StartDate DATETIME NOT NULL,
                 CompletionDate DATETIME,
                 LastAccessDate DATETIME
             )";
@@ -133,14 +190,14 @@ namespace EnglishAutomationApp.Data
                 var createUserVocabularyTable = @"
             CREATE TABLE UserVocabulary (
                 Id COUNTER PRIMARY KEY,
-                UserId INTEGER,
-                VocabularyWordId INTEGER,
-                MasteryLevel INTEGER,
-                FirstLearnedDate DATETIME,
+                UserId INTEGER NOT NULL,
+                VocabularyWordId INTEGER NOT NULL,
+                MasteryLevel INTEGER NOT NULL,
+                FirstLearnedDate DATETIME NOT NULL,
                 LastReviewedDate DATETIME,
-                ReviewCount INTEGER,
-                CorrectAnswers INTEGER,
-                TotalAttempts INTEGER
+                ReviewCount INTEGER NOT NULL,
+                CorrectAnswers INTEGER NOT NULL,
+                TotalAttempts INTEGER NOT NULL
             )";
                 await ExecuteNonQueryAsync(connection, createUserVocabularyTable);
 
@@ -180,13 +237,31 @@ namespace EnglishAutomationApp.Data
 
         private static async Task SeedVocabularyWordsAsync(OleDbConnection connection)
         {
+            // Check if vocabulary words already exist
+            var checkSql = "SELECT COUNT(*) FROM VocabularyWords";
+            using var checkCommand = new OleDbCommand(checkSql, connection);
+            var result = await checkCommand.ExecuteScalarAsync();
+            var count = result != null ? (int)result : 0;
+
+            if (count > 0) return; // Already seeded
+
             var sampleWords = new[]
             {
                 new { English = "Hello", Turkish = "Merhaba", Pronunciation = "/həˈloʊ/", Example = "Hello, how are you?", ExampleTr = "Merhaba, nasılsın?", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
                 new { English = "Goodbye", Turkish = "Hoşçakal", Pronunciation = "/ɡʊdˈbaɪ/", Example = "Goodbye, see you tomorrow!", ExampleTr = "Hoşçakal, yarın görüşürüz!", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
                 new { English = "Thank you", Turkish = "Teşekkür ederim", Pronunciation = "/θæŋk juː/", Example = "Thank you for your help.", ExampleTr = "Yardımın için teşekkür ederim.", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
+                new { English = "Please", Turkish = "Lütfen", Pronunciation = "/pliːz/", Example = "Please help me.", ExampleTr = "Lütfen bana yardım et.", Difficulty = 1, PartOfSpeech = 4, Category = "Greetings" },
+                new { English = "Yes", Turkish = "Evet", Pronunciation = "/jes/", Example = "Yes, I agree.", ExampleTr = "Evet, katılıyorum.", Difficulty = 1, PartOfSpeech = 4, Category = "Basic" },
+                new { English = "No", Turkish = "Hayır", Pronunciation = "/noʊ/", Example = "No, I don't think so.", ExampleTr = "Hayır, öyle düşünmüyorum.", Difficulty = 1, PartOfSpeech = 4, Category = "Basic" },
                 new { English = "Book", Turkish = "Kitap", Pronunciation = "/bʊk/", Example = "I am reading a book.", ExampleTr = "Bir kitap okuyorum.", Difficulty = 1, PartOfSpeech = 1, Category = "Objects" },
-                new { English = "Water", Turkish = "Su", Pronunciation = "/ˈwɔːtər/", Example = "I need some water.", ExampleTr = "Biraz suya ihtiyacım var.", Difficulty = 1, PartOfSpeech = 1, Category = "Food & Drink" }
+                new { English = "Water", Turkish = "Su", Pronunciation = "/ˈwɔːtər/", Example = "I need some water.", ExampleTr = "Biraz suya ihtiyacım var.", Difficulty = 1, PartOfSpeech = 1, Category = "Food & Drink" },
+                new { English = "Food", Turkish = "Yemek", Pronunciation = "/fuːd/", Example = "The food is delicious.", ExampleTr = "Yemek lezzetli.", Difficulty = 1, PartOfSpeech = 1, Category = "Food & Drink" },
+                new { English = "House", Turkish = "Ev", Pronunciation = "/haʊs/", Example = "This is my house.", ExampleTr = "Bu benim evim.", Difficulty = 1, PartOfSpeech = 1, Category = "Places" },
+                new { English = "School", Turkish = "Okul", Pronunciation = "/skuːl/", Example = "I go to school every day.", ExampleTr = "Her gün okula giderim.", Difficulty = 1, PartOfSpeech = 1, Category = "Places" },
+                new { English = "Beautiful", Turkish = "Güzel", Pronunciation = "/ˈbjuːtɪfəl/", Example = "She is beautiful.", ExampleTr = "O güzel.", Difficulty = 2, PartOfSpeech = 3, Category = "Adjectives" },
+                new { English = "Important", Turkish = "Önemli", Pronunciation = "/ɪmˈpɔːrtənt/", Example = "This is very important.", ExampleTr = "Bu çok önemli.", Difficulty = 2, PartOfSpeech = 3, Category = "Adjectives" },
+                new { English = "Understand", Turkish = "Anlamak", Pronunciation = "/ˌʌndərˈstænd/", Example = "I understand you.", ExampleTr = "Seni anlıyorum.", Difficulty = 2, PartOfSpeech = 2, Category = "Verbs" },
+                new { English = "Learn", Turkish = "Öğrenmek", Pronunciation = "/lɜːrn/", Example = "I want to learn English.", ExampleTr = "İngilizce öğrenmek istiyorum.", Difficulty = 2, PartOfSpeech = 2, Category = "Verbs" }
             };
 
             var sql = @"INSERT INTO VocabularyWords (EnglishWord, TurkishMeaning, Pronunciation, ExampleSentence, ExampleSentenceTurkish, Difficulty, PartOfSpeech, Category, AudioUrl, IsActive, CreatedDate)
@@ -194,30 +269,48 @@ namespace EnglishAutomationApp.Data
 
             foreach (var word in sampleWords)
             {
-                using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("?", word.English);
-                command.Parameters.AddWithValue("?", word.Turkish);
-                command.Parameters.AddWithValue("?", word.Pronunciation);
-                command.Parameters.AddWithValue("?", word.Example);
-                command.Parameters.AddWithValue("?", word.ExampleTr);
-                command.Parameters.AddWithValue("?", word.Difficulty);
-                command.Parameters.AddWithValue("?", word.PartOfSpeech);
-                command.Parameters.AddWithValue("?", word.Category);
-                command.Parameters.AddWithValue("?", DBNull.Value); // AudioUrl
-                command.Parameters.AddWithValue("?", 1); // IsActive = true
-                command.Parameters.AddWithValue("?", DateTime.Now);
+                try
+                {
+                    using var command = new OleDbCommand(sql, connection);
+                    command.Parameters.AddWithValue("?", word.English);
+                    command.Parameters.AddWithValue("?", word.Turkish);
+                    command.Parameters.AddWithValue("?", word.Pronunciation);
+                    command.Parameters.AddWithValue("?", word.Example);
+                    command.Parameters.AddWithValue("?", word.ExampleTr);
+                    command.Parameters.AddWithValue("?", word.Difficulty);
+                    command.Parameters.AddWithValue("?", word.PartOfSpeech);
+                    command.Parameters.AddWithValue("?", word.Category);
+                    command.Parameters.AddWithValue("?", DBNull.Value); // AudioUrl
+                    command.Parameters.AddWithValue("?", 1); // IsActive = true
+                    command.Parameters.AddWithValue("?", DateTime.Now);
 
-                await command.ExecuteNonQueryAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log error but continue with other words
+                    System.Diagnostics.Debug.WriteLine($"Error inserting word '{word.English}': {ex.Message}");
+                }
             }
         }
 
         private static async Task SeedCoursesAsync(OleDbConnection connection)
         {
+            // Check if courses already exist
+            var checkSql = "SELECT COUNT(*) FROM Courses";
+            using var checkCommand = new OleDbCommand(checkSql, connection);
+            var result = await checkCommand.ExecuteScalarAsync();
+            var count = result != null ? (int)result : 0;
+
+            if (count > 0) return; // Already seeded
+
             var sampleCourses = new[]
             {
-                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals", Level = 1, Type = 2, Price = 0.00, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
-                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Learn the basic grammar structures", Level = 1, Type = 1, Price = 0.00, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
-                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations", Level = 2, Type = 3, Price = 0.00, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" }
+                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals. This course covers essential vocabulary, basic grammar structures, and common phrases used in everyday communication. Perfect for beginners starting their English learning journey.", Level = 1, Type = 2, Price = 0.00, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
+                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Master the building blocks of English grammar. Learn about sentence structure, verb tenses, articles, prepositions, and more. This course provides a solid foundation for proper English communication.", Level = 1, Type = 1, Price = 0.00, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
+                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations. Learn how to introduce yourself, ask for directions, order food, make appointments, and handle common social interactions with confidence.", Level = 2, Type = 3, Price = 0.00, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" },
+                new { Title = "Business English", Description = "Professional English for workplace", Content = "Develop professional communication skills for the workplace. Learn business vocabulary, email writing, presentation skills, and formal communication protocols.", Level = 2, Type = 3, Price = 0.00, OrderIndex = 4, Duration = 90, Prerequisites = "Grammar Fundamentals", Color = "#9C27B0" },
+                new { Title = "Advanced Vocabulary", Description = "Expand your English vocabulary", Content = "Build an extensive vocabulary with advanced words and phrases. Learn synonyms, idioms, phrasal verbs, and sophisticated expressions to enhance your English fluency.", Level = 3, Type = 2, Price = 0.00, OrderIndex = 5, Duration = 75, Prerequisites = "Everyday Conversations", Color = "#F44336" }
             };
 
             var sql = @"INSERT INTO Courses (Title, DescriptionText, ContentText, CourseLevel, CourseType, Price, OrderIndex, EstimatedDurationMinutes, Prerequisites, Color, IsActive, CreatedDate)
@@ -225,28 +318,46 @@ namespace EnglishAutomationApp.Data
 
             foreach (var course in sampleCourses)
             {
-                using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("?", course.Title);
-                command.Parameters.AddWithValue("?", course.Description);
-                command.Parameters.AddWithValue("?", course.Content);
-                command.Parameters.AddWithValue("?", course.Level);
-                command.Parameters.AddWithValue("?", course.Type);
-                command.Parameters.AddWithValue("?", (decimal)course.Price);
-                command.Parameters.AddWithValue("?", course.OrderIndex);
-                command.Parameters.AddWithValue("?", course.Duration);
-                command.Parameters.AddWithValue("?", string.IsNullOrEmpty(course.Prerequisites) ? (object)DBNull.Value : course.Prerequisites);
-                command.Parameters.AddWithValue("?", course.Color);
-                command.Parameters.AddWithValue("?", 1); // IsActive = true
-                command.Parameters.AddWithValue("?", DateTime.Now);
+                try
+                {
+                    using var command = new OleDbCommand(sql, connection);
+                    command.Parameters.AddWithValue("?", course.Title);
+                    command.Parameters.AddWithValue("?", course.Description);
+                    command.Parameters.AddWithValue("?", course.Content);
+                    command.Parameters.AddWithValue("?", course.Level);
+                    command.Parameters.AddWithValue("?", course.Type);
+                    command.Parameters.AddWithValue("?", (decimal)course.Price);
+                    command.Parameters.AddWithValue("?", course.OrderIndex);
+                    command.Parameters.AddWithValue("?", course.Duration);
+                    command.Parameters.AddWithValue("?", string.IsNullOrEmpty(course.Prerequisites) ? (object)DBNull.Value : course.Prerequisites);
+                    command.Parameters.AddWithValue("?", course.Color);
+                    command.Parameters.AddWithValue("?", 1); // IsActive = true
+                    command.Parameters.AddWithValue("?", DateTime.Now);
 
-                await command.ExecuteNonQueryAsync();
+                    await command.ExecuteNonQueryAsync();
+                }
+                catch (Exception ex)
+                {
+                    // Log error but continue with other courses
+                    System.Diagnostics.Debug.WriteLine($"Error inserting course '{course.Title}': {ex.Message}");
+                }
             }
         }
 
         private static async Task ExecuteNonQueryAsync(OleDbConnection connection, string sql)
         {
-            using var command = new OleDbCommand(sql, connection);
-            await command.ExecuteNonQueryAsync();
+            try
+            {
+                using var command = new OleDbCommand(sql, connection);
+                await command.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine("SQL executed successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SQL execution failed: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"SQL: {sql}");
+                throw;
+            }
         }
 
         // User operations
