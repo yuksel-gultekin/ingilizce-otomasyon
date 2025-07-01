@@ -339,18 +339,40 @@ namespace EnglishAutomationApp.Views.Pages
 
             if (course != null)
             {
-                try
-                {
-                    // Show simple course content form
-                    var courseContentForm = new SimpleCourseContentForm(course, isEnglish);
-                    courseContentForm.ShowDialog();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error opening course: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                // Basit MessageBox ile kurs bilgilerini göster
+                var title = isEnglish ? "Course Content" : "Kurs İçeriği";
+                var message = isEnglish ?
+                    $"Course: {course.Title}\n\nLevel: {course.LevelText}\nType: {course.TypeText}\nDescription: {course.Description}\n\nThis course is now available for learning!" :
+                    $"Kurs: {course.Title}\n\nSeviye: {GetTurkishLevel(course.Level)}\nTür: {GetTurkishCourseType(course.Type)}\nAçıklama: {course.Description}\n\nBu kurs artık öğrenime hazır!";
+
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private string GetTurkishLevel(CourseLevel level)
+        {
+            return level switch
+            {
+                CourseLevel.Beginner => "Başlangıç",
+                CourseLevel.Intermediate => "Orta",
+                CourseLevel.Advanced => "İleri",
+                _ => level.ToString()
+            };
+        }
+
+        private string GetTurkishCourseType(CourseType type)
+        {
+            return type switch
+            {
+                CourseType.Grammar => "Gramer",
+                CourseType.Vocabulary => "Kelime",
+                CourseType.Speaking => "Konuşma",
+                CourseType.Listening => "Dinleme",
+                CourseType.Reading => "Okuma",
+                CourseType.Writing => "Yazma",
+                CourseType.Pronunciation => "Telaffuz",
+                _ => type.ToString()
+            };
         }
 
         private void UpdateLanguage()
