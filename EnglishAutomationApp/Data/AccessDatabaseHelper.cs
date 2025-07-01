@@ -6,6 +6,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EnglishAutomationApp.Models;
+using static EnglishAutomationApp.Models.WordDifficulty;
+using static EnglishAutomationApp.Models.CourseLevel;
+using static EnglishAutomationApp.Models.CourseType;
 
 namespace EnglishAutomationApp.Data
 {
@@ -197,6 +200,129 @@ namespace EnglishAutomationApp.Data
             )";
                 await ExecuteNonQueryAsync(connection, createUserVocabularyTable);
 
+                // ✅ Lessons table
+                var createLessonsTable = @"
+            CREATE TABLE Lessons (
+                Id COUNTER PRIMARY KEY,
+                CourseId INTEGER NOT NULL,
+                Title TEXT(200) NOT NULL,
+                ContentText MEMO NOT NULL,
+                LessonType INTEGER NOT NULL,
+                OrderIndex INTEGER NOT NULL,
+                EstimatedDurationMinutes INTEGER,
+                VideoUrl TEXT(500),
+                AudioUrl TEXT(500),
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createLessonsTable);
+
+                // ✅ Quizzes table
+                var createQuizzesTable = @"
+            CREATE TABLE Quizzes (
+                Id COUNTER PRIMARY KEY,
+                LessonId INTEGER NOT NULL,
+                Title TEXT(200) NOT NULL,
+                DescriptionText MEMO NOT NULL,
+                PassingScore INTEGER NOT NULL,
+                TimeLimit INTEGER,
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createQuizzesTable);
+
+                // ✅ Questions table
+                var createQuestionsTable = @"
+            CREATE TABLE Questions (
+                Id COUNTER PRIMARY KEY,
+                QuizId INTEGER NOT NULL,
+                QuestionText MEMO NOT NULL,
+                QuestionType INTEGER NOT NULL,
+                OrderIndex INTEGER NOT NULL,
+                Points INTEGER NOT NULL,
+                Explanation MEMO
+            )";
+                await ExecuteNonQueryAsync(connection, createQuestionsTable);
+
+                // ✅ Answers table
+                var createAnswersTable = @"
+            CREATE TABLE Answers (
+                Id COUNTER PRIMARY KEY,
+                QuestionId INTEGER NOT NULL,
+                AnswerText MEMO NOT NULL,
+                IsCorrect INTEGER NOT NULL,
+                OrderIndex INTEGER NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createAnswersTable);
+
+                // ✅ QuizAttempts table
+                var createQuizAttemptsTable = @"
+            CREATE TABLE QuizAttempts (
+                Id COUNTER PRIMARY KEY,
+                UserId INTEGER NOT NULL,
+                QuizId INTEGER NOT NULL,
+                StartTime DATETIME NOT NULL,
+                EndTime DATETIME,
+                Score INTEGER,
+                IsPassed INTEGER NOT NULL,
+                IsCompleted INTEGER NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createQuizAttemptsTable);
+
+                // ✅ QuizAnswers table
+                var createQuizAnswersTable = @"
+            CREATE TABLE QuizAnswers (
+                Id COUNTER PRIMARY KEY,
+                QuizAttemptId INTEGER NOT NULL,
+                QuestionId INTEGER NOT NULL,
+                SelectedAnswer MEMO,
+                IsCorrect INTEGER NOT NULL,
+                PointsEarned INTEGER NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createQuizAnswersTable);
+
+                // ✅ LessonProgress table
+                var createLessonProgressTable = @"
+            CREATE TABLE LessonProgress (
+                Id COUNTER PRIMARY KEY,
+                UserId INTEGER NOT NULL,
+                LessonId INTEGER NOT NULL,
+                Status INTEGER NOT NULL,
+                ProgressPercentage INTEGER NOT NULL,
+                TimeSpentMinutes INTEGER NOT NULL,
+                StartDate DATETIME NOT NULL,
+                CompletionDate DATETIME,
+                LastAccessDate DATETIME
+            )";
+                await ExecuteNonQueryAsync(connection, createLessonProgressTable);
+
+                // ✅ Achievements table
+                var createAchievementsTable = @"
+            CREATE TABLE Achievements (
+                Id COUNTER PRIMARY KEY,
+                Name TEXT(100) NOT NULL,
+                DescriptionText MEMO NOT NULL,
+                AchievementType INTEGER NOT NULL,
+                Icon TEXT(10),
+                Color TEXT(20),
+                RequiredValue INTEGER NOT NULL,
+                Points INTEGER NOT NULL,
+                IsActive INTEGER NOT NULL,
+                CreatedDate DATETIME NOT NULL
+            )";
+                await ExecuteNonQueryAsync(connection, createAchievementsTable);
+
+                // ✅ UserAchievements table
+                var createUserAchievementsTable = @"
+            CREATE TABLE UserAchievements (
+                Id COUNTER PRIMARY KEY,
+                UserId INTEGER NOT NULL,
+                AchievementId INTEGER NOT NULL,
+                EarnedDate DATETIME NOT NULL,
+                CurrentValue INTEGER
+            )";
+                await ExecuteNonQueryAsync(connection, createUserAchievementsTable);
+
             }
             catch (Exception ex)
             {
@@ -221,13 +347,13 @@ namespace EnglishAutomationApp.Data
                 var adminSql = @"INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
                 using var adminCommand = new OleDbCommand(adminSql, connection);
-                adminCommand.Parameters.Add("@Email", OleDbType.VarChar, 255).Value = "admin@engotomasyon.com";
-                adminCommand.Parameters.Add("@PasswordHash", OleDbType.VarChar, 255).Value = BCrypt.Net.BCrypt.HashPassword("admin123");
-                adminCommand.Parameters.Add("@FirstName", OleDbType.VarChar, 100).Value = "Admin";
-                adminCommand.Parameters.Add("@LastName", OleDbType.VarChar, 100).Value = "User";
-                adminCommand.Parameters.Add("@Role", OleDbType.VarChar, 50).Value = "Admin";
-                adminCommand.Parameters.Add("@IsActive", OleDbType.Integer).Value = 1;
-                adminCommand.Parameters.Add("@CreatedDate", OleDbType.Date).Value = DateTime.Now;
+                adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
+                adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
+                adminCommand.Parameters.AddWithValue("?", "Admin");
+                adminCommand.Parameters.AddWithValue("?", "User");
+                adminCommand.Parameters.AddWithValue("?", "Admin");
+                adminCommand.Parameters.AddWithValue("?", 1);
+                adminCommand.Parameters.AddWithValue("?", DateTime.Now);
 
                 await adminCommand.ExecuteNonQueryAsync();
                 System.Diagnostics.Debug.WriteLine("Admin user created successfully");
@@ -252,21 +378,21 @@ namespace EnglishAutomationApp.Data
 
             var sampleWords = new[]
             {
-                new { English = "Hello", Turkish = "Merhaba", Pronunciation = "/həˈloʊ/", Example = "Hello, how are you?", ExampleTr = "Merhaba, nasılsın?", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
-                new { English = "Goodbye", Turkish = "Hoşçakal", Pronunciation = "/ɡʊdˈbaɪ/", Example = "Goodbye, see you tomorrow!", ExampleTr = "Hoşçakal, yarın görüşürüz!", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
-                new { English = "Thank you", Turkish = "Teşekkür ederim", Pronunciation = "/θæŋk juː/", Example = "Thank you for your help.", ExampleTr = "Yardımın için teşekkür ederim.", Difficulty = 1, PartOfSpeech = 8, Category = "Greetings" },
-                new { English = "Please", Turkish = "Lütfen", Pronunciation = "/pliːz/", Example = "Please help me.", ExampleTr = "Lütfen bana yardım et.", Difficulty = 1, PartOfSpeech = 4, Category = "Greetings" },
-                new { English = "Yes", Turkish = "Evet", Pronunciation = "/jes/", Example = "Yes, I agree.", ExampleTr = "Evet, katılıyorum.", Difficulty = 1, PartOfSpeech = 4, Category = "Basic" },
-                new { English = "No", Turkish = "Hayır", Pronunciation = "/noʊ/", Example = "No, I don't think so.", ExampleTr = "Hayır, öyle düşünmüyorum.", Difficulty = 1, PartOfSpeech = 4, Category = "Basic" },
-                new { English = "Book", Turkish = "Kitap", Pronunciation = "/bʊk/", Example = "I am reading a book.", ExampleTr = "Bir kitap okuyorum.", Difficulty = 1, PartOfSpeech = 1, Category = "Objects" },
-                new { English = "Water", Turkish = "Su", Pronunciation = "/ˈwɔːtər/", Example = "I need some water.", ExampleTr = "Biraz suya ihtiyacım var.", Difficulty = 1, PartOfSpeech = 1, Category = "Food & Drink" },
-                new { English = "Food", Turkish = "Yemek", Pronunciation = "/fuːd/", Example = "The food is delicious.", ExampleTr = "Yemek lezzetli.", Difficulty = 1, PartOfSpeech = 1, Category = "Food & Drink" },
-                new { English = "House", Turkish = "Ev", Pronunciation = "/haʊs/", Example = "This is my house.", ExampleTr = "Bu benim evim.", Difficulty = 1, PartOfSpeech = 1, Category = "Places" },
-                new { English = "School", Turkish = "Okul", Pronunciation = "/skuːl/", Example = "I go to school every day.", ExampleTr = "Her gün okula giderim.", Difficulty = 1, PartOfSpeech = 1, Category = "Places" },
-                new { English = "Beautiful", Turkish = "Güzel", Pronunciation = "/ˈbjuːtɪfəl/", Example = "She is beautiful.", ExampleTr = "O güzel.", Difficulty = 2, PartOfSpeech = 3, Category = "Adjectives" },
-                new { English = "Important", Turkish = "Önemli", Pronunciation = "/ɪmˈpɔːrtənt/", Example = "This is very important.", ExampleTr = "Bu çok önemli.", Difficulty = 2, PartOfSpeech = 3, Category = "Adjectives" },
-                new { English = "Understand", Turkish = "Anlamak", Pronunciation = "/ˌʌndərˈstænd/", Example = "I understand you.", ExampleTr = "Seni anlıyorum.", Difficulty = 2, PartOfSpeech = 2, Category = "Verbs" },
-                new { English = "Learn", Turkish = "Öğrenmek", Pronunciation = "/lɜːrn/", Example = "I want to learn English.", ExampleTr = "İngilizce öğrenmek istiyorum.", Difficulty = 2, PartOfSpeech = 2, Category = "Verbs" }
+                new { English = "Hello", Turkish = "Merhaba", Pronunciation = "/həˈloʊ/", Example = "Hello, how are you?", ExampleTr = "Merhaba, nasılsın?", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Interjection, Category = "Greetings" },
+                new { English = "Goodbye", Turkish = "Hoşçakal", Pronunciation = "/ɡʊdˈbaɪ/", Example = "Goodbye, see you tomorrow!", ExampleTr = "Hoşçakal, yarın görüşürüz!", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Interjection, Category = "Greetings" },
+                new { English = "Thank you", Turkish = "Teşekkür ederim", Pronunciation = "/θæŋk juː/", Example = "Thank you for your help.", ExampleTr = "Yardımın için teşekkür ederim.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Interjection, Category = "Greetings" },
+                new { English = "Please", Turkish = "Lütfen", Pronunciation = "/pliːz/", Example = "Please help me.", ExampleTr = "Lütfen bana yardım et.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Adverb, Category = "Greetings" },
+                new { English = "Yes", Turkish = "Evet", Pronunciation = "/jes/", Example = "Yes, I agree.", ExampleTr = "Evet, katılıyorum.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Adverb, Category = "Basic" },
+                new { English = "No", Turkish = "Hayır", Pronunciation = "/noʊ/", Example = "No, I don't think so.", ExampleTr = "Hayır, öyle düşünmüyorum.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Adverb, Category = "Basic" },
+                new { English = "Book", Turkish = "Kitap", Pronunciation = "/bʊk/", Example = "I am reading a book.", ExampleTr = "Bir kitap okuyorum.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Noun, Category = "Objects" },
+                new { English = "Water", Turkish = "Su", Pronunciation = "/ˈwɔːtər/", Example = "I need some water.", ExampleTr = "Biraz suya ihtiyacım var.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Noun, Category = "Food & Drink" },
+                new { English = "Food", Turkish = "Yemek", Pronunciation = "/fuːd/", Example = "The food is delicious.", ExampleTr = "Yemek lezzetli.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Noun, Category = "Food & Drink" },
+                new { English = "House", Turkish = "Ev", Pronunciation = "/haʊs/", Example = "This is my house.", ExampleTr = "Bu benim evim.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Noun, Category = "Places" },
+                new { English = "School", Turkish = "Okul", Pronunciation = "/skuːl/", Example = "I go to school every day.", ExampleTr = "Her gün okula giderim.", Difficulty = (int)WordDifficulty.Beginner, PartOfSpeech = (int)Models.PartOfSpeech.Noun, Category = "Places" },
+                new { English = "Beautiful", Turkish = "Güzel", Pronunciation = "/ˈbjuːtɪfəl/", Example = "She is beautiful.", ExampleTr = "O güzel.", Difficulty = (int)WordDifficulty.Intermediate, PartOfSpeech = (int)Models.PartOfSpeech.Adjective, Category = "Adjectives" },
+                new { English = "Important", Turkish = "Önemli", Pronunciation = "/ɪmˈpɔːrtənt/", Example = "This is very important.", ExampleTr = "Bu çok önemli.", Difficulty = (int)WordDifficulty.Intermediate, PartOfSpeech = (int)Models.PartOfSpeech.Adjective, Category = "Adjectives" },
+                new { English = "Understand", Turkish = "Anlamak", Pronunciation = "/ˌʌndərˈstænd/", Example = "I understand you.", ExampleTr = "Seni anlıyorum.", Difficulty = (int)WordDifficulty.Intermediate, PartOfSpeech = (int)Models.PartOfSpeech.Verb, Category = "Verbs" },
+                new { English = "Learn", Turkish = "Öğrenmek", Pronunciation = "/lɜːrn/", Example = "I want to learn English.", ExampleTr = "İngilizce öğrenmek istiyorum.", Difficulty = (int)WordDifficulty.Intermediate, PartOfSpeech = (int)Models.PartOfSpeech.Verb, Category = "Verbs" }
             };
 
             var sql = @"INSERT INTO VocabularyWords (EnglishWord, TurkishMeaning, Pronunciation, ExampleSentence, ExampleSentenceTurkish, Difficulty, PartOfSpeech, Category, AudioUrl, IsActive, CreatedDate)
@@ -311,11 +437,11 @@ namespace EnglishAutomationApp.Data
 
             var sampleCourses = new[]
             {
-                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals. This course covers essential vocabulary, basic grammar structures, and common phrases used in everyday communication. Perfect for beginners starting their English learning journey.", Level = 1, Type = 2, Price = 0.00, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
-                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Master the building blocks of English grammar. Learn about sentence structure, verb tenses, articles, prepositions, and more. This course provides a solid foundation for proper English communication.", Level = 1, Type = 1, Price = 0.00, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
-                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations. Learn how to introduce yourself, ask for directions, order food, make appointments, and handle common social interactions with confidence.", Level = 2, Type = 3, Price = 0.00, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" },
-                new { Title = "Business English", Description = "Professional English for workplace", Content = "Develop professional communication skills for the workplace. Learn business vocabulary, email writing, presentation skills, and formal communication protocols.", Level = 2, Type = 3, Price = 0.00, OrderIndex = 4, Duration = 90, Prerequisites = "Grammar Fundamentals", Color = "#9C27B0" },
-                new { Title = "Advanced Vocabulary", Description = "Expand your English vocabulary", Content = "Build an extensive vocabulary with advanced words and phrases. Learn synonyms, idioms, phrasal verbs, and sophisticated expressions to enhance your English fluency.", Level = 3, Type = 2, Price = 0.00, OrderIndex = 5, Duration = 75, Prerequisites = "Everyday Conversations", Color = "#F44336" }
+                new { Title = "English Basics", Description = "Learn basic English words and phrases", Content = "Introduction to English language fundamentals. This course covers essential vocabulary, basic grammar structures, and common phrases used in everyday communication. Perfect for beginners starting their English learning journey.", Level = (int)CourseLevel.Beginner, Type = (int)CourseType.Vocabulary, Price = 0.00, OrderIndex = 1, Duration = 30, Prerequisites = "", Color = "#4CAF50" },
+                new { Title = "Grammar Fundamentals", Description = "Essential English grammar rules", Content = "Master the building blocks of English grammar. Learn about sentence structure, verb tenses, articles, prepositions, and more. This course provides a solid foundation for proper English communication.", Level = (int)CourseLevel.Beginner, Type = (int)CourseType.Grammar, Price = 0.00, OrderIndex = 2, Duration = 45, Prerequisites = "", Color = "#2196F3" },
+                new { Title = "Everyday Conversations", Description = "Common phrases for daily communication", Content = "Practice speaking in everyday situations. Learn how to introduce yourself, ask for directions, order food, make appointments, and handle common social interactions with confidence.", Level = (int)CourseLevel.Intermediate, Type = (int)CourseType.Speaking, Price = 0.00, OrderIndex = 3, Duration = 60, Prerequisites = "English Basics", Color = "#FF9800" },
+                new { Title = "Business English", Description = "Professional English for workplace", Content = "Develop professional communication skills for the workplace. Learn business vocabulary, email writing, presentation skills, and formal communication protocols.", Level = (int)CourseLevel.Intermediate, Type = (int)CourseType.Speaking, Price = 0.00, OrderIndex = 4, Duration = 90, Prerequisites = "Grammar Fundamentals", Color = "#9C27B0" },
+                new { Title = "Advanced Vocabulary", Description = "Expand your English vocabulary", Content = "Build an extensive vocabulary with advanced words and phrases. Learn synonyms, idioms, phrasal verbs, and sophisticated expressions to enhance your English fluency.", Level = (int)CourseLevel.Advanced, Type = (int)CourseType.Vocabulary, Price = 0.00, OrderIndex = 5, Duration = 75, Prerequisites = "Everyday Conversations", Color = "#F44336" }
             };
 
             var sql = @"INSERT INTO Courses (Title, DescriptionText, ContentText, CourseLevel, CourseType, Price, OrderIndex, EstimatedDurationMinutes, Prerequisites, Color, IsActive, CreatedDate)
@@ -420,6 +546,34 @@ namespace EnglishAutomationApp.Data
             {
                 return false;
             }
+        }
+
+        public static async Task<List<User>> GetAllUsersAsync()
+        {
+            var users = new List<User>();
+            var connectionString = GetConnectionString();
+            using var connection = new OleDbConnection(connectionString);
+            await connection.OpenAsync();
+
+            var sql = "SELECT * FROM Users WHERE Role = 'User' ORDER BY CreatedDate DESC";
+            using var command = new OleDbCommand(sql, connection);
+            using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                users.Add(new User
+                {
+                    Id = reader.GetInt32(0), // Id
+                    Email = reader.GetString(1), // Email
+                    PasswordHash = reader.GetString(2), // PasswordHash
+                    FirstName = reader.GetString(3), // FirstName
+                    LastName = reader.GetString(4), // LastName
+                    Role = reader.GetString(5), // Role
+                    IsActive = reader.GetInt32(6) == 1, // IsActive
+                    CreatedDate = reader.GetDateTime(7) // CreatedDate
+                });
+            }
+            return users;
         }
 
         // Course operations

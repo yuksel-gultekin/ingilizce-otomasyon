@@ -17,15 +17,17 @@ namespace EnglishAutomationApp.Models
         public ProgressStatus Status { get; set; } = ProgressStatus.NotStarted;
 
         [Required]
+        public int ProgressPercentage { get; set; } = 0;
+
+        [Required]
+        public int TimeSpentMinutes { get; set; } = 0;
+
+        [Required]
         public DateTime StartDate { get; set; } = DateTime.Now;
 
         public DateTime? CompletionDate { get; set; }
 
-        public int TimeSpentMinutes { get; set; } = 0;
-
-        public int Score { get; set; } = 0;
-
-        public string? Notes { get; set; }
+        public DateTime? LastAccessDate { get; set; }
 
         // Navigation Properties
         public virtual User User { get; set; } = null!;
@@ -33,6 +35,7 @@ namespace EnglishAutomationApp.Models
 
         // Computed Properties
         public string StatusText => Status.ToString();
+        public string ProgressText => $"{ProgressPercentage}%";
         public bool IsCompleted => Status == ProgressStatus.Completed;
         public string TimeSpentText => $"{TimeSpentMinutes} min";
     }

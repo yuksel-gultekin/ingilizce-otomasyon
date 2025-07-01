@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using EnglishAutomationApp.Services;
 using EnglishAutomationApp.Views.Pages;
 using EnglishAutomationApp.Helpers;
+using EnglishAutomationApp.Forms;
 
 namespace EnglishAutomationApp.Views
 {
@@ -168,12 +169,13 @@ namespace EnglishAutomationApp.Views
         {
             if (AuthenticationService.IsAdmin)
             {
-                ShowUserControl(new AdminUserControl());
+                var adminForm = new AdminPanelForm(AuthenticationService.CurrentUser!);
+                adminForm.ShowDialog();
                 UpdateStatus("Admin Panel");
             }
             else
             {
-                MessageBox.Show("You don't have permission to access this page.", "Access Denied", 
+                MessageBox.Show("Bu sayfaya erişim yetkiniz yok.", "Erişim Reddedildi",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
