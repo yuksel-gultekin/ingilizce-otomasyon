@@ -27,8 +27,6 @@ namespace EnglishAutomationApp.Views
         private LinkLabel forgotPasswordLabel = null!;
         private System.Windows.Forms.Timer fadeTimer = null!;
         private float opacity = 0f;
-
-        // Language support
         private bool isEnglish = true;
 
         public LoginForm()

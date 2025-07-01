@@ -16,8 +16,6 @@ namespace EnglishAutomationApp.Views
         private Panel contentPanel = null!;
         private Label welcomeLabel = null!;
         private ComboBox languageComboBox = null!;
-
-        // Language support
         private bool isEnglish = true;
 
         public MainForm()
@@ -44,23 +42,19 @@ namespace EnglishAutomationApp.Views
             menuStrip.ForeColor = Color.White;
             menuStrip.Font = ModernUIHelper.Fonts.Body;
 
-            // File Menu
             var fileMenu = new ToolStripMenuItem("File");
             fileMenu.DropDownItems.Add("Logout", null, LogoutMenuItem_Click);
             fileMenu.DropDownItems.Add("Exit", null, ExitMenuItem_Click);
 
-            // Learning Menu
             var learningMenu = new ToolStripMenuItem("Learning");
             learningMenu.DropDownItems.Add("📊 Dashboard", null, DashboardMenuItem_Click);
             learningMenu.DropDownItems.Add("📚 Courses", null, CoursesMenuItem_Click);
             learningMenu.DropDownItems.Add("📖 Vocabulary", null, VocabularyMenuItem_Click);
 
-            // Admin Menu (will be shown only for admin users)
             var adminMenu = new ToolStripMenuItem("Admin");
             adminMenu.DropDownItems.Add("⚙️ Admin Panel", null, AdminMenuItem_Click);
             adminMenu.Visible = AuthenticationService.IsAdmin;
 
-            // Help Menu
             var helpMenu = new ToolStripMenuItem("Help");
             helpMenu.DropDownItems.Add("About", null, AboutMenuItem_Click);
 

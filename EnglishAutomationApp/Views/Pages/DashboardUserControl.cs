@@ -268,7 +268,6 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void ViewProgressButton_Click(object? sender, EventArgs e)
         {
-            // Progress functionality removed
             MessageBox.Show("Progress tracking feature has been removed.", "Info",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

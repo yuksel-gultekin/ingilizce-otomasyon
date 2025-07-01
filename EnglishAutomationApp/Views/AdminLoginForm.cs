@@ -24,7 +24,7 @@ namespace EnglishAutomationApp.Views
         {
             this.SuspendLayout();
 
-            // Form properties
+
             this.Text = "Admin Login - English Automation Platform";
             this.Size = new Size(400, 350);
             this.StartPosition = FormStartPosition.CenterParent;

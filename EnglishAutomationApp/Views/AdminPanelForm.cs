@@ -15,14 +15,12 @@ namespace EnglishAutomationApp.Views
         private ComboBox languageComboBox = null!;
 
         private AdminUserControl? currentAdminControl;
-
-        // Language support
         private bool isEnglish = true;
 
         public AdminPanelForm()
         {
             InitializeComponent();
-            LoadUsersPanel(); // Default panel
+            LoadUsersPanel();
         }
 
         private void InitializeComponent()

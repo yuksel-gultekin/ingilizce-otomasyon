@@ -24,8 +24,6 @@ namespace EnglishAutomationApp.Views.Pages
 
         private List<VocabularyWord> allWords = new List<VocabularyWord>();
         private List<VocabularyWord> filteredWords = new List<VocabularyWord>();
-
-        // Language support
         private bool isEnglish = true;
 
         public VocabularyUserControl()
@@ -193,8 +191,8 @@ namespace EnglishAutomationApp.Views.Pages
                 categoryFilter.Items.AddRange(categories.ToArray());
                 categoryFilter.SelectedIndex = 0;
 
-                UpdateStatsLabel();
-                DisplayWords();
+                // Apply filters to show all words initially
+                ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -307,9 +305,9 @@ namespace EnglishAutomationApp.Views.Pages
                 ForeColor = Color.White,
                 BackColor = GetDifficultyColor(word.Difficulty),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(card.Width - 200, 10),
-                Size = new Size(90, 28),
-                Padding = new Padding(6),
+                Location = new Point(card.Width - 220, 10),
+                Size = new Size(110, 35),
+                Padding = new Padding(8),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
@@ -321,8 +319,8 @@ namespace EnglishAutomationApp.Views.Pages
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(card.Width - 100, 10),
-                Size = new Size(90, 28),
-                Padding = new Padding(6),
+                Size = new Size(110, 35),
+                Padding = new Padding(8),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
@@ -357,7 +355,6 @@ namespace EnglishAutomationApp.Views.Pages
             };
         }
 
-        // Event Handlers
         private void SearchBox_TextChanged(object? sender, EventArgs e)
         {
             ApplyFilters();
@@ -393,6 +390,7 @@ namespace EnglishAutomationApp.Views.Pages
 
                 // Difficulty filter
                 var matchesDifficulty = selectedDifficulty == "All Levels" ||
+                    selectedDifficulty == "Tüm Seviyeler" ||
                     word.DifficultyText == selectedDifficulty;
 
                 return matchesSearch && matchesCategory && matchesDifficulty;

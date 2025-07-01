@@ -19,8 +19,6 @@ namespace EnglishAutomationApp.Views
         private Button saveButton = null!;
         private Button cancelButton = null!;
         private Label messageLabel = null!;
-
-        // Language support
         private bool isEnglish = true;
 
         public AddUserForm(bool english = true)

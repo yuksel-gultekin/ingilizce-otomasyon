@@ -22,8 +22,6 @@ namespace EnglishAutomationApp.Views.Pages
         private Label statsLabel = null!;
 
         private List<User> allUsers = new List<User>();
-
-        // Language support
         private bool isEnglish = true;
 
         public AdminUserControl()

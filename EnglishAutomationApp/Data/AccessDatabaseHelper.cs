@@ -31,9 +31,7 @@ namespace EnglishAutomationApp.Data
             try
             {
                 var dbPath = GetDatabasePath();
-                System.Diagnostics.Debug.WriteLine($"Database path: {dbPath}");
 
-                // Create empty Access database file if it doesn't exist
                 if (!File.Exists(dbPath))
                 {
                     await CreateEmptyAccessDatabaseAsync(dbPath);
@@ -41,14 +39,11 @@ namespace EnglishAutomationApp.Data
 
                 using var connection = new OleDbConnection(GetConnectionString());
                 await connection.OpenAsync();
-                System.Diagnostics.Debug.WriteLine("Database connection opened successfully");
 
                 await EnsureTablesExistAsync(connection);
-                System.Diagnostics.Debug.WriteLine("Database initialization completed");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Database initialization error: {ex.Message}");
                 throw;
             }
         }
@@ -75,11 +70,11 @@ namespace EnglishAutomationApp.Data
                     dynamic catalog = Activator.CreateInstance(catalogType)!;
                     catalog.Create($"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};");
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(catalog);
-                    System.Diagnostics.Debug.WriteLine("Access database created successfully using ADOX");
+
                 }
                 catch (Exception adoxEx)
                 {
-                    System.Diagnostics.Debug.WriteLine($"ADOX creation failed: {adoxEx.Message}");
+
                     throw new Exception($"Could not create Access database. Please ensure Microsoft Access Database Engine is installed. Error: {adoxEx.Message}");
                 }
 

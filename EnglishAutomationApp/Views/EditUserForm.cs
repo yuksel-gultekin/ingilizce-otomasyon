@@ -20,8 +20,6 @@ namespace EnglishAutomationApp.Views
         private Label messageLabel = null!;
         
         private User userToEdit;
-        
-        // Language support
         private bool isEnglish = true;
 
         public EditUserForm(User user, bool english = true)
