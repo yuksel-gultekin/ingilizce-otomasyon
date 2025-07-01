@@ -387,17 +387,39 @@ namespace EnglishAutomationApp.Data
                 try
                 {
                     using var command = new OleDbCommand(sql, connection);
-                    command.Parameters.AddWithValue("?", word.English);
-                    command.Parameters.AddWithValue("?", word.Turkish);
-                    command.Parameters.AddWithValue("?", word.Pronunciation);
-                    command.Parameters.AddWithValue("?", word.Example);
-                    command.Parameters.AddWithValue("?", word.ExampleTr);
-                    command.Parameters.AddWithValue("?", word.Difficulty);
-                    command.Parameters.AddWithValue("?", word.PartOfSpeech);
-                    command.Parameters.AddWithValue("?", word.Category);
-                    command.Parameters.AddWithValue("?", DBNull.Value); // AudioUrl
-                    command.Parameters.AddWithValue("?", 1); // IsActive = true
-                    command.Parameters.AddWithValue("?", DateTime.Now);
+
+                    // EnglishWord - TEXT(255) NOT NULL
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.English;
+
+                    // TurkishMeaning - TEXT(255) NOT NULL
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.Turkish;
+
+                    // Pronunciation - TEXT(255) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.Pronunciation ?? (object)DBNull.Value;
+
+                    // ExampleSentence - MEMO nullable
+                    command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.Example ?? (object)DBNull.Value;
+
+                    // ExampleSentenceTurkish - MEMO nullable
+                    command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.ExampleTr ?? (object)DBNull.Value;
+
+                    // Difficulty - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = word.Difficulty;
+
+                    // PartOfSpeech - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = word.PartOfSpeech;
+
+                    // Category - TEXT(100) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = word.Category ?? (object)DBNull.Value;
+
+                    // AudioUrl - TEXT(255) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = DBNull.Value;
+
+                    // IsActive - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = 1;
+
+                    // CreatedDate - DATETIME NOT NULL
+                    command.Parameters.Add("?", OleDbType.Date).Value = DateTime.Now;
 
                     await command.ExecuteNonQueryAsync();
                 }
@@ -436,18 +458,42 @@ namespace EnglishAutomationApp.Data
                 try
                 {
                     using var command = new OleDbCommand(sql, connection);
-                    command.Parameters.AddWithValue("?", course.Title);
-                    command.Parameters.AddWithValue("?", course.Description);
-                    command.Parameters.AddWithValue("?", course.Content);
-                    command.Parameters.AddWithValue("?", course.Level);
-                    command.Parameters.AddWithValue("?", course.Type);
-                    command.Parameters.AddWithValue("?", (decimal)course.Price);
-                    command.Parameters.AddWithValue("?", course.OrderIndex);
-                    command.Parameters.AddWithValue("?", course.Duration);
-                    command.Parameters.AddWithValue("?", string.IsNullOrEmpty(course.Prerequisites) ? (object)DBNull.Value : course.Prerequisites);
-                    command.Parameters.AddWithValue("?", course.Color);
-                    command.Parameters.AddWithValue("?", 1); // IsActive = true
-                    command.Parameters.AddWithValue("?", DateTime.Now);
+
+                    // Title - TEXT(255) NOT NULL
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = course.Title;
+
+                    // DescriptionText - TEXT(255) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = course.Description ?? (object)DBNull.Value;
+
+                    // ContentText - MEMO nullable
+                    command.Parameters.Add("?", OleDbType.LongVarChar).Value = course.Content ?? (object)DBNull.Value;
+
+                    // CourseLevel - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = course.Level;
+
+                    // CourseType - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = course.Type;
+
+                    // Price - CURRENCY nullable
+                    command.Parameters.Add("?", OleDbType.Currency).Value = (decimal)course.Price;
+
+                    // OrderIndex - INTEGER nullable
+                    command.Parameters.Add("?", OleDbType.Integer).Value = course.OrderIndex;
+
+                    // EstimatedDurationMinutes - INTEGER nullable
+                    command.Parameters.Add("?", OleDbType.Integer).Value = course.Duration;
+
+                    // Prerequisites - TEXT(255) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 255).Value = string.IsNullOrEmpty(course.Prerequisites) ? (object)DBNull.Value : course.Prerequisites;
+
+                    // Color - TEXT(20) nullable
+                    command.Parameters.Add("?", OleDbType.VarChar, 20).Value = course.Color ?? (object)DBNull.Value;
+
+                    // IsActive - INTEGER NOT NULL
+                    command.Parameters.Add("?", OleDbType.Integer).Value = 1;
+
+                    // CreatedDate - DATETIME NOT NULL
+                    command.Parameters.Add("?", OleDbType.Date).Value = DateTime.Now;
 
                     await command.ExecuteNonQueryAsync();
                 }
@@ -692,17 +738,39 @@ namespace EnglishAutomationApp.Data
                 var sql = @"INSERT INTO VocabularyWords (EnglishWord, TurkishMeaning, Pronunciation, ExampleSentence, ExampleSentenceTurkish, Difficulty, PartOfSpeech, Category, AudioUrl, IsActive, CreatedDate)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("?", word.EnglishWord);
-                command.Parameters.AddWithValue("?", word.TurkishMeaning);
-                command.Parameters.AddWithValue("?", word.Pronunciation ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", word.ExampleSentence ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", word.ExampleSentenceTurkish ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", (int)word.Difficulty);
-                command.Parameters.AddWithValue("?", (int)word.PartOfSpeech);
-                command.Parameters.AddWithValue("?", word.Category ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", word.AudioUrl ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("?", word.IsActive ? 1 : 0);
-                command.Parameters.AddWithValue("?", word.CreatedDate);
+
+                // EnglishWord - TEXT(255) NOT NULL
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.EnglishWord;
+
+                // TurkishMeaning - TEXT(255) NOT NULL
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.TurkishMeaning;
+
+                // Pronunciation - TEXT(255) nullable
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.Pronunciation ?? (object)DBNull.Value;
+
+                // ExampleSentence - MEMO nullable
+                command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.ExampleSentence ?? (object)DBNull.Value;
+
+                // ExampleSentenceTurkish - MEMO nullable
+                command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.ExampleSentenceTurkish ?? (object)DBNull.Value;
+
+                // Difficulty - INTEGER NOT NULL
+                command.Parameters.Add("?", OleDbType.Integer).Value = (int)word.Difficulty;
+
+                // PartOfSpeech - INTEGER NOT NULL
+                command.Parameters.Add("?", OleDbType.Integer).Value = (int)word.PartOfSpeech;
+
+                // Category - TEXT(100) nullable
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = word.Category ?? (object)DBNull.Value;
+
+                // AudioUrl - TEXT(255) nullable
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.AudioUrl ?? (object)DBNull.Value;
+
+                // IsActive - INTEGER NOT NULL
+                command.Parameters.Add("?", OleDbType.Integer).Value = word.IsActive ? 1 : 0;
+
+                // CreatedDate - DATETIME NOT NULL
+                command.Parameters.Add("?", OleDbType.Date).Value = word.CreatedDate;
 
                 await command.ExecuteNonQueryAsync();
                 return true;
@@ -755,8 +823,8 @@ namespace EnglishAutomationApp.Data
                 // Check if progress exists
                 var checkSql = "SELECT COUNT(*) FROM UserProgress WHERE UserId = ? AND CourseId = ?";
                 using var checkCommand = new OleDbCommand(checkSql, connection);
-                checkCommand.Parameters.AddWithValue("?", progress.UserId);
-                checkCommand.Parameters.AddWithValue("?", progress.CourseId);
+                checkCommand.Parameters.Add("?", OleDbType.Integer).Value = progress.UserId;
+                checkCommand.Parameters.Add("?", OleDbType.Integer).Value = progress.CourseId;
                 var result = await checkCommand.ExecuteScalarAsync();
                 var exists = result != null && (int)result > 0;
 
@@ -776,24 +844,26 @@ namespace EnglishAutomationApp.Data
                 using var command = new OleDbCommand(sql, connection);
                 if (exists)
                 {
-                    command.Parameters.AddWithValue("?", (int)progress.Status);
-                    command.Parameters.AddWithValue("?", progress.ProgressPercentage);
-                    command.Parameters.AddWithValue("?", progress.TimeSpentMinutes);
-                    command.Parameters.AddWithValue("?", progress.CompletionDate ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("?", progress.LastAccessDate ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("?", progress.UserId);
-                    command.Parameters.AddWithValue("?", progress.CourseId);
+                    // UPDATE parameters
+                    command.Parameters.Add("?", OleDbType.Integer).Value = (int)progress.Status;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.ProgressPercentage;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.TimeSpentMinutes;
+                    command.Parameters.Add("?", OleDbType.Date).Value = progress.CompletionDate ?? (object)DBNull.Value;
+                    command.Parameters.Add("?", OleDbType.Date).Value = progress.LastAccessDate ?? (object)DBNull.Value;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.UserId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.CourseId;
                 }
                 else
                 {
-                    command.Parameters.AddWithValue("?", progress.UserId);
-                    command.Parameters.AddWithValue("?", progress.CourseId);
-                    command.Parameters.AddWithValue("?", (int)progress.Status);
-                    command.Parameters.AddWithValue("?", progress.ProgressPercentage);
-                    command.Parameters.AddWithValue("?", progress.TimeSpentMinutes);
-                    command.Parameters.AddWithValue("?", progress.StartDate);
-                    command.Parameters.AddWithValue("?", progress.CompletionDate ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("?", progress.LastAccessDate ?? (object)DBNull.Value);
+                    // INSERT parameters
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.UserId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.CourseId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = (int)progress.Status;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.ProgressPercentage;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = progress.TimeSpentMinutes;
+                    command.Parameters.Add("?", OleDbType.Date).Value = progress.StartDate;
+                    command.Parameters.Add("?", OleDbType.Date).Value = progress.CompletionDate ?? (object)DBNull.Value;
+                    command.Parameters.Add("?", OleDbType.Date).Value = progress.LastAccessDate ?? (object)DBNull.Value;
                 }
 
                 await command.ExecuteNonQueryAsync();
@@ -847,8 +917,8 @@ namespace EnglishAutomationApp.Data
                 // Check if record exists
                 var checkSql = "SELECT COUNT(*) FROM UserVocabulary WHERE UserId = ? AND VocabularyWordId = ?";
                 using var checkCommand = new OleDbCommand(checkSql, connection);
-                checkCommand.Parameters.AddWithValue("?", userVocab.UserId);
-                checkCommand.Parameters.AddWithValue("?", userVocab.VocabularyWordId);
+                checkCommand.Parameters.Add("?", OleDbType.Integer).Value = userVocab.UserId;
+                checkCommand.Parameters.Add("?", OleDbType.Integer).Value = userVocab.VocabularyWordId;
                 var result = await checkCommand.ExecuteScalarAsync();
                 var exists = result != null && (int)result > 0;
 
@@ -868,24 +938,26 @@ namespace EnglishAutomationApp.Data
                 using var command = new OleDbCommand(sql, connection);
                 if (exists)
                 {
-                    command.Parameters.AddWithValue("?", userVocab.MasteryLevel);
-                    command.Parameters.AddWithValue("?", userVocab.LastReviewedDate ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("?", userVocab.ReviewCount);
-                    command.Parameters.AddWithValue("?", userVocab.CorrectAnswers);
-                    command.Parameters.AddWithValue("?", userVocab.TotalAttempts);
-                    command.Parameters.AddWithValue("?", userVocab.UserId);
-                    command.Parameters.AddWithValue("?", userVocab.VocabularyWordId);
+                    // UPDATE parameters
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.MasteryLevel;
+                    command.Parameters.Add("?", OleDbType.Date).Value = userVocab.LastReviewedDate ?? (object)DBNull.Value;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.ReviewCount;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.CorrectAnswers;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.TotalAttempts;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.UserId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.VocabularyWordId;
                 }
                 else
                 {
-                    command.Parameters.AddWithValue("?", userVocab.UserId);
-                    command.Parameters.AddWithValue("?", userVocab.VocabularyWordId);
-                    command.Parameters.AddWithValue("?", userVocab.MasteryLevel);
-                    command.Parameters.AddWithValue("?", userVocab.FirstLearnedDate);
-                    command.Parameters.AddWithValue("?", userVocab.LastReviewedDate ?? (object)DBNull.Value);
-                    command.Parameters.AddWithValue("?", userVocab.ReviewCount);
-                    command.Parameters.AddWithValue("?", userVocab.CorrectAnswers);
-                    command.Parameters.AddWithValue("?", userVocab.TotalAttempts);
+                    // INSERT parameters
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.UserId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.VocabularyWordId;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.MasteryLevel;
+                    command.Parameters.Add("?", OleDbType.Date).Value = userVocab.FirstLearnedDate;
+                    command.Parameters.Add("?", OleDbType.Date).Value = userVocab.LastReviewedDate ?? (object)DBNull.Value;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.ReviewCount;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.CorrectAnswers;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = userVocab.TotalAttempts;
                 }
 
                 await command.ExecuteNonQueryAsync();
