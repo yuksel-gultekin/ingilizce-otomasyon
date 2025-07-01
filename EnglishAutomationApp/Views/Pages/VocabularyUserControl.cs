@@ -191,8 +191,15 @@ namespace EnglishAutomationApp.Views.Pages
                 categoryFilter.Items.AddRange(categories.ToArray());
                 categoryFilter.SelectedIndex = 0;
 
-                // Apply filters to show all words initially
-                ApplyFilters();
+                // Ensure difficulty filter is properly set
+                if (difficultyFilter.SelectedIndex < 0)
+                {
+                    difficultyFilter.SelectedIndex = 0;
+                }
+
+                // Display all words initially
+                DisplayWords();
+                UpdateStatsLabel();
             }
             catch (Exception ex)
             {
@@ -372,9 +379,16 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void ApplyFilters()
         {
-            var searchTerm = searchBox.Text.ToLower();
-            var selectedCategory = categoryFilter.SelectedItem?.ToString();
-            var selectedDifficulty = difficultyFilter.SelectedItem?.ToString();
+            if (allWords == null || allWords.Count == 0)
+            {
+                filteredWords = new List<VocabularyWord>();
+                DisplayWords();
+                return;
+            }
+
+            var searchTerm = searchBox?.Text?.ToLower() ?? "";
+            var selectedCategory = categoryFilter?.SelectedItem?.ToString() ?? "All Categories";
+            var selectedDifficulty = difficultyFilter?.SelectedItem?.ToString() ?? "All Levels";
 
             filteredWords = allWords.Where(word =>
             {
@@ -386,6 +400,7 @@ namespace EnglishAutomationApp.Views.Pages
 
                 // Category filter
                 var matchesCategory = selectedCategory == "All Categories" ||
+                    selectedCategory == "Tüm Kategoriler" ||
                     word.Category == selectedCategory;
 
                 // Difficulty filter
