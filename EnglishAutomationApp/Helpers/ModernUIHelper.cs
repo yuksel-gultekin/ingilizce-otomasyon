@@ -90,7 +90,7 @@ namespace EnglishAutomationApp.Helpers
             return button;
         }
 
-        public static Button CreateIconButton(string text, string icon, Color? backgroundColor = null, int width = 140, int height = 40)
+        public static Button CreateIconButton(string text, string icon, Color? backgroundColor = null, int width = 160, int height = 45)
         {
             var button = CreateModernButton(text, backgroundColor, null, width, height);
             button.Font = new Font("Segoe UI", 10, FontStyle.Regular);
@@ -100,14 +100,14 @@ namespace EnglishAutomationApp.Helpers
 
         public static Button CreateSmallButton(string text, Color? backgroundColor = null)
         {
-            var button = CreateModernButton(text, backgroundColor, null, 80, 32);
+            var button = CreateModernButton(text, backgroundColor, null, 90, 36);
             button.Font = Fonts.Small;
             return button;
         }
 
         public static Button CreateLargeButton(string text, Color? backgroundColor = null)
         {
-            var button = CreateModernButton(text, backgroundColor, null, 160, 48);
+            var button = CreateModernButton(text, backgroundColor, null, 180, 52);
             button.Font = Fonts.Heading4;
             return button;
         }

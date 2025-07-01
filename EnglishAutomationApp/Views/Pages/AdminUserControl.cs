@@ -181,6 +181,7 @@ namespace EnglishAutomationApp.Views.Pages
             usersDataGridView.Columns.Add("LastName", "Last Name");
             usersDataGridView.Columns.Add("Role", "Role");
             usersDataGridView.Columns.Add("IsActive", "Active");
+            usersDataGridView.Columns.Add("IsAdmin", "Admin");
             usersDataGridView.Columns.Add("CreatedDate", "Created Date");
             usersDataGridView.Columns.Add("LastLoginDate", "Last Login");
 
@@ -215,6 +216,7 @@ namespace EnglishAutomationApp.Views.Pages
                     user.LastName ?? "",
                     user.Role,
                     user.IsActive ? "Yes" : "No",
+                    user.IsAdmin ? "Yes" : "No",
                     user.CreatedDate.ToString("yyyy-MM-dd"),
                     user.LastLoginDate?.ToString("yyyy-MM-dd") ?? "Never"
                 );
@@ -258,6 +260,7 @@ namespace EnglishAutomationApp.Views.Pages
                     user.LastName ?? "",
                     user.Role,
                     user.IsActive ? "Yes" : "No",
+                    user.IsAdmin ? "Yes" : "No",
                     user.CreatedDate.ToString("yyyy-MM-dd"),
                     user.LastLoginDate?.ToString("yyyy-MM-dd") ?? "Never"
                 );
@@ -266,8 +269,11 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void AddUserButton_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("Add User functionality will be implemented soon.",
-                "Coming Soon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var addUserForm = new AddUserForm();
+            if (addUserForm.ShowDialog() == DialogResult.OK)
+            {
+                LoadUsersAsync(); // Refresh the list
+            }
         }
 
         private void RefreshButton_Click(object? sender, EventArgs e)

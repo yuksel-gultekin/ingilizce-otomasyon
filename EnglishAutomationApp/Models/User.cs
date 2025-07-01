@@ -30,6 +30,9 @@ namespace EnglishAutomationApp.Models
         public bool IsActive { get; set; } = true;
 
         [Required]
+        public bool IsAdmin { get; set; } = false;
+
+        [Required]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public DateTime? LastLoginDate { get; set; }
@@ -39,6 +42,5 @@ namespace EnglishAutomationApp.Models
 
         // Computed Properties
         public string FullName => $"{FirstName} {LastName}".Trim();
-        public bool IsAdmin => Role == "Admin";
     }
 }

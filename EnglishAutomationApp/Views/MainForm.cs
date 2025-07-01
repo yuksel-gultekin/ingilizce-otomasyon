@@ -15,6 +15,10 @@ namespace EnglishAutomationApp.Views
         private ToolStripStatusLabel statusLabel = null!;
         private Panel contentPanel = null!;
         private Label welcomeLabel = null!;
+        private ComboBox languageComboBox = null!;
+
+        // Language support
+        private bool isEnglish = true;
 
         public MainForm()
         {
@@ -52,10 +56,6 @@ namespace EnglishAutomationApp.Views
             learningMenu.DropDownItems.Add("📖 Vocabulary", null, VocabularyMenuItem_Click);
             learningMenu.DropDownItems.Add("📈 Progress", null, ProgressMenuItem_Click);
 
-            // Tools Menu
-            var toolsMenu = new ToolStripMenuItem("Tools");
-            toolsMenu.DropDownItems.Add("🏆 Achievements", null, AchievementsMenuItem_Click);
-
             // Admin Menu (will be shown only for admin users)
             var adminMenu = new ToolStripMenuItem("Admin");
             adminMenu.DropDownItems.Add("⚙️ Admin Panel", null, AdminMenuItem_Click);
@@ -67,9 +67,23 @@ namespace EnglishAutomationApp.Views
 
             menuStrip.Items.Add(fileMenu);
             menuStrip.Items.Add(learningMenu);
-            menuStrip.Items.Add(toolsMenu);
             menuStrip.Items.Add(adminMenu);
             menuStrip.Items.Add(helpMenu);
+
+            // Language ComboBox
+            languageComboBox = new ComboBox();
+            languageComboBox.Items.AddRange(new[] { "🇺🇸 English", "🇹🇷 Türkçe" });
+            languageComboBox.SelectedIndex = 0;
+            languageComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            languageComboBox.Font = new Font("Segoe UI", 9);
+            languageComboBox.BackColor = Color.FromArgb(67, 56, 202);
+            languageComboBox.ForeColor = Color.White;
+            languageComboBox.Width = 120;
+            languageComboBox.SelectedIndexChanged += LanguageComboBox_SelectedIndexChanged;
+
+            var languageItem = new ToolStripControlHost(languageComboBox);
+            languageItem.Alignment = ToolStripItemAlignment.Right;
+            menuStrip.Items.Add(languageItem);
 
             // Welcome Label
             welcomeLabel = new Label();
@@ -78,7 +92,7 @@ namespace EnglishAutomationApp.Views
             welcomeLabel.BackColor = ModernUIHelper.Colors.Primary;
             welcomeLabel.TextAlign = ContentAlignment.MiddleRight;
             welcomeLabel.Dock = DockStyle.Right;
-            welcomeLabel.Width = 350;
+            welcomeLabel.Width = 250;
             welcomeLabel.Padding = new Padding(ModernUIHelper.Spacing.Large);
 
             // Add welcome label to menu strip
@@ -157,11 +171,7 @@ namespace EnglishAutomationApp.Views
             UpdateStatus("Progress");
         }
 
-        private void AchievementsMenuItem_Click(object? sender, EventArgs e)
-        {
-            ShowUserControl(new AchievementsUserControl());
-            UpdateStatus("Achievements");
-        }
+
 
 
 
@@ -235,6 +245,34 @@ namespace EnglishAutomationApp.Views
             ProgressMenuItem_Click(null, EventArgs.Empty);
         }
 
+        private void LanguageComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            isEnglish = languageComboBox.SelectedIndex == 0;
+            UpdateLanguage();
+        }
 
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                this.Text = "English Automation Platform";
+                welcomeLabel.Text = $"Welcome, {AuthenticationService.CurrentUser?.FullName ?? "User"}!";
+                statusLabel.Text = "Ready";
+            }
+            else
+            {
+                // Turkish
+                this.Text = "İngilizce Otomasyon Platformu";
+                welcomeLabel.Text = $"Hoş geldiniz, {AuthenticationService.CurrentUser?.FullName ?? "Kullanıcı"}!";
+                statusLabel.Text = "Hazır";
+            }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            UpdateLanguage();
+        }
     }
 }

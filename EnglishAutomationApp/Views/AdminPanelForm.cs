@@ -15,8 +15,12 @@ namespace EnglishAutomationApp.Views
         private Button settingsButton = null!;
         private Button logoutButton = null!;
         private Label titleLabel = null!;
+        private ComboBox languageComboBox = null!;
 
         private AdminUserControl? currentAdminControl;
+
+        // Language support
+        private bool isEnglish = true;
 
         public AdminPanelForm()
         {
@@ -52,26 +56,38 @@ namespace EnglishAutomationApp.Views
             sidebarPanel.Dock = DockStyle.Left;
             sidebarPanel.Width = 250;
 
+            // Language ComboBox
+            languageComboBox = new ComboBox();
+            languageComboBox.Items.AddRange(new[] { "🇺🇸 English", "🇹🇷 Türkçe" });
+            languageComboBox.SelectedIndex = 0;
+            languageComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            languageComboBox.Font = new Font("Segoe UI", 9);
+            languageComboBox.BackColor = Color.FromArgb(51, 65, 85);
+            languageComboBox.ForeColor = Color.White;
+            languageComboBox.Location = new Point(10, 10);
+            languageComboBox.Size = new Size(120, 25);
+            languageComboBox.SelectedIndexChanged += LanguageComboBox_SelectedIndexChanged;
+
             // Title
             titleLabel = new Label();
             titleLabel.Text = "🔧 Admin Panel";
             titleLabel.Font = new Font("Segoe UI", 16, FontStyle.Bold);
             titleLabel.ForeColor = Color.White;
             titleLabel.TextAlign = ContentAlignment.MiddleCenter;
-            titleLabel.Location = new Point(0, 30);
+            titleLabel.Location = new Point(0, 45);
             titleLabel.Size = new Size(250, 40);
 
             // Navigation buttons
-            usersButton = CreateNavButton("👥 User Management", 100);
+            usersButton = CreateNavButton("👥 User Management", 115);
             usersButton.Click += (s, e) => LoadUsersPanel();
 
-            coursesButton = CreateNavButton("📚 Course Management", 150);
+            coursesButton = CreateNavButton("📚 Course Management", 165);
             coursesButton.Click += (s, e) => LoadCoursesPanel();
 
-            vocabularyButton = CreateNavButton("📖 Vocabulary Management", 200);
+            vocabularyButton = CreateNavButton("📖 Vocabulary Management", 215);
             vocabularyButton.Click += (s, e) => LoadVocabularyPanel();
 
-            settingsButton = CreateNavButton("⚙️ Settings", 250);
+            settingsButton = CreateNavButton("⚙️ Settings", 265);
             settingsButton.Click += (s, e) => LoadSettingsPanel();
 
             // Logout button at bottom
@@ -89,6 +105,7 @@ namespace EnglishAutomationApp.Views
             logoutButton.Cursor = Cursors.Hand;
             logoutButton.Click += LogoutButton_Click;
 
+            sidebarPanel.Controls.Add(languageComboBox);
             sidebarPanel.Controls.Add(titleLabel);
             sidebarPanel.Controls.Add(usersButton);
             sidebarPanel.Controls.Add(coursesButton);
@@ -214,13 +231,53 @@ namespace EnglishAutomationApp.Views
 
         private void LogoutButton_Click(object? sender, EventArgs e)
         {
-            var result = MessageBox.Show("Are you sure you want to logout from admin panel?", 
-                "Logout Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            var message = isEnglish ? "Are you sure you want to logout from admin panel?" : "Admin panelinden çıkmak istediğinizden emin misiniz?";
+            var title = isEnglish ? "Logout Confirmation" : "Çıkış Onayı";
+
+            var result = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
                 this.Close();
             }
+        }
+
+        private void LanguageComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            isEnglish = languageComboBox.SelectedIndex == 0;
+            UpdateLanguage();
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                this.Text = "Admin Panel - English Automation Platform";
+                titleLabel.Text = "🔧 Admin Panel";
+                usersButton.Text = "👥 User Management";
+                coursesButton.Text = "📚 Course Management";
+                vocabularyButton.Text = "📖 Vocabulary Management";
+                settingsButton.Text = "⚙️ Settings";
+                logoutButton.Text = "🚪 Logout";
+            }
+            else
+            {
+                // Turkish
+                this.Text = "Yönetici Paneli - İngilizce Otomasyon Platformu";
+                titleLabel.Text = "🔧 Yönetici Paneli";
+                usersButton.Text = "👥 Kullanıcı Yönetimi";
+                coursesButton.Text = "📚 Kurs Yönetimi";
+                vocabularyButton.Text = "📖 Kelime Yönetimi";
+                settingsButton.Text = "⚙️ Ayarlar";
+                logoutButton.Text = "🚪 Çıkış";
+            }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            UpdateLanguage();
         }
     }
 }

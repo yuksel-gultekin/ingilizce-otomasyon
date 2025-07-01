@@ -157,6 +157,7 @@ namespace EnglishAutomationApp.Data
                 FirstName TEXT(100),
                 LastName TEXT(100),
                 IsActive INTEGER NOT NULL,
+                IsAdmin INTEGER NOT NULL DEFAULT 0,
                 CreatedDate DATETIME NOT NULL,
                 LastLoginDate DATETIME
             )";
@@ -347,10 +348,49 @@ namespace EnglishAutomationApp.Data
 
         private static async Task SeedDataAsync(OleDbConnection connection)
         {
-            
+            await SeedAdminUserAsync(connection);
             await SeedVocabularyWordsAsync(connection);
-
             await SeedCoursesAsync(connection);
+        }
+
+        private static async Task SeedAdminUserAsync(OleDbConnection connection)
+        {
+            try
+            {
+                // Check if admin user already exists
+                var checkSql = "SELECT COUNT(*) FROM Users WHERE Email = ?";
+                using var checkCommand = new OleDbCommand(checkSql, connection);
+                checkCommand.Parameters.Add("?", OleDbType.VarChar, 255).Value = "admin@engotomasyon.com";
+                var result = await checkCommand.ExecuteScalarAsync();
+
+                if (result != null && (int)result > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("Admin user already exists");
+                    return;
+                }
+
+                // Create admin user
+                var sql = @"INSERT INTO Users (Email, PasswordHash, Role, FirstName, LastName, IsActive, IsAdmin, CreatedDate, LastLoginDate)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+                using var command = new OleDbCommand(sql, connection);
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = "admin@engotomasyon.com";
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = BCrypt.Net.BCrypt.HashPassword("admin123");
+                command.Parameters.Add("?", OleDbType.VarChar, 50).Value = "Admin";
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = "System";
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = "Administrator";
+                command.Parameters.Add("?", OleDbType.Integer).Value = 1; // IsActive
+                command.Parameters.Add("?", OleDbType.Integer).Value = 1; // IsAdmin
+                command.Parameters.Add("?", OleDbType.Date).Value = DateTime.Now;
+                command.Parameters.Add("?", OleDbType.Date).Value = DBNull.Value; // LastLoginDate
+
+                await command.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine("Admin user created: admin@engotomasyon.com / admin123");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating admin user: {ex.Message}");
+            }
         }
 
         private static async Task SeedVocabularyWordsAsync(OleDbConnection connection)
@@ -547,8 +587,9 @@ namespace EnglishAutomationApp.Data
                     FirstName = reader.IsDBNull(4) ? null : reader.GetString(4), // FirstName
                     LastName = reader.IsDBNull(5) ? null : reader.GetString(5), // LastName
                     IsActive = reader.GetInt32(6) == 1, // IsActive
-                    CreatedDate = reader.GetDateTime(7), // CreatedDate
-                    LastLoginDate = reader.IsDBNull(8) ? null : reader.GetDateTime(8) // LastLoginDate
+                    IsAdmin = reader.GetInt32(7) == 1, // IsAdmin
+                    CreatedDate = reader.GetDateTime(8), // CreatedDate
+                    LastLoginDate = reader.IsDBNull(9) ? null : reader.GetDateTime(9) // LastLoginDate
                 };
             }
             return null;
@@ -570,11 +611,11 @@ namespace EnglishAutomationApp.Data
                 System.Diagnostics.Debug.WriteLine("Connection opened successfully");
 
                 // SQL sorgusunu tablodaki field sırası ile eşleştir (Id hariç - AUTO INCREMENT)
-                var sql = @"INSERT INTO Users (Email, PasswordHash, Role, FirstName, LastName, IsActive, CreatedDate, LastLoginDate)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                var sql = @"INSERT INTO Users (Email, PasswordHash, Role, FirstName, LastName, IsActive, IsAdmin, CreatedDate, LastLoginDate)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 System.Diagnostics.Debug.WriteLine($"SQL: {sql}");
-                System.Diagnostics.Debug.WriteLine($"Parameters: Email='{user.Email}', Role='{user.Role}', FirstName='{user.FirstName}', LastName='{user.LastName}', IsActive={user.IsActive}");
+                System.Diagnostics.Debug.WriteLine($"Parameters: Email='{user.Email}', Role='{user.Role}', FirstName='{user.FirstName}', LastName='{user.LastName}', IsActive={user.IsActive}, IsAdmin={user.IsAdmin}");
 
                 using var command = new OleDbCommand(sql, connection);
 
@@ -601,6 +642,9 @@ namespace EnglishAutomationApp.Data
 
                 // IsActive - INTEGER
                 command.Parameters.Add("?", OleDbType.Integer).Value = user.IsActive ? 1 : 0;
+
+                // IsAdmin - INTEGER
+                command.Parameters.Add("?", OleDbType.Integer).Value = user.IsAdmin ? 1 : 0;
 
                 // CreatedDate - DATETIME
                 command.Parameters.Add("?", OleDbType.Date).Value = user.CreatedDate;
@@ -650,8 +694,9 @@ namespace EnglishAutomationApp.Data
                         FirstName = reader.IsDBNull(4) ? null : reader.GetString(4), // FirstName
                         LastName = reader.IsDBNull(5) ? null : reader.GetString(5), // LastName
                         IsActive = reader.GetInt32(6) == 1, // IsActive
-                        CreatedDate = reader.GetDateTime(7), // CreatedDate
-                        LastLoginDate = reader.IsDBNull(8) ? null : reader.GetDateTime(8) // LastLoginDate
+                        IsAdmin = reader.GetInt32(7) == 1, // IsAdmin
+                        CreatedDate = reader.GetDateTime(8), // CreatedDate
+                        LastLoginDate = reader.IsDBNull(9) ? null : reader.GetDateTime(9) // LastLoginDate
                     });
                 }
                 return users;
