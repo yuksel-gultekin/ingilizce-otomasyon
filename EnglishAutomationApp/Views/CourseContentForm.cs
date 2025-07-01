@@ -6,9 +6,9 @@ using EnglishAutomationApp.Models;
 
 namespace EnglishAutomationApp.Views
 {
-    public partial class CourseContentForm : Form
+    public class CourseContentForm : Form
     {
-        private Course course;
+        private readonly Course course;
         private bool isEnglish = true;
 
         public CourseContentForm(Course course)
@@ -41,7 +41,7 @@ namespace EnglishAutomationApp.Views
             var titleLabel = new Label
             {
                 Text = course.Title,
-                Font = ModernUIHelper.Fonts.Heading,
+                Font = ModernUIHelper.Fonts.Title,
                 ForeColor = ModernUIHelper.Colors.TextPrimary,
                 AutoSize = true,
                 Location = new Point(0, 0)
@@ -157,7 +157,7 @@ Bu kurs yapılandırılmış dersler ve pratik alıştırmalar aracılığıyla 
             }
         }
 
-        private void StartButton_Click(object sender, EventArgs e)
+        private void StartButton_Click(object? sender, EventArgs e)
         {
             var message = isEnglish 
                 ? $"Course '{course.Title}' has been started!\n\nThis is a demo version. In the full version, you would access interactive lessons, quizzes, and progress tracking."
