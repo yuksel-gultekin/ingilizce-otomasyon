@@ -520,11 +520,12 @@ namespace EnglishAutomationApp.Data
                 await connection.OpenAsync();
                 System.Diagnostics.Debug.WriteLine("Connection opened successfully");
 
-                // SQL sorgusunu tablodaki field sırası ile eşleştir
+                // SQL sorgusunu tablodaki field sırası ile eşleştir (Id hariç - AUTO INCREMENT)
                 var sql = @"INSERT INTO Users (Email, PasswordHash, Role, FirstName, LastName, IsActive, CreatedDate, LastLoginDate)
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
                 System.Diagnostics.Debug.WriteLine($"SQL: {sql}");
+                System.Diagnostics.Debug.WriteLine($"Parameters: Email='{user.Email}', Role='{user.Role}', FirstName='{user.FirstName}', LastName='{user.LastName}', IsActive={user.IsActive}");
 
                 using var command = new OleDbCommand(sql, connection);
                 command.Parameters.AddWithValue("?", user.Email ?? "");
