@@ -74,7 +74,7 @@ namespace EnglishAutomationApp.Data
                 Difficulty INTEGER,
                 PartOfSpeech INTEGER,
                 Category TEXT(100),
-                AudioUrl TEXT(500),
+                AudioUrl TEXT(255),
                 IsActive YESNO,
                 CreatedDate DATETIME
             )";
