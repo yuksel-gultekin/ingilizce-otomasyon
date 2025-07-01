@@ -236,5 +236,37 @@ namespace EnglishAutomationApp.Helpers
             panel.BackColor = Colors.Surface;
             panel.Padding = new Padding(Spacing.Large);
         }
+
+        public static Button CreateButton(string text, Color? backgroundColor = null, int width = 120, int height = 40)
+        {
+            return CreateModernButton(text, backgroundColor, null, width, height);
+        }
+
+        public static void ApplyRoundedCorners(Control control, int radius)
+        {
+            // Simple border simulation for rounded corners
+            control.Paint += (s, e) => {
+                var rect = control.ClientRectangle;
+                rect.Width -= 1;
+                rect.Height -= 1;
+
+                using (var pen = new Pen(Colors.Border))
+                {
+                    e.Graphics.DrawRectangle(pen, rect);
+                }
+            };
+        }
+
+        public static void ApplyShadow(Control control)
+        {
+            // Simple shadow effect simulation
+            control.Paint += (s, e) => {
+                var shadowRect = new Rectangle(2, 2, control.Width - 2, control.Height - 2);
+                using (var brush = new SolidBrush(Color.FromArgb(20, 0, 0, 0)))
+                {
+                    e.Graphics.FillRectangle(brush, shadowRect);
+                }
+            };
+        }
     }
 }
