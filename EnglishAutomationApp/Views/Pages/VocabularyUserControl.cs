@@ -177,8 +177,8 @@ namespace EnglishAutomationApp.Views.Pages
         {
             try
             {
-                // Initialize database first
-                await Data.AccessDatabaseHelper.InitializeDatabaseAsync();
+                // Seed sample data if needed
+                await VocabularyService.SeedSampleWordsAsync();
 
                 // Load all words
                 allWords = await VocabularyService.GetAllWordsAsync();
@@ -191,15 +191,8 @@ namespace EnglishAutomationApp.Views.Pages
                 categoryFilter.Items.AddRange(categories.ToArray());
                 categoryFilter.SelectedIndex = 0;
 
-                // Ensure difficulty filter is properly set
-                if (difficultyFilter.SelectedIndex < 0)
-                {
-                    difficultyFilter.SelectedIndex = 0;
-                }
-
-                // Display all words directly like Course page does
-                UpdateStatsLabel();
-                DisplayWords();
+                // Apply filters to show all words initially
+                ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -379,16 +372,9 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void ApplyFilters()
         {
-            if (allWords == null || allWords.Count == 0)
-            {
-                filteredWords = new List<VocabularyWord>();
-                DisplayWords();
-                return;
-            }
-
-            var searchTerm = searchBox?.Text?.ToLower() ?? "";
-            var selectedCategory = categoryFilter?.SelectedItem?.ToString() ?? "All Categories";
-            var selectedDifficulty = difficultyFilter?.SelectedItem?.ToString() ?? "All Levels";
+            var searchTerm = searchBox.Text.ToLower();
+            var selectedCategory = categoryFilter.SelectedItem?.ToString();
+            var selectedDifficulty = difficultyFilter.SelectedItem?.ToString();
 
             filteredWords = allWords.Where(word =>
             {
@@ -400,7 +386,6 @@ namespace EnglishAutomationApp.Views.Pages
 
                 // Category filter
                 var matchesCategory = selectedCategory == "All Categories" ||
-                    selectedCategory == "Tüm Kategoriler" ||
                     word.Category == selectedCategory;
 
                 // Difficulty filter
@@ -469,8 +454,9 @@ namespace EnglishAutomationApp.Views.Pages
 
                 if (wordsForReview.Any())
                 {
-                    MessageBox.Show("Study Mode feature has been removed.", "Info",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var reviewForm = new StudyModeForm(wordsForReview, isReviewMode: true);
+                    reviewForm.ShowDialog();
+                    LoadDataAsync(); // Refresh to update stats
                 }
                 else
                 {
@@ -494,8 +480,16 @@ namespace EnglishAutomationApp.Views.Pages
                 return;
             }
 
-            MessageBox.Show("Vocabulary Stats feature has been removed.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id);
+                statsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading statistics: {ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void UpdateLanguage()
