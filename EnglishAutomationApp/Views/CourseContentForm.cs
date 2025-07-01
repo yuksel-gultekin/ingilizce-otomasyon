@@ -11,7 +11,15 @@ namespace EnglishAutomationApp.Views
         private readonly Course course;
         private bool isEnglish = true;
 
-        public CourseContentForm(Course course, bool isEnglish = true)
+        public CourseContentForm(Course course)
+        {
+            this.course = course;
+            isEnglish = true;
+            InitializeComponent();
+            LoadCourseContent();
+        }
+
+        public CourseContentForm(Course course, bool isEnglish)
         {
             this.course = course;
             this.isEnglish = isEnglish;
