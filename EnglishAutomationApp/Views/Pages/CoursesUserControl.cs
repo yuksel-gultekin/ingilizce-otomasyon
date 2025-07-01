@@ -24,6 +24,8 @@ namespace EnglishAutomationApp.Views.Pages
 
         private List<Course> allCourses = new List<Course>();
         private List<Course> filteredCourses = new List<Course>();
+
+        // Language support
         private bool isEnglish = true;
 
         public CoursesUserControl()
@@ -154,8 +156,9 @@ namespace EnglishAutomationApp.Views.Pages
             {
                 allCourses = await Data.AccessDatabaseHelper.GetAllCoursesAsync();
 
-                // Apply filters to show all courses initially
-                ApplyFilters();
+                filteredCourses = allCourses.ToList();
+                UpdateStatsLabel();
+                DisplayCourses();
             }
             catch (Exception ex)
             {
@@ -194,12 +197,10 @@ namespace EnglishAutomationApp.Views.Pages
 
                 // Level filter
                 var matchesLevel = selectedLevel == "All Levels" ||
-                    selectedLevel == "Tüm Seviyeler" ||
                     course.LevelText == selectedLevel;
 
                 // Type filter
                 var matchesType = selectedType == "All Types" ||
-                    selectedType == "Tüm Türler" ||
                     course.TypeText == selectedType;
 
                 return matchesSearch && matchesLevel && matchesType;
@@ -240,30 +241,30 @@ namespace EnglishAutomationApp.Views.Pages
             titleLabel.Location = new Point(0, 0);
             titleLabel.Width = card.Width - 40;
 
-            // Course Level Badge (bigger size)
+            // Course Level Badge
             var levelLabel = new Label
             {
                 Text = course.LevelText,
-                Font = ModernUIHelper.Fonts.Body,
+                Font = ModernUIHelper.Fonts.Small,
                 ForeColor = Color.White,
                 BackColor = GetLevelColor(course.Level),
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(0, 35),
-                Size = new Size(90, 30),
-                Padding = new Padding(6)
+                Size = new Size(70, 20),
+                Padding = new Padding(4)
             };
 
-            // Course Type Badge (bigger size)
+            // Course Type Badge
             var typeLabel = new Label
             {
                 Text = course.TypeText,
-                Font = ModernUIHelper.Fonts.Body,
+                Font = ModernUIHelper.Fonts.Small,
                 ForeColor = ModernUIHelper.Colors.TextSecondary,
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(100, 35),
-                Size = new Size(100, 30),
-                Padding = new Padding(6)
+                Location = new Point(80, 35),
+                Size = new Size(80, 20),
+                Padding = new Padding(4)
             };
 
             // Course Description
@@ -289,7 +290,7 @@ namespace EnglishAutomationApp.Views.Pages
                 card.Controls.Add(prereqLabel);
             }
 
-            // FREE Badge (bigger size)
+            // FREE Badge
             var freeText = isEnglish ? "FREE" : "ÜCRETSİZ";
             var freeLabel = new Label
             {
@@ -299,8 +300,8 @@ namespace EnglishAutomationApp.Views.Pages
                 BackColor = ModernUIHelper.Colors.Success,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(0, 230),
-                Size = new Size(isEnglish ? 80 : 100, 35),
-                Padding = new Padding(6)
+                Size = new Size(isEnglish ? 60 : 80, 25),
+                Padding = new Padding(4)
             };
 
             // Start Button
