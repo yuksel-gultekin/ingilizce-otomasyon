@@ -19,10 +19,11 @@ namespace EnglishAutomationApp.Helpers
             public static readonly Color Background = Color.FromArgb(249, 250, 251);  // Gray-50
             public static readonly Color Surface = Color.White;
             public static readonly Color SurfaceVariant = Color.FromArgb(243, 244, 246); // Gray-100
-            
+
             public static readonly Color TextPrimary = Color.FromArgb(17, 24, 39);    // Gray-900
             public static readonly Color TextSecondary = Color.FromArgb(107, 114, 128); // Gray-500
             public static readonly Color TextMuted = Color.FromArgb(156, 163, 175);   // Gray-400
+            public static readonly Color OnSurface = Color.FromArgb(17, 24, 39);      // Gray-900 (same as TextPrimary)
             
             public static readonly Color Success = Color.FromArgb(34, 197, 94);       // Green-500
             public static readonly Color Warning = Color.FromArgb(245, 158, 11);      // Amber-500
@@ -92,9 +93,8 @@ namespace EnglishAutomationApp.Helpers
         public static Button CreateIconButton(string text, string icon, Color? backgroundColor = null, int width = 140, int height = 40)
         {
             var button = CreateModernButton(text, backgroundColor, null, width, height);
-            button.Font = new Font("Segoe UI", 10, FontStyle.Medium);
+            button.Font = new Font("Segoe UI", 10, FontStyle.Regular);
             button.TextAlign = ContentAlignment.MiddleCenter;
-            button.ImageAlign = ContentAlignment.MiddleLeft;
             return button;
         }
 

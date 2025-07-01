@@ -169,7 +169,7 @@ namespace EnglishAutomationApp.Views
         {
             if (AuthenticationService.IsAdmin)
             {
-                var adminForm = new AdminPanelForm(AuthenticationService.CurrentUser!);
+                var adminForm = new AdminPanelForm();
                 adminForm.ShowDialog();
                 UpdateStatus("Admin Panel");
             }

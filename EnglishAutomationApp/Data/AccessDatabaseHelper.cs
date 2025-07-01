@@ -69,7 +69,10 @@ namespace EnglishAutomationApp.Data
                 // Create empty Access database using ADOX
                 try
                 {
-                    dynamic catalog = Activator.CreateInstance(Type.GetTypeFromProgID("ADOX.Catalog")!);
+                    var catalogType = Type.GetTypeFromProgID("ADOX.Catalog");
+                    if (catalogType == null) throw new InvalidOperationException("ADOX.Catalog not available");
+
+                    dynamic catalog = Activator.CreateInstance(catalogType)!;
                     catalog.Create($"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};");
                     System.Runtime.InteropServices.Marshal.ReleaseComObject(catalog);
                     System.Diagnostics.Debug.WriteLine("Access database created successfully using ADOX");

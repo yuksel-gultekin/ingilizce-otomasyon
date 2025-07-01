@@ -279,7 +279,9 @@ namespace EnglishAutomationApp.Views.Pages
         {
             if (e.RowIndex < 0) return;
 
-            var userId = (int)usersDataGridView.Rows[e.RowIndex].Cells["Id"].Value;
+            var userIdValue = usersDataGridView.Rows[e.RowIndex].Cells["Id"].Value;
+            if (userIdValue == null) return;
+            var userId = (int)userIdValue;
             var user = allUsers.FirstOrDefault(u => u.Id == userId);
 
             if (user == null) return;
