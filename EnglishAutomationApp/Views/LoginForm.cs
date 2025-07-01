@@ -13,6 +13,8 @@ namespace EnglishAutomationApp.Views
         private TextBox passwordTextBox = null!;
         private Button loginButton = null!;
         private Button registerButton = null!;
+        private Button adminPanelButton = null!;
+        private ComboBox languageComboBox = null!;
         private Label messageLabel = null!;
         private Label titleLabel = null!;
         private Label subtitleLabel = null!;
@@ -25,6 +27,9 @@ namespace EnglishAutomationApp.Views
         private LinkLabel forgotPasswordLabel = null!;
         private System.Windows.Forms.Timer fadeTimer = null!;
         private float opacity = 0f;
+
+        // Language support
+        private bool isEnglish = true;
 
         public LoginForm()
         {
@@ -54,6 +59,19 @@ namespace EnglishAutomationApp.Views
             logoBox.BackColor = Color.FromArgb(99, 102, 241); // Indigo-500
             logoBox.Anchor = AnchorStyles.Top;
             logoBox.Paint += LogoBox_Paint;
+
+            // Language ComboBox
+            languageComboBox = new ComboBox();
+            languageComboBox.Items.AddRange(new[] { "🇺🇸 English", "🇹🇷 Türkçe" });
+            languageComboBox.SelectedIndex = 0;
+            languageComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+            languageComboBox.Font = new Font("Segoe UI", 9);
+            languageComboBox.BackColor = Color.FromArgb(51, 65, 85);
+            languageComboBox.ForeColor = Color.White;
+            languageComboBox.Location = new Point(350, 20);
+            languageComboBox.Size = new Size(120, 25);
+            languageComboBox.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            languageComboBox.SelectedIndexChanged += LanguageComboBox_SelectedIndexChanged;
 
             // Title Label - Modern typography
             titleLabel = new Label();
@@ -163,20 +181,35 @@ namespace EnglishAutomationApp.Views
             loginButton.MouseEnter += LoginButton_MouseEnter;
             loginButton.MouseLeave += LoginButton_MouseLeave;
 
-            // Register Button - Outline style
+            // Register Button - Outline style (smaller)
             registerButton = new Button();
             registerButton.Text = "Create new account";
-            registerButton.Font = new Font("Segoe UI", 11);
+            registerButton.Font = new Font("Segoe UI", 10);
             registerButton.ForeColor = Color.FromArgb(99, 102, 241); // Indigo-500
             registerButton.BackColor = Color.Transparent;
             registerButton.FlatStyle = FlatStyle.Flat;
             registerButton.FlatAppearance.BorderSize = 1;
             registerButton.FlatAppearance.BorderColor = Color.FromArgb(99, 102, 241);
             registerButton.Location = new Point(50, 590);
-            registerButton.Size = new Size(400, 35);
-            registerButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            registerButton.Size = new Size(190, 35);
+            registerButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             registerButton.Cursor = Cursors.Hand;
             registerButton.Click += RegisterButton_Click;
+
+            // Admin Panel Button
+            adminPanelButton = new Button();
+            adminPanelButton.Text = "🔧 Admin Panel";
+            adminPanelButton.Font = new Font("Segoe UI", 10);
+            adminPanelButton.ForeColor = Color.FromArgb(245, 158, 11); // Amber-500
+            adminPanelButton.BackColor = Color.Transparent;
+            adminPanelButton.FlatStyle = FlatStyle.Flat;
+            adminPanelButton.FlatAppearance.BorderSize = 1;
+            adminPanelButton.FlatAppearance.BorderColor = Color.FromArgb(245, 158, 11);
+            adminPanelButton.Location = new Point(260, 590);
+            adminPanelButton.Size = new Size(190, 35);
+            adminPanelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            adminPanelButton.Cursor = Cursors.Hand;
+            adminPanelButton.Click += AdminPanelButton_Click;
 
             // Message Label
             messageLabel = new Label();
@@ -200,10 +233,12 @@ namespace EnglishAutomationApp.Views
 
             // Add all controls to form
             this.Controls.Add(logoBox);
+            this.Controls.Add(languageComboBox);
             this.Controls.Add(titleLabel);
             this.Controls.Add(subtitleLabel);
             this.Controls.Add(mainPanel);
             this.Controls.Add(registerButton);
+            this.Controls.Add(adminPanelButton);
 
             this.ResumeLayout(false);
         }
@@ -443,6 +478,52 @@ namespace EnglishAutomationApp.Views
         {
             var registerForm = new RegisterForm();
             registerForm.ShowDialog(this);
+        }
+
+        private void AdminPanelButton_Click(object? sender, EventArgs e)
+        {
+            // Admin login dialog
+            var adminLoginForm = new AdminLoginForm();
+            if (adminLoginForm.ShowDialog(this) == DialogResult.OK)
+            {
+                // Open admin panel
+                var adminForm = new AdminPanelForm();
+                adminForm.ShowDialog(this);
+            }
+        }
+
+        private void LanguageComboBox_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            isEnglish = languageComboBox.SelectedIndex == 0;
+            UpdateLanguage();
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                titleLabel.Text = "Welcome back";
+                subtitleLabel.Text = "Sign in to your account to continue";
+                emailLabel.Text = "EMAIL ADDRESS";
+                passwordLabel.Text = "PASSWORD";
+                rememberMeCheckBox.Text = "Remember me";
+                forgotPasswordLabel.Text = "Forgot password?";
+                loginButton.Text = "Sign in";
+                registerButton.Text = "Create new account";
+                adminPanelButton.Text = "🔧 Admin Panel";
+            }
+            else
+            {
+                titleLabel.Text = "Tekrar hoş geldiniz";
+                subtitleLabel.Text = "Devam etmek için hesabınıza giriş yapın";
+                emailLabel.Text = "E-POSTA ADRESİ";
+                passwordLabel.Text = "ŞİFRE";
+                rememberMeCheckBox.Text = "Beni hatırla";
+                forgotPasswordLabel.Text = "Şifremi unuttum?";
+                loginButton.Text = "Giriş yap";
+                registerButton.Text = "Yeni hesap oluştur";
+                adminPanelButton.Text = "🔧 Yönetici Paneli";
+            }
         }
 
         private void ShowMessage(string message, Color color)

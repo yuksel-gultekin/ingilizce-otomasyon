@@ -91,7 +91,10 @@ namespace EnglishAutomationApp.Helpers
 
         public static Button CreateIconButton(string text, string icon, Color? backgroundColor = null, int width = 140, int height = 40)
         {
-            var button = CreateModernButton($"{icon} {text}", backgroundColor, null, width, height);
+            var button = CreateModernButton(text, backgroundColor, null, width, height);
+            button.Font = new Font("Segoe UI", 10, FontStyle.Medium);
+            button.TextAlign = ContentAlignment.MiddleCenter;
+            button.ImageAlign = ContentAlignment.MiddleLeft;
             return button;
         }
 

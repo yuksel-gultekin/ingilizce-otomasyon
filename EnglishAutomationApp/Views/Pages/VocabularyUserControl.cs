@@ -118,28 +118,28 @@ namespace EnglishAutomationApp.Views.Pages
             difficultyFilter.SelectedIndex = 0;
             difficultyFilter.SelectedIndexChanged += DifficultyFilter_SelectedIndexChanged;
 
-            // Second row - Action buttons
+            // Second row - Action buttons (improved spacing and sizing)
             // Add word button
-            addWordButton = ModernUIHelper.CreateIconButton("Add Word", "+", ModernUIHelper.Colors.Secondary, 120);
+            addWordButton = ModernUIHelper.CreateIconButton("+ Add Word", "➕", ModernUIHelper.Colors.Secondary, 130);
             addWordButton.Location = new Point(ModernUIHelper.Spacing.Large, 50);
             addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             addWordButton.Click += AddWordButton_Click;
 
             // Study mode button
-            studyModeButton = ModernUIHelper.CreateIconButton("Study Mode", "📚", ModernUIHelper.Colors.Primary, 140);
-            studyModeButton.Location = new Point(160, 50);
+            studyModeButton = ModernUIHelper.CreateIconButton("📚 Study Mode", "🎯", ModernUIHelper.Colors.Primary, 150);
+            studyModeButton.Location = new Point(170, 50);
             studyModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             studyModeButton.Click += StudyModeButton_Click;
 
             // Review button
-            var reviewButton = ModernUIHelper.CreateIconButton("Review", "🔄", ModernUIHelper.Colors.Secondary, 120);
-            reviewButton.Location = new Point(320, 50);
+            var reviewButton = ModernUIHelper.CreateIconButton("🔄 Review", "📝", ModernUIHelper.Colors.Secondary, 130);
+            reviewButton.Location = new Point(340, 50);
             reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             reviewButton.Click += ReviewButton_Click;
 
             // Stats button
-            var statsButton = ModernUIHelper.CreateIconButton("Stats", "📊", ModernUIHelper.Colors.Warning, 100);
-            statsButton.Location = new Point(460, 50);
+            var statsButton = ModernUIHelper.CreateIconButton("📊 Stats", "📈", ModernUIHelper.Colors.Warning, 120);
+            statsButton.Location = new Point(490, 50);
             statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             statsButton.Click += StatsButton_Click;
 
@@ -387,13 +387,26 @@ namespace EnglishAutomationApp.Views.Pages
         {
             if (filteredWords.Any())
             {
-                var studyForm = new StudyModeForm(filteredWords);
-                studyForm.ShowDialog();
+                try
+                {
+                    var studyForm = new StudyModeForm(filteredWords);
+                    studyForm.ShowDialog();
+                    LoadDataAsync(); // Refresh data after study session
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening study mode: {ex.Message}", "Study Mode Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                MessageBox.Show("No words available for study mode.", "Study Mode",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("📚 Study Mode is ready, but no words are available!\n\n" +
+                               "• Try adjusting your filters (category, difficulty)\n" +
+                               "• Add some vocabulary words first\n" +
+                               "• Check if words are properly loaded",
+                               "Study Mode - No Words Available",
+                               MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
