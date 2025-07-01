@@ -18,10 +18,6 @@ namespace EnglishAutomationApp.Data
         {
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             return Path.Combine(documents, "eng-otomasyon.accdb");
-
-
-
-           
         }
 
         private static string GetConnectionString()
@@ -61,26 +57,39 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-                // For Access databases, we need to use a different approach
-                // Create the database using ADOX COM object or let OleDb create it
                 System.Diagnostics.Debug.WriteLine($"Creating new Access database at: {dbPath}");
 
-                // The database will be created when we first try to create tables
-                // Just ensure the directory exists
+                // Ensure the directory exists
                 var directory = Path.GetDirectoryName(dbPath);
                 if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
                 {
                     Directory.CreateDirectory(directory);
                 }
 
-                await Task.CompletedTask; // Placeholder for async pattern
+                // Create empty Access database using ADOX
+                try
+                {
+                    dynamic catalog = Activator.CreateInstance(Type.GetTypeFromProgID("ADOX.Catalog")!);
+                    catalog.Create($"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={dbPath};");
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(catalog);
+                    System.Diagnostics.Debug.WriteLine("Access database created successfully using ADOX");
+                }
+                catch (Exception adoxEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"ADOX creation failed: {adoxEx.Message}");
+                    throw new Exception($"Could not create Access database. Please ensure Microsoft Access Database Engine is installed. Error: {adoxEx.Message}");
+                }
+
+                await Task.CompletedTask;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error preparing database path: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error creating database: {ex.Message}");
                 throw;
             }
         }
+
+
 
 
         private static async Task EnsureTablesExistAsync(OleDbConnection connection)
@@ -540,10 +549,13 @@ namespace EnglishAutomationApp.Data
                 command.Parameters.AddWithValue("?", user.CreatedDate);
 
                 await command.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine("User created successfully");
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error creating user: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return false;
             }
         }

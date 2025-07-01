@@ -90,7 +90,8 @@ namespace EnglishAutomationApp.Services
             }
             catch (Exception ex)
             {
-                return (false, $"Registration error occurred: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Registration exception: {ex.Message}");
+                return (false, $"Registration error: {ex.Message}");
             }
         }
 
