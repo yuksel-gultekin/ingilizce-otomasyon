@@ -14,8 +14,8 @@ namespace EnglishAutomationApp.Views.Pages
         private List<VocabularyWord> words = null!;
         private int currentWordIndex = 0;
         private int correctAnswers = 0;
+        private readonly bool isReviewMode = false;
         private bool showingAnswer = false;
-        private bool isReviewMode = false;
 
         private Panel headerPanel = null!;
         private Panel cardPanel = null!;
