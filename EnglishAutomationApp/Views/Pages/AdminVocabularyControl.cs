@@ -93,7 +93,7 @@ namespace EnglishAutomationApp.Views.Pages
                 Dock = DockStyle.Top,
                 Height = 70,
                 BackColor = ModernUIHelper.Colors.Surface,
-                Padding = new Padding(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Medium)
+                Padding = new Padding(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Medium, ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Medium)
             };
 
             // Search textbox
