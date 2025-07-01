@@ -42,7 +42,7 @@ namespace EnglishAutomationApp.Data
 
                 await EnsureTablesExistAsync(connection);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

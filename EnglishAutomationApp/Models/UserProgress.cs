@@ -18,6 +18,7 @@ namespace EnglishAutomationApp.Models
         public ProgressStatus Status { get; set; }
         public int ProgressPercentage { get; set; }
         public int TimeSpentMinutes { get; set; }
+        public DateTime? StartDate { get; set; }
         public DateTime? CompletionDate { get; set; }
         public DateTime? LastAccessDate { get; set; }
 
