@@ -223,7 +223,7 @@ namespace EnglishAutomationApp.Views
             }
             else if (userControl is CoursesUserControl coursesControl)
             {
-                coursesControl.SetLanguage(isEnglish);
+                //coursesControl.SetLanguage(isEnglish);
             }
 
             contentPanel.Controls.Add(userControl);
@@ -257,7 +257,7 @@ namespace EnglishAutomationApp.Views
                 }
                 else if (currentControl is CoursesUserControl coursesControl)
                 {
-                    coursesControl.SetLanguage(isEnglish);
+                   // coursesControl.SetLanguage(isEnglish);
                 }
             }
         }
