@@ -509,28 +509,43 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-                var connectionString = GetConnectionString();
-                using var connection = new OleDbConnection(connectionString);
-                await connection.OpenAsync();
+                System.Diagnostics.Debug.WriteLine($"CreateUserAsync called for: {user.Email}");
+                System.Diagnostics.Debug.WriteLine($"User data: FirstName={user.FirstName}, LastName={user.LastName}, Role={user.Role}");
 
-                var sql = @"INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
-                           VALUES (?, ?, ?, ?, ?, ?, ?)";
+                var connectionString = GetConnectionString();
+                System.Diagnostics.Debug.WriteLine($"Connection string: {connectionString}");
+
+                using var connection = new OleDbConnection(connectionString);
+                System.Diagnostics.Debug.WriteLine("Opening connection...");
+                await connection.OpenAsync();
+                System.Diagnostics.Debug.WriteLine("Connection opened successfully");
+
+                // SQL sorgusunu tablodaki field sırası ile eşleştir
+                var sql = @"INSERT INTO Users (Email, PasswordHash, Role, FirstName, LastName, IsActive, CreatedDate, LastLoginDate)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+                System.Diagnostics.Debug.WriteLine($"SQL: {sql}");
+
                 using var command = new OleDbCommand(sql, connection);
-                command.Parameters.AddWithValue("?", user.Email);
-                command.Parameters.AddWithValue("?", user.PasswordHash);
-                command.Parameters.AddWithValue("?", user.FirstName);
-                command.Parameters.AddWithValue("?", user.LastName);
-                command.Parameters.AddWithValue("?", user.Role);
+                command.Parameters.AddWithValue("?", user.Email ?? "");
+                command.Parameters.AddWithValue("?", user.PasswordHash ?? "");
+                command.Parameters.AddWithValue("?", user.Role ?? "User");
+                command.Parameters.AddWithValue("?", user.FirstName ?? (object)DBNull.Value);
+                command.Parameters.AddWithValue("?", user.LastName ?? (object)DBNull.Value);
                 command.Parameters.AddWithValue("?", user.IsActive ? 1 : 0);
                 command.Parameters.AddWithValue("?", user.CreatedDate);
+                command.Parameters.AddWithValue("?", user.LastLoginDate ?? (object)DBNull.Value);
 
-                await command.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine("Executing SQL...");
+                var rowsAffected = await command.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine($"Rows affected: {rowsAffected}");
                 System.Diagnostics.Debug.WriteLine("User created successfully");
                 return true;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error creating user: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException?.Message}");
                 System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 return false;
             }
