@@ -342,7 +342,24 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void StartCourseButton_Click(object? sender, EventArgs e)
         {
-            MessageBox.Show("BUTON TIKLANDI!", "DEBUG", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (sender is Button button && button.Tag is Course course)
+            {
+                try
+                {
+                    var courseContentForm = new CourseContentForm(course);
+                    courseContentForm.ShowDialog();
+                }
+                catch (Exception ex)
+                {
+                    var errorMessage = isEnglish
+                        ? $"Error opening course: {ex.Message}"
+                        : $"Kurs açılırken hata: {ex.Message}";
+                    MessageBox.Show(errorMessage,
+                        isEnglish ? "Error" : "Hata",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
         }
 
         private string GetTurkishLevel(CourseLevel level)
