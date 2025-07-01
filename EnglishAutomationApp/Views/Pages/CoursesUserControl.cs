@@ -340,8 +340,8 @@ namespace EnglishAutomationApp.Views.Pages
             if (course != null)
             {
                 // Show course content form
-                var courseContentForm = new CourseContentForm(course);
-                courseContentForm.SetLanguage(isEnglish);
+                var courseContentForm = new CourseContentForm(course, isEnglish);
+
                 courseContentForm.ShowDialog();
             }
         }

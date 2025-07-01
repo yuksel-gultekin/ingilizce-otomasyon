@@ -11,9 +11,10 @@ namespace EnglishAutomationApp.Views
         private readonly Course course;
         private bool isEnglish = true;
 
-        public CourseContentForm(Course course)
+        public CourseContentForm(Course course, bool isEnglish = true)
         {
             this.course = course;
+            this.isEnglish = isEnglish;
             InitializeComponent();
             LoadCourseContent();
         }
@@ -41,7 +42,7 @@ namespace EnglishAutomationApp.Views
             var titleLabel = new Label
             {
                 Text = course.Title,
-                Font = ModernUIHelper.Fonts.Title,
+                Font = ModernUIHelper.Fonts.Heading1,
                 ForeColor = ModernUIHelper.Colors.TextPrimary,
                 AutoSize = true,
                 Location = new Point(0, 0)
