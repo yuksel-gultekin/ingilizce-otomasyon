@@ -1077,8 +1077,72 @@ namespace EnglishAutomationApp.Data
                 return false;
             }
         }
+        public static async Task<bool> DeleteVocabularyWordAsync(int wordId)
+        {
+            try
+            {
+                var connectionString = GetConnectionString();
+                using var connection = new OleDbConnection(connectionString);
+                await connection.OpenAsync();
 
+                // First delete related user vocabulary records
+                var deleteUserVocabSql = "DELETE FROM UserVocabulary WHERE VocabularyWordId = ?";
+                using var deleteUserVocabCommand = new OleDbCommand(deleteUserVocabSql, connection);
+                deleteUserVocabCommand.Parameters.Add("?", OleDbType.Integer).Value = wordId;
+                await deleteUserVocabCommand.ExecuteNonQueryAsync();
 
+                // Then delete the vocabulary word
+                var deleteWordSql = "DELETE FROM VocabularyWords WHERE Id = ?";
+                using var deleteWordCommand = new OleDbCommand(deleteWordSql, connection);
+                deleteWordCommand.Parameters.Add("?", OleDbType.Integer).Value = wordId;
+
+                var rowsAffected = await deleteWordCommand.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static async Task<bool> UpdateVocabularyWordAsync(VocabularyWord word)
+        {
+            try
+            {
+                var connectionString = GetConnectionString();
+                using var connection = new OleDbConnection(connectionString);
+                await connection.OpenAsync();
+
+                var sql = @"UPDATE VocabularyWords SET
+                           EnglishWord = ?, TurkishMeaning = ?, Pronunciation = ?,
+                           ExampleSentence = ?, ExampleSentenceTurkish = ?,
+                           Difficulty = ?, PartOfSpeech = ?, Category = ?,
+                           AudioUrl = ?, IsActive = ?
+                           WHERE Id = ?";
+
+                using var command = new OleDbCommand(sql, connection);
+
+                // Add parameters in the same order as the SQL
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = word.EnglishWord;
+                command.Parameters.Add("?", OleDbType.VarChar, 200).Value = word.TurkishMeaning;
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = word.Pronunciation ?? (object)DBNull.Value;
+                command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.ExampleSentence ?? (object)DBNull.Value;
+                command.Parameters.Add("?", OleDbType.LongVarChar).Value = word.ExampleSentenceTurkish ?? (object)DBNull.Value;
+                command.Parameters.Add("?", OleDbType.Integer).Value = (int)word.Difficulty;
+                command.Parameters.Add("?", OleDbType.Integer).Value = (int)word.PartOfSpeech;
+                command.Parameters.Add("?", OleDbType.VarChar, 100).Value = word.Category ?? (object)DBNull.Value;
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = word.AudioUrl ?? (object)DBNull.Value;
+                command.Parameters.Add("?", OleDbType.Integer).Value = word.IsActive ? 1 : 0;
+                command.Parameters.Add("?", OleDbType.Integer).Value = word.Id;
+
+                var rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 }

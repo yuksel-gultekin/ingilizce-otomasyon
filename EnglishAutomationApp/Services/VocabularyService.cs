@@ -44,16 +44,13 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<VocabularyWord> UpdateWordAsync(VocabularyWord word)
         {
-            // Update functionality needs to be implemented in AccessDatabaseHelper
-            await Task.CompletedTask;
+            await Data.AccessDatabaseHelper.UpdateVocabularyWordAsync(word);
             return word;
         }
 
         public static async Task<bool> DeleteWordAsync(int wordId)
         {
-            // Delete functionality needs to be implemented in AccessDatabaseHelper
-            await Task.CompletedTask;
-            return true;
+            return await Data.AccessDatabaseHelper.DeleteVocabularyWordAsync(wordId);
         }
 
         public static async Task<List<string>> GetCategoriesAsync()

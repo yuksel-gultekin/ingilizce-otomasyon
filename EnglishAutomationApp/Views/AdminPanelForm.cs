@@ -10,11 +10,12 @@ namespace EnglishAutomationApp.Views
         private Panel sidebarPanel = null!;
         private Panel contentPanel = null!;
         private Button usersButton = null!;
+        private Button vocabularyButton = null!;
         private Button logoutButton = null!;
         private Label titleLabel = null!;
         private ComboBox languageComboBox = null!;
 
-        private AdminUserControl? currentAdminControl;
+        private UserControl? currentAdminControl;
         private bool isEnglish = true;
 
         public AdminPanelForm()
@@ -76,6 +77,9 @@ namespace EnglishAutomationApp.Views
             usersButton = CreateNavButton("👥 User Management", 115);
             usersButton.Click += (s, e) => LoadUsersPanel();
 
+            vocabularyButton = CreateNavButton("📖 Vocabulary Management", 165);
+            vocabularyButton.Click += (s, e) => LoadVocabularyPanel();
+
             // Logout button at bottom
             logoutButton = new Button();
             logoutButton.Text = "🚪 Logout";
@@ -94,6 +98,7 @@ namespace EnglishAutomationApp.Views
             sidebarPanel.Controls.Add(languageComboBox);
             sidebarPanel.Controls.Add(titleLabel);
             sidebarPanel.Controls.Add(usersButton);
+            sidebarPanel.Controls.Add(vocabularyButton);
             sidebarPanel.Controls.Add(logoutButton);
         }
 
@@ -134,6 +139,14 @@ namespace EnglishAutomationApp.Views
             LoadAdminControl(adminUserControl);
         }
 
+        private void LoadVocabularyPanel()
+        {
+            SetActiveButton(vocabularyButton);
+            var adminVocabularyControl = new AdminVocabularyControl();
+            adminVocabularyControl.SetLanguage(isEnglish);
+            LoadAdminControl(adminVocabularyControl);
+        }
+
 
 
         private void LoadAdminControl(UserControl control)
@@ -141,13 +154,14 @@ namespace EnglishAutomationApp.Views
             contentPanel.Controls.Clear();
             control.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(control);
-            currentAdminControl = control as AdminUserControl;
+            currentAdminControl = control;
         }
 
         private void SetActiveButton(Button activeButton)
         {
-            // Reset users button
+            // Reset all buttons
             usersButton.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
+            vocabularyButton.BackColor = Color.FromArgb(51, 65, 85); // Slate-700
 
             // Set active button
             activeButton.BackColor = Color.FromArgb(99, 102, 241); // Indigo-500
@@ -176,6 +190,10 @@ namespace EnglishAutomationApp.Views
             {
                 adminUserControl.SetLanguage(isEnglish);
             }
+            else if (currentAdminControl is AdminVocabularyControl adminVocabularyControl)
+            {
+                adminVocabularyControl.SetLanguage(isEnglish);
+            }
         }
 
         private void UpdateLanguage()
@@ -186,6 +204,7 @@ namespace EnglishAutomationApp.Views
                 this.Text = "Admin Panel - English Automation Platform";
                 titleLabel.Text = "🔧 Admin Panel";
                 usersButton.Text = "👥 User Management";
+                vocabularyButton.Text = "📖 Vocabulary Management";
                 logoutButton.Text = "🚪 Logout";
             }
             else
@@ -194,6 +213,7 @@ namespace EnglishAutomationApp.Views
                 this.Text = "Yönetici Paneli - İngilizce Otomasyon Platformu";
                 titleLabel.Text = "🔧 Yönetici Paneli";
                 usersButton.Text = "👥 Kullanıcı Yönetimi";
+                vocabularyButton.Text = "📖 Kelime Yönetimi";
                 logoutButton.Text = "🚪 Çıkış";
             }
         }
