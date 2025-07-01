@@ -37,7 +37,6 @@ namespace EnglishAutomationApp.Data
         {
             var tableExists = false;
 
-            // Check if Users table exists by trying to query it
             try
             {
                 var checkSql = "SELECT COUNT(*) FROM Users";
@@ -54,7 +53,7 @@ namespace EnglishAutomationApp.Data
             if (!tableExists)
             {
                 await CreateTablesAsync(connection);
-                await SeedDataAsync(connection);
+                //await SeedDataAsync(connection);
             }
         }
 
