@@ -177,8 +177,8 @@ namespace EnglishAutomationApp.Views.Pages
         {
             try
             {
-                // Seed sample data if needed
-                await VocabularyService.SeedSampleWordsAsync();
+                // Initialize database first
+                await Data.AccessDatabaseHelper.InitializeDatabaseAsync();
 
                 // Load all words
                 allWords = await VocabularyService.GetAllWordsAsync();
