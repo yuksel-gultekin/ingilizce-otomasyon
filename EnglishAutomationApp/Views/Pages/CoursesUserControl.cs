@@ -341,9 +341,9 @@ namespace EnglishAutomationApp.Views.Pages
             {
                 try
                 {
-                    // Show course content form with interactive lessons
-                    var courseContentForm = new CourseContentForm(course, isEnglish);
-                    courseContentForm.ShowDialog(this.FindForm());
+                    // Show simple course content form
+                    var courseContentForm = new SimpleCourseContentForm(course, isEnglish);
+                    courseContentForm.ShowDialog();
                 }
                 catch (Exception ex)
                 {
