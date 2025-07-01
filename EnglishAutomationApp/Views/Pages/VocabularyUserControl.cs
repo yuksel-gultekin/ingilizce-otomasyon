@@ -443,44 +443,66 @@ namespace EnglishAutomationApp.Views.Pages
         {
             if (AuthenticationService.CurrentUser == null)
             {
-                MessageBox.Show("Please login to use the review feature.", "Login Required",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var message = isEnglish ? "Please login to use the review feature." : "İnceleme özelliğini kullanmak için lütfen giriş yapın.";
+                var title = isEnglish ? "Login Required" : "Giriş Gerekli";
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             try
             {
-                var wordsForReview = await VocabularyService.GetWordsForReviewAsync(AuthenticationService.CurrentUser.Id);
+                var wordsForReview = await VocabularyService.GetWordsForReviewAsync(AuthenticationService.CurrentUser.Id, 10);
 
                 if (wordsForReview.Any())
                 {
-                    MessageBox.Show("Study Mode feature has been removed.", "Info",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Open review form
+                    var reviewForm = new VocabularyReviewForm(wordsForReview, isEnglish);
+                    reviewForm.ShowDialog();
+
+                    // Refresh the vocabulary list after review
+                    await LoadVocabularyAsync();
                 }
                 else
                 {
-                    MessageBox.Show("Great job! No words need review right now. Come back later!",
-                        "No Review Needed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var message = isEnglish
+                        ? "Great job! No words need review right now. Come back later!"
+                        : "Harika! Şu anda incelenmesi gereken kelime yok. Daha sonra tekrar gel!";
+                    var title = isEnglish ? "No Review Needed" : "İnceleme Gerekmiyor";
+                    MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading review words: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var message = isEnglish
+                    ? $"Error loading review words: {ex.Message}"
+                    : $"İnceleme kelimeleri yüklenirken hata: {ex.Message}";
+                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void StatsButton_Click(object? sender, EventArgs e)
+        private async void StatsButton_Click(object? sender, EventArgs e)
         {
             if (AuthenticationService.CurrentUser == null)
             {
-                MessageBox.Show("Please login to view your statistics.", "Login Required",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var message = isEnglish ? "Please login to view your statistics." : "İstatistiklerinizi görüntülemek için lütfen giriş yapın.";
+                var title = isEnglish ? "Login Required" : "Giriş Gerekli";
+                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            MessageBox.Show("Vocabulary Stats feature has been removed.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            try
+            {
+                // Open stats form
+                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id, isEnglish);
+                statsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                var message = isEnglish
+                    ? $"Error loading statistics: {ex.Message}"
+                    : $"İstatistikler yüklenirken hata: {ex.Message}";
+                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void UpdateLanguage()

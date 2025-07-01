@@ -126,9 +126,56 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<List<VocabularyWord>> GetWordsForReviewAsync(int userId, int maxWords = 10)
         {
-            // Get random words for review - functionality needs to be implemented in AccessDatabaseHelper
-            var allWords = await GetAllWordsAsync();
-            return allWords.Take(maxWords).ToList();
+            try
+            {
+                var allWords = await GetAllWordsAsync();
+                var userVocabulary = await GetUserVocabulariesAsync(userId);
+
+                // Get words that need review based on spaced repetition
+                var wordsNeedingReview = new List<VocabularyWord>();
+
+                foreach (var word in allWords)
+                {
+                    var userVocab = userVocabulary.FirstOrDefault(uv => uv.VocabularyWordId == word.Id);
+
+                    if (userVocab == null)
+                    {
+                        // New word - add to review
+                        wordsNeedingReview.Add(word);
+                    }
+                    else if (userVocab.LastReviewedDate.HasValue)
+                    {
+                        // Check if enough time has passed for review
+                        var daysSinceReview = (DateTime.Now - userVocab.LastReviewedDate.Value).Days;
+                        var reviewInterval = GetReviewInterval(userVocab.MasteryLevel);
+
+                        if (daysSinceReview >= reviewInterval)
+                        {
+                            wordsNeedingReview.Add(word);
+                        }
+                    }
+                    else
+                    {
+                        // Never reviewed - add to review
+                        wordsNeedingReview.Add(word);
+                    }
+                }
+
+                // Prioritize words with lower mastery levels and shuffle
+                var prioritizedWords = wordsNeedingReview
+                    .OrderBy(w => userVocabulary.FirstOrDefault(uv => uv.VocabularyWordId == w.Id)?.MasteryLevel ?? 0)
+                    .ThenBy(w => Guid.NewGuid()) // Shuffle within same mastery level
+                    .Take(maxWords)
+                    .ToList();
+
+                return prioritizedWords;
+            }
+            catch (Exception)
+            {
+                // Fallback to random words if there's an error
+                var allWords = await GetAllWordsAsync();
+                return allWords.OrderBy(w => Guid.NewGuid()).Take(maxWords).ToList();
+            }
         }
 
         public static async Task<Dictionary<string, int>> GetUserStatsAsync(int userId)
