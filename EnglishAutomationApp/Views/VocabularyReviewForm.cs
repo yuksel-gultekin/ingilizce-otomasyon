@@ -74,7 +74,7 @@ namespace EnglishAutomationApp.Views
             // Card Panel
             cardPanel = new Panel
             {
-                Size = new Size(540, 200),
+                Size = new Size(540, 250),
                 Location = new Point(30, 110),
                 BackColor = Color.White,
                 BorderStyle = BorderStyle.None
@@ -88,17 +88,18 @@ namespace EnglishAutomationApp.Views
                 Font = new Font("Segoe UI", 24, FontStyle.Bold),
                 ForeColor = ModernUIHelper.Colors.Primary,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Top,
-                Height = 100
+                Size = new Size(500, 80),
+                Location = new Point(20, 20)
             };
 
             // Meaning Label
             meaningLabel = new Label
             {
-                Font = new Font("Segoe UI", 14),
-                ForeColor = ModernUIHelper.Colors.TextSecondary,
+                Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                ForeColor = ModernUIHelper.Colors.Primary,
                 TextAlign = ContentAlignment.MiddleCenter,
-                Dock = DockStyle.Fill,
+                Size = new Size(500, 80),
+                Location = new Point(20, 120),
                 Visible = false
             };
 
@@ -108,7 +109,7 @@ namespace EnglishAutomationApp.Views
             buttonPanel = new Panel
             {
                 Size = new Size(540, 80),
-                Location = new Point(30, 330),
+                Location = new Point(30, 380),
                 BackColor = Color.Transparent
             };
 
