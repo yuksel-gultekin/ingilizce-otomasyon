@@ -51,19 +51,28 @@ namespace EnglishAutomationApp.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"Starting registration for: {email}");
+
                 // Email check
+                System.Diagnostics.Debug.WriteLine("Checking if user exists...");
                 var existingUser = await Data.AccessDatabaseHelper.GetUserByEmailAsync(email);
 
                 if (existingUser != null)
                 {
+                    System.Diagnostics.Debug.WriteLine("User already exists");
                     return (false, "This email address is already in use.");
                 }
+
+                System.Diagnostics.Debug.WriteLine("User doesn't exist, proceeding...");
 
                 // Password validation
                 if (password.Length < 6)
                 {
+                    System.Diagnostics.Debug.WriteLine("Password too short");
                     return (false, "Password must be at least 6 characters long.");
                 }
+
+                System.Diagnostics.Debug.WriteLine("Creating new user object...");
 
                 // Create new user
                 var newUser = new User
@@ -77,15 +86,19 @@ namespace EnglishAutomationApp.Services
                     CreatedDate = DateTime.Now
                 };
 
+                System.Diagnostics.Debug.WriteLine("Calling CreateUserAsync...");
                 var success = await Data.AccessDatabaseHelper.CreateUserAsync(newUser);
+                System.Diagnostics.Debug.WriteLine($"CreateUserAsync returned: {success}");
 
                 if (success)
                 {
+                    System.Diagnostics.Debug.WriteLine("Registration successful");
                     return (true, "Registration successful. You can now login.");
                 }
                 else
                 {
-                    return (false, "Registration failed. Please try again.");
+                    System.Diagnostics.Debug.WriteLine("Registration failed - CreateUserAsync returned false");
+                    return (false, "Registration failed. Database operation unsuccessful.");
                 }
             }
             catch (Exception ex)
