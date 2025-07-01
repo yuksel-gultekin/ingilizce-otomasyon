@@ -177,8 +177,8 @@ namespace EnglishAutomationApp.Views
                 : $"Kelime {currentWordIndex + 1} / {wordsToReview.Count}";
 
             // Show word
-            wordLabel.Text = currentWord.Word;
-            meaningLabel.Text = currentWord.Meaning;
+            wordLabel.Text = currentWord.EnglishWord;
+            meaningLabel.Text = currentWord.TurkishMeaning;
             meaningLabel.Visible = false;
 
             // Reset buttons

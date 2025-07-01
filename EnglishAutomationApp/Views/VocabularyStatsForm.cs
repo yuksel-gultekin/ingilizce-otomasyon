@@ -96,12 +96,12 @@ namespace EnglishAutomationApp.Views
                 var accuracy = totalAttempts > 0 ? (totalCorrect * 100 / totalAttempts) : 0;
 
                 // Group by difficulty
-                var beginnerWords = userVocabulary.Count(uv => 
-                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == DifficultyLevel.Beginner));
-                var intermediateWords = userVocabulary.Count(uv => 
-                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == DifficultyLevel.Intermediate));
-                var advancedWords = userVocabulary.Count(uv => 
-                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == DifficultyLevel.Advanced));
+                var beginnerWords = userVocabulary.Count(uv =>
+                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == WordDifficulty.Beginner));
+                var intermediateWords = userVocabulary.Count(uv =>
+                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == WordDifficulty.Intermediate));
+                var advancedWords = userVocabulary.Count(uv =>
+                    allWords.Any(w => w.Id == uv.VocabularyWordId && w.Difficulty == WordDifficulty.Advanced));
 
                 // Group by mastery level
                 var masteryLevel1 = userVocabulary.Count(uv => uv.MasteryLevel == 1);

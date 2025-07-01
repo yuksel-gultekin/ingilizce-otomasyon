@@ -460,7 +460,7 @@ namespace EnglishAutomationApp.Views.Pages
                     reviewForm.ShowDialog();
 
                     // Refresh the vocabulary list after review
-                    await LoadVocabularyAsync();
+                    LoadDataAsync();
                 }
                 else
                 {
