@@ -550,30 +550,38 @@ namespace EnglishAutomationApp.Data
 
         public static async Task<List<User>> GetAllUsersAsync()
         {
-            var users = new List<User>();
-            var connectionString = GetConnectionString();
-            using var connection = new OleDbConnection(connectionString);
-            await connection.OpenAsync();
-
-            var sql = "SELECT * FROM Users WHERE Role = 'User' ORDER BY CreatedDate DESC";
-            using var command = new OleDbCommand(sql, connection);
-            using var reader = await command.ExecuteReaderAsync();
-
-            while (await reader.ReadAsync())
+            try
             {
-                users.Add(new User
+                var users = new List<User>();
+                var connectionString = GetConnectionString();
+                using var connection = new OleDbConnection(connectionString);
+                await connection.OpenAsync();
+
+                var sql = "SELECT * FROM Users WHERE Role = 'User' ORDER BY CreatedDate DESC";
+                using var command = new OleDbCommand(sql, connection);
+                using var reader = await command.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
                 {
-                    Id = reader.GetInt32(0), // Id
-                    Email = reader.GetString(1), // Email
-                    PasswordHash = reader.GetString(2), // PasswordHash
-                    FirstName = reader.GetString(3), // FirstName
-                    LastName = reader.GetString(4), // LastName
-                    Role = reader.GetString(5), // Role
-                    IsActive = reader.GetInt32(6) == 1, // IsActive
-                    CreatedDate = reader.GetDateTime(7) // CreatedDate
-                });
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32(0), // Id
+                        Email = reader.GetString(1), // Email
+                        PasswordHash = reader.GetString(2), // PasswordHash
+                        FirstName = reader.IsDBNull(3) ? string.Empty : reader.GetString(3), // FirstName
+                        LastName = reader.IsDBNull(4) ? string.Empty : reader.GetString(4), // LastName
+                        Role = reader.GetString(5), // Role
+                        IsActive = reader.GetInt32(6) == 1, // IsActive
+                        CreatedDate = reader.GetDateTime(7) // CreatedDate
+                    });
+                }
+                return users;
             }
-            return users;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting users: {ex.Message}");
+                return new List<User>();
+            }
         }
 
         // Course operations

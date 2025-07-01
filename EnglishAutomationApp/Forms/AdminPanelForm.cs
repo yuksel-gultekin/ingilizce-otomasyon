@@ -338,20 +338,22 @@ namespace EnglishAutomationApp.Forms
         {
             var students = await AccessDatabaseHelper.GetAllUsersAsync();
 
-            studentsGrid.Columns.Clear();
-            studentsGrid.Columns.Add("Id", "ID");
-            studentsGrid.Columns.Add("Email", "E-posta");
-            studentsGrid.Columns.Add("FirstName", "Ad");
-            studentsGrid.Columns.Add("LastName", "Soyad");
-            studentsGrid.Columns.Add("CreatedDate", "Kayıt Tarihi");
-            studentsGrid.Columns.Add("IsActive", "Aktif");
+            studentsGrid?.Columns.Clear();
+            studentsGrid?.Columns.Add("Id", "ID");
+            studentsGrid?.Columns.Add("Email", "E-posta");
+            studentsGrid?.Columns.Add("FirstName", "Ad");
+            studentsGrid?.Columns.Add("LastName", "Soyad");
+            studentsGrid?.Columns.Add("CreatedDate", "Kayıt Tarihi");
+            studentsGrid?.Columns.Add("IsActive", "Aktif");
 
-            studentsGrid.Columns["Id"].Visible = false;
-            studentsGrid.Columns["CreatedDate"].DefaultCellStyle.Format = "dd.MM.yyyy";
+            if (studentsGrid?.Columns["Id"] != null)
+                studentsGrid.Columns["Id"].Visible = false;
+            if (studentsGrid?.Columns["CreatedDate"] != null)
+                studentsGrid.Columns["CreatedDate"].DefaultCellStyle.Format = "dd.MM.yyyy";
 
             foreach (var student in students)
             {
-                studentsGrid.Rows.Add(
+                studentsGrid?.Rows.Add(
                     student.Id,
                     student.Email ?? "",
                     student.FirstName ?? "",
@@ -366,20 +368,21 @@ namespace EnglishAutomationApp.Forms
         {
             var courses = await AccessDatabaseHelper.GetAllCoursesAsync();
             
-            coursesGrid.Columns.Clear();
-            coursesGrid.Columns.Add("Id", "ID");
-            coursesGrid.Columns.Add("Title", "Başlık");
-            coursesGrid.Columns.Add("Description", "Açıklama");
-            coursesGrid.Columns.Add("Level", "Seviye");
-            coursesGrid.Columns.Add("Type", "Tür");
-            coursesGrid.Columns.Add("Price", "Fiyat");
-            coursesGrid.Columns.Add("IsActive", "Aktif");
+            coursesGrid?.Columns.Clear();
+            coursesGrid?.Columns.Add("Id", "ID");
+            coursesGrid?.Columns.Add("Title", "Başlık");
+            coursesGrid?.Columns.Add("Description", "Açıklama");
+            coursesGrid?.Columns.Add("Level", "Seviye");
+            coursesGrid?.Columns.Add("Type", "Tür");
+            coursesGrid?.Columns.Add("Price", "Fiyat");
+            coursesGrid?.Columns.Add("IsActive", "Aktif");
 
-            coursesGrid.Columns["Id"].Visible = false;
+            if (coursesGrid?.Columns["Id"] != null)
+                coursesGrid.Columns["Id"].Visible = false;
 
             foreach (var course in courses)
             {
-                coursesGrid.Rows.Add(
+                coursesGrid?.Rows.Add(
                     course.Id,
                     course.Title ?? "",
                     course.Description ?? "",
@@ -395,20 +398,21 @@ namespace EnglishAutomationApp.Forms
         {
             var words = await AccessDatabaseHelper.GetAllVocabularyWordsAsync();
             
-            vocabularyGrid.Columns.Clear();
-            vocabularyGrid.Columns.Add("Id", "ID");
-            vocabularyGrid.Columns.Add("EnglishWord", "İngilizce");
-            vocabularyGrid.Columns.Add("TurkishMeaning", "Türkçe");
-            vocabularyGrid.Columns.Add("Pronunciation", "Telaffuz");
-            vocabularyGrid.Columns.Add("Difficulty", "Zorluk");
-            vocabularyGrid.Columns.Add("PartOfSpeech", "Kelime Türü");
-            vocabularyGrid.Columns.Add("Category", "Kategori");
+            vocabularyGrid?.Columns.Clear();
+            vocabularyGrid?.Columns.Add("Id", "ID");
+            vocabularyGrid?.Columns.Add("EnglishWord", "İngilizce");
+            vocabularyGrid?.Columns.Add("TurkishMeaning", "Türkçe");
+            vocabularyGrid?.Columns.Add("Pronunciation", "Telaffuz");
+            vocabularyGrid?.Columns.Add("Difficulty", "Zorluk");
+            vocabularyGrid?.Columns.Add("PartOfSpeech", "Kelime Türü");
+            vocabularyGrid?.Columns.Add("Category", "Kategori");
 
-            vocabularyGrid.Columns["Id"].Visible = false;
+            if (vocabularyGrid?.Columns["Id"] != null)
+                vocabularyGrid.Columns["Id"].Visible = false;
 
             foreach (var word in words)
             {
-                vocabularyGrid.Rows.Add(
+                vocabularyGrid?.Rows.Add(
                     word.Id,
                     word.EnglishWord ?? "",
                     word.TurkishMeaning ?? "",

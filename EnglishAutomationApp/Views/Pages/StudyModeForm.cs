@@ -243,12 +243,15 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void ShowAnswerButton_Click(object? sender, EventArgs e)
         {
-            showingAnswer = true;
-            meaningLabel.Visible = true;
-            exampleLabel.Visible = true;
-            showAnswerButton.Visible = false;
-            correctButton.Visible = true;
-            incorrectButton.Visible = true;
+            if (!showingAnswer)
+            {
+                showingAnswer = true;
+                meaningLabel.Visible = true;
+                exampleLabel.Visible = true;
+                showAnswerButton.Visible = false;
+                correctButton.Visible = true;
+                incorrectButton.Visible = true;
+            }
         }
 
         private async void CorrectButton_Click(object? sender, EventArgs e)
