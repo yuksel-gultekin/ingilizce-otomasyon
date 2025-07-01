@@ -29,12 +29,7 @@ namespace EnglishAutomationApp.Views.Pages
         public VocabularyUserControl()
         {
             InitializeComponent();
-            this.Load += VocabularyUserControl_Load;
-        }
-
-        private async void VocabularyUserControl_Load(object? sender, EventArgs e)
-        {
-            await LoadDataAsync();
+            LoadDataAsync();
         }
 
         public void SetLanguage(bool english)
@@ -178,7 +173,7 @@ namespace EnglishAutomationApp.Views.Pages
             contentPanel.Controls.Add(wordsPanel);
         }
 
-        private async Task LoadDataAsync()
+        private async void LoadDataAsync()
         {
             try
             {
@@ -202,12 +197,9 @@ namespace EnglishAutomationApp.Views.Pages
                     difficultyFilter.SelectedIndex = 0;
                 }
 
-                // Force UI update on main thread and trigger search event
-                this.Invoke((MethodInvoker)delegate
-                {
-                    // Trigger the search TextChanged event to display all words
-                    SearchBox_TextChanged(searchBox, EventArgs.Empty);
-                });
+                // Display all words directly like Course page does
+                UpdateStatsLabel();
+                DisplayWords();
             }
             catch (Exception ex)
             {
@@ -422,12 +414,12 @@ namespace EnglishAutomationApp.Views.Pages
             DisplayWords();
         }
 
-        private async void AddWordButton_Click(object? sender, EventArgs e)
+        private void AddWordButton_Click(object? sender, EventArgs e)
         {
             var addWordForm = new AddEditWordForm();
             if (addWordForm.ShowDialog() == DialogResult.OK)
             {
-                await LoadDataAsync();
+                LoadDataAsync();
             }
         }
 
