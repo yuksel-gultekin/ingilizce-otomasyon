@@ -318,7 +318,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private async Task EditUser(User user)
+        private Task EditUser(User user)
         {
             try
             {
@@ -333,6 +333,8 @@ namespace EnglishAutomationApp.Views.Pages
                 var message = isEnglish ? $"Error opening edit form: {ex.Message}" : $"Düzenleme formu açılırken hata: {ex.Message}";
                 MessageBox.Show(message, isEnglish ? "Error" : "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            return Task.CompletedTask;
         }
 
         private async Task DeleteUser(User user)
@@ -408,16 +410,16 @@ namespace EnglishAutomationApp.Views.Pages
                 // Update DataGridView headers
                 if (usersDataGridView.Columns.Count > 0)
                 {
-                    usersDataGridView.Columns["Email"].HeaderText = "Email";
-                    usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
-                    usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
-                    usersDataGridView.Columns["Role"].HeaderText = "Role";
-                    usersDataGridView.Columns["IsActive"].HeaderText = "Active";
-                    usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
-                    usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
-                    usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
-                    usersDataGridView.Columns["Edit"].HeaderText = "Edit";
-                    usersDataGridView.Columns["Delete"].HeaderText = "Delete";
+                    if (usersDataGridView.Columns["Email"] != null) usersDataGridView.Columns["Email"].HeaderText = "Email";
+                    if (usersDataGridView.Columns["FirstName"] != null) usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
+                    if (usersDataGridView.Columns["LastName"] != null) usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
+                    if (usersDataGridView.Columns["Role"] != null) usersDataGridView.Columns["Role"].HeaderText = "Role";
+                    if (usersDataGridView.Columns["IsActive"] != null) usersDataGridView.Columns["IsActive"].HeaderText = "Active";
+                    if (usersDataGridView.Columns["IsAdmin"] != null) usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
+                    if (usersDataGridView.Columns["CreatedDate"] != null) usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
+                    if (usersDataGridView.Columns["LastLoginDate"] != null) usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
+                    if (usersDataGridView.Columns["Edit"] != null) usersDataGridView.Columns["Edit"].HeaderText = "Edit";
+                    if (usersDataGridView.Columns["Delete"] != null) usersDataGridView.Columns["Delete"].HeaderText = "Delete";
                 }
             }
             else
@@ -437,16 +439,16 @@ namespace EnglishAutomationApp.Views.Pages
                 // Update DataGridView headers
                 if (usersDataGridView.Columns.Count > 0)
                 {
-                    usersDataGridView.Columns["Email"].HeaderText = "E-posta";
-                    usersDataGridView.Columns["FirstName"].HeaderText = "Ad";
-                    usersDataGridView.Columns["LastName"].HeaderText = "Soyad";
-                    usersDataGridView.Columns["Role"].HeaderText = "Rol";
-                    usersDataGridView.Columns["IsActive"].HeaderText = "Aktif";
-                    usersDataGridView.Columns["IsAdmin"].HeaderText = "Yönetici";
-                    usersDataGridView.Columns["CreatedDate"].HeaderText = "Oluşturma Tarihi";
-                    usersDataGridView.Columns["LastLoginDate"].HeaderText = "Son Giriş";
-                    usersDataGridView.Columns["Edit"].HeaderText = "Düzenle";
-                    usersDataGridView.Columns["Delete"].HeaderText = "Sil";
+                    if (usersDataGridView.Columns["Email"] != null) usersDataGridView.Columns["Email"].HeaderText = "E-posta";
+                    if (usersDataGridView.Columns["FirstName"] != null) usersDataGridView.Columns["FirstName"].HeaderText = "Ad";
+                    if (usersDataGridView.Columns["LastName"] != null) usersDataGridView.Columns["LastName"].HeaderText = "Soyad";
+                    if (usersDataGridView.Columns["Role"] != null) usersDataGridView.Columns["Role"].HeaderText = "Rol";
+                    if (usersDataGridView.Columns["IsActive"] != null) usersDataGridView.Columns["IsActive"].HeaderText = "Aktif";
+                    if (usersDataGridView.Columns["IsAdmin"] != null) usersDataGridView.Columns["IsAdmin"].HeaderText = "Yönetici";
+                    if (usersDataGridView.Columns["CreatedDate"] != null) usersDataGridView.Columns["CreatedDate"].HeaderText = "Oluşturma Tarihi";
+                    if (usersDataGridView.Columns["LastLoginDate"] != null) usersDataGridView.Columns["LastLoginDate"].HeaderText = "Son Giriş";
+                    if (usersDataGridView.Columns["Edit"] != null) usersDataGridView.Columns["Edit"].HeaderText = "Düzenle";
+                    if (usersDataGridView.Columns["Delete"] != null) usersDataGridView.Columns["Delete"].HeaderText = "Sil";
                 }
             }
         }

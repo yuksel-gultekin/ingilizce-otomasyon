@@ -712,7 +712,7 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-                using var connection = new OleDbConnection(ConnectionString);
+                using var connection = new OleDbConnection(GetConnectionString());
                 await connection.OpenAsync();
 
                 var sql = "DELETE FROM Users WHERE Id = ?";
@@ -733,7 +733,7 @@ namespace EnglishAutomationApp.Data
         {
             try
             {
-                using var connection = new OleDbConnection(ConnectionString);
+                using var connection = new OleDbConnection(GetConnectionString());
                 await connection.OpenAsync();
 
                 var sql = @"UPDATE Users SET
