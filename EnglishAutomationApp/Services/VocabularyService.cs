@@ -76,22 +76,52 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<List<UserVocabulary>> GetUserVocabulariesAsync(int userId)
         {
-            // User vocabulary functionality needs to be implemented in AccessDatabaseHelper
-            await Task.CompletedTask;
-            return new List<UserVocabulary>();
+            return await Data.AccessDatabaseHelper.GetUserVocabularyAsync(userId);
         }
 
         public static async Task<UserVocabulary> AddOrUpdateUserVocabularyAsync(int userId, int wordId, bool isCorrect)
         {
-            // User vocabulary functionality needs to be implemented in AccessDatabaseHelper
-            await Task.CompletedTask;
-            return new UserVocabulary
+            // Get existing user vocabulary or create new one
+            var userVocabularyList = await Data.AccessDatabaseHelper.GetUserVocabularyAsync(userId);
+            var existingUserVocab = userVocabularyList.FirstOrDefault(uv => uv.VocabularyWordId == wordId);
+
+            if (existingUserVocab != null)
             {
-                UserId = userId,
-                VocabularyWordId = wordId,
-                FirstLearnedDate = DateTime.Now,
-                MasteryLevel = 1
-            };
+                // Update existing record
+                existingUserVocab.TotalAttempts++;
+                if (isCorrect)
+                {
+                    existingUserVocab.CorrectAnswers++;
+                    existingUserVocab.MasteryLevel = Math.Min(5, existingUserVocab.MasteryLevel + 1);
+                }
+                else
+                {
+                    existingUserVocab.MasteryLevel = Math.Max(1, existingUserVocab.MasteryLevel - 1);
+                }
+                existingUserVocab.ReviewCount++;
+                existingUserVocab.LastReviewedDate = DateTime.Now;
+
+                await Data.AccessDatabaseHelper.CreateOrUpdateUserVocabularyAsync(existingUserVocab);
+                return existingUserVocab;
+            }
+            else
+            {
+                // Create new record
+                var newUserVocab = new UserVocabulary
+                {
+                    UserId = userId,
+                    VocabularyWordId = wordId,
+                    FirstLearnedDate = DateTime.Now,
+                    LastReviewedDate = DateTime.Now,
+                    MasteryLevel = isCorrect ? 2 : 1,
+                    ReviewCount = 1,
+                    CorrectAnswers = isCorrect ? 1 : 0,
+                    TotalAttempts = 1
+                };
+
+                await Data.AccessDatabaseHelper.CreateOrUpdateUserVocabularyAsync(newUserVocab);
+                return newUserVocab;
+            }
         }
 
         public static async Task<List<VocabularyWord>> GetWordsForReviewAsync(int userId, int maxWords = 10)
@@ -103,25 +133,43 @@ namespace EnglishAutomationApp.Services
 
         public static async Task<Dictionary<string, int>> GetUserStatsAsync(int userId)
         {
-            // User stats functionality needs to be implemented in AccessDatabaseHelper
-            await Task.CompletedTask;
+            var userVocabulary = await Data.AccessDatabaseHelper.GetUserVocabularyAsync(userId);
             var allWords = await GetAllWordsAsync();
+
+            var totalWordsLearned = userVocabulary.Count;
+            var masteredWords = userVocabulary.Count(uv => uv.MasteryLevel >= 4);
+            var wordsInProgress = userVocabulary.Count(uv => uv.MasteryLevel < 4);
+            var totalReviews = userVocabulary.Sum(uv => uv.ReviewCount);
+            var totalAttempts = userVocabulary.Sum(uv => uv.TotalAttempts);
+            var totalCorrect = userVocabulary.Sum(uv => uv.CorrectAnswers);
+            var averageAccuracy = totalAttempts > 0 ? (int)((double)totalCorrect / totalAttempts * 100) : 0;
+
             return new Dictionary<string, int>
             {
-                ["TotalWordsLearned"] = allWords.Count,
-                ["MasteredWords"] = 0,
-                ["WordsInProgress"] = allWords.Count,
-                ["TotalReviews"] = 0,
-                ["AverageAccuracy"] = 0,
-                ["CurrentStreak"] = 0
+                ["TotalWordsLearned"] = totalWordsLearned,
+                ["MasteredWords"] = masteredWords,
+                ["WordsInProgress"] = wordsInProgress,
+                ["TotalReviews"] = totalReviews,
+                ["AverageAccuracy"] = averageAccuracy,
+                ["CurrentStreak"] = 0 // This would need additional tracking
             };
         }
 
         public static async Task<List<VocabularyWord>> GetWeakWordsAsync(int userId, int count = 5)
         {
-            // Weak words functionality needs to be implemented in AccessDatabaseHelper
+            var userVocabulary = await Data.AccessDatabaseHelper.GetUserVocabularyAsync(userId);
             var allWords = await GetAllWordsAsync();
-            return allWords.Take(count).ToList();
+
+            // Get words with low mastery level or low accuracy
+            var weakWordIds = userVocabulary
+                .Where(uv => uv.MasteryLevel <= 2 || uv.AccuracyRate < 60)
+                .OrderBy(uv => uv.MasteryLevel)
+                .ThenBy(uv => uv.AccuracyRate)
+                .Take(count)
+                .Select(uv => uv.VocabularyWordId)
+                .ToList();
+
+            return allWords.Where(w => weakWordIds.Contains(w.Id)).ToList();
         }
 
         private static int GetReviewInterval(int masteryLevel)

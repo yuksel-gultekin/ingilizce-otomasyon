@@ -31,7 +31,7 @@ namespace EnglishAutomationApp
             try
             {
                 // Initialize Access database
-                await AppDbContext.InitializeDatabaseAsync();
+                await AccessDatabaseHelper.InitializeDatabaseAsync();
 
                 ErrorHandler.LogInfo("Access database initialized successfully.");
             }
