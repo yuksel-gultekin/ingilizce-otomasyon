@@ -454,9 +454,8 @@ namespace EnglishAutomationApp.Views.Pages
 
                 if (wordsForReview.Any())
                 {
-                    var reviewForm = new StudyModeForm(wordsForReview, isReviewMode: true);
-                    reviewForm.ShowDialog();
-                    LoadDataAsync(); // Refresh to update stats
+                    MessageBox.Show("Study Mode feature has been removed.", "Info",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -480,16 +479,8 @@ namespace EnglishAutomationApp.Views.Pages
                 return;
             }
 
-            try
-            {
-                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id);
-                statsForm.ShowDialog();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading statistics: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            MessageBox.Show("Vocabulary Stats feature has been removed.", "Info",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void UpdateLanguage()
