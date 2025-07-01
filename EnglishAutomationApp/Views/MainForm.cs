@@ -54,7 +54,6 @@ namespace EnglishAutomationApp.Views
             learningMenu.DropDownItems.Add("📊 Dashboard", null, DashboardMenuItem_Click);
             learningMenu.DropDownItems.Add("📚 Courses", null, CoursesMenuItem_Click);
             learningMenu.DropDownItems.Add("📖 Vocabulary", null, VocabularyMenuItem_Click);
-            learningMenu.DropDownItems.Add("📈 Progress", null, ProgressMenuItem_Click);
 
             // Admin Menu (will be shown only for admin users)
             var adminMenu = new ToolStripMenuItem("Admin");
@@ -165,11 +164,7 @@ namespace EnglishAutomationApp.Views
             UpdateStatus("Vocabulary");
         }
 
-        private void ProgressMenuItem_Click(object? sender, EventArgs e)
-        {
-            ShowUserControl(new ProgressUserControl());
-            UpdateStatus("Progress");
-        }
+
 
 
 
@@ -226,6 +221,17 @@ namespace EnglishAutomationApp.Views
         {
             contentPanel.Controls.Clear();
             userControl.Dock = DockStyle.Fill;
+
+            // Set language for supported controls
+            if (userControl is VocabularyUserControl vocabControl)
+            {
+                vocabControl.SetLanguage(isEnglish);
+            }
+            else if (userControl is CoursesUserControl coursesControl)
+            {
+                coursesControl.SetLanguage(isEnglish);
+            }
+
             contentPanel.Controls.Add(userControl);
         }
 
@@ -240,15 +246,26 @@ namespace EnglishAutomationApp.Views
             CoursesMenuItem_Click(null, EventArgs.Empty);
         }
 
-        public void NavigateToProgressPage()
-        {
-            ProgressMenuItem_Click(null, EventArgs.Empty);
-        }
+
 
         private void LanguageComboBox_SelectedIndexChanged(object? sender, EventArgs e)
         {
             isEnglish = languageComboBox.SelectedIndex == 0;
             UpdateLanguage();
+
+            // Update current user control language
+            if (contentPanel.Controls.Count > 0)
+            {
+                var currentControl = contentPanel.Controls[0];
+                if (currentControl is VocabularyUserControl vocabControl)
+                {
+                    vocabControl.SetLanguage(isEnglish);
+                }
+                else if (currentControl is CoursesUserControl coursesControl)
+                {
+                    coursesControl.SetLanguage(isEnglish);
+                }
+            }
         }
 
         private void UpdateLanguage()
@@ -264,7 +281,7 @@ namespace EnglishAutomationApp.Views
                 UpdateMenuLanguage("File", "Learning", "Admin", "Help");
                 UpdateMenuItemsLanguage(
                     new[] { "Logout", "Exit" },
-                    new[] { "📊 Dashboard", "📚 Courses", "📖 Vocabulary", "📈 Progress" },
+                    new[] { "📊 Dashboard", "📚 Courses", "📖 Vocabulary" },
                     new[] { "⚙️ Admin Panel" },
                     new[] { "About" }
                 );
@@ -280,7 +297,7 @@ namespace EnglishAutomationApp.Views
                 UpdateMenuLanguage("Dosya", "Öğrenme", "Yönetici", "Yardım");
                 UpdateMenuItemsLanguage(
                     new[] { "Çıkış Yap", "Kapat" },
-                    new[] { "📊 Kontrol Paneli", "📚 Kurslar", "📖 Kelimeler", "📈 İlerleme" },
+                    new[] { "📊 Kontrol Paneli", "📚 Kurslar", "📖 Kelimeler" },
                     new[] { "⚙️ Yönetici Paneli" },
                     new[] { "Hakkında" }
                 );
@@ -308,12 +325,11 @@ namespace EnglishAutomationApp.Views
             }
 
             // Update Learning menu items
-            if (menuStrip.Items[1] is ToolStripMenuItem learningMenu && learningMenu.DropDownItems.Count >= 4)
+            if (menuStrip.Items[1] is ToolStripMenuItem learningMenu && learningMenu.DropDownItems.Count >= 3)
             {
                 learningMenu.DropDownItems[0].Text = learningItems[0]; // Dashboard
                 learningMenu.DropDownItems[1].Text = learningItems[1]; // Courses
                 learningMenu.DropDownItems[2].Text = learningItems[2]; // Vocabulary
-                learningMenu.DropDownItems[3].Text = learningItems[3]; // Progress
             }
 
             // Update Admin menu items

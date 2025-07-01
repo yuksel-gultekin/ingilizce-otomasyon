@@ -297,7 +297,7 @@ namespace EnglishAutomationApp.Views.Pages
             LoadUsersAsync();
         }
 
-        private void UsersDataGridView_CellClick(object? sender, DataGridViewCellEventArgs e)
+        private async void UsersDataGridView_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
@@ -310,19 +310,82 @@ namespace EnglishAutomationApp.Views.Pages
 
             if (usersDataGridView.Columns[e.ColumnIndex].Name == "Edit")
             {
-                MessageBox.Show("Edit User functionality will be implemented soon.",
-                    "Coming Soon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await EditUser(user);
             }
             else if (usersDataGridView.Columns[e.ColumnIndex].Name == "Delete")
             {
-                var result = MessageBox.Show($"Are you sure you want to delete user '{user.Email}'?",
-                    "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                await DeleteUser(user);
+            }
+        }
+
+        private async Task EditUser(User user)
+        {
+            try
+            {
+                var editUserForm = new EditUserForm(user, isEnglish);
+                if (editUserForm.ShowDialog() == DialogResult.OK)
+                {
+                    LoadUsersAsync(); // Refresh the list
+                }
+            }
+            catch (Exception ex)
+            {
+                var message = isEnglish ? $"Error opening edit form: {ex.Message}" : $"Düzenleme formu açılırken hata: {ex.Message}";
+                MessageBox.Show(message, isEnglish ? "Error" : "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async Task DeleteUser(User user)
+        {
+            try
+            {
+                // Prevent deleting the current admin user
+                if (user.IsAdmin && allUsers.Count(u => u.IsAdmin) <= 1)
+                {
+                    var message = isEnglish ?
+                        "Cannot delete the last admin user. At least one admin must remain." :
+                        "Son yönetici kullanıcı silinemez. En az bir yönetici kalmalıdır.";
+                    MessageBox.Show(message, isEnglish ? "Cannot Delete" : "Silinemez",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                var confirmMessage = isEnglish ?
+                    $"Are you sure you want to delete user '{user.Email}'?\n\nThis action cannot be undone." :
+                    $"'{user.Email}' kullanıcısını silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz.";
+
+                var confirmTitle = isEnglish ? "Confirm Delete" : "Silme Onayı";
+
+                var result = MessageBox.Show(confirmMessage, confirmTitle,
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                 if (result == DialogResult.Yes)
                 {
-                    MessageBox.Show("Delete user functionality will be implemented soon.",
-                        "Coming Soon", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    var success = await AccessDatabaseHelper.DeleteUserAsync(user.Id);
+
+                    if (success)
+                    {
+                        var successMessage = isEnglish ?
+                            "User deleted successfully." :
+                            "Kullanıcı başarıyla silindi.";
+                        MessageBox.Show(successMessage, isEnglish ? "Success" : "Başarılı",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadUsersAsync(); // Refresh the list
+                    }
+                    else
+                    {
+                        var errorMessage = isEnglish ?
+                            "Failed to delete user. Please try again." :
+                            "Kullanıcı silinemedi. Lütfen tekrar deneyin.";
+                        MessageBox.Show(errorMessage, isEnglish ? "Error" : "Hata",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                var message = isEnglish ? $"Error deleting user: {ex.Message}" : $"Kullanıcı silinirken hata: {ex.Message}";
+                MessageBox.Show(message, isEnglish ? "Error" : "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

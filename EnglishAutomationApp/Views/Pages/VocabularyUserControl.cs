@@ -25,10 +25,19 @@ namespace EnglishAutomationApp.Views.Pages
         private List<VocabularyWord> allWords = new List<VocabularyWord>();
         private List<VocabularyWord> filteredWords = new List<VocabularyWord>();
 
+        // Language support
+        private bool isEnglish = true;
+
         public VocabularyUserControl()
         {
             InitializeComponent();
             LoadDataAsync();
+        }
+
+        public void SetLanguage(bool english)
+        {
+            isEnglish = english;
+            UpdateLanguage();
         }
 
         private void InitializeComponent()
@@ -208,18 +217,41 @@ namespace EnglishAutomationApp.Views.Pages
                     var masteredWords = userStats.GetValueOrDefault("MasteredWords", 0);
                     var currentStreak = userStats.GetValueOrDefault("CurrentStreak", 0);
 
-                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} | " +
-                                     $"Learned: {learnedWords} | Mastered: {masteredWords} | " +
-                                     $"Streak: {currentStreak} days 🔥";
+                    if (isEnglish)
+                    {
+                        statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} | " +
+                                         $"Learned: {learnedWords} | Mastered: {masteredWords} | " +
+                                         $"Streak: {currentStreak} days 🔥";
+                    }
+                    else
+                    {
+                        statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} | " +
+                                         $"Öğrenilen: {learnedWords} | Ustalaşılan: {masteredWords} | " +
+                                         $"Seri: {currentStreak} gün 🔥";
+                    }
                 }
                 catch
                 {
-                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                    if (isEnglish)
+                    {
+                        statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                    }
+                    else
+                    {
+                        statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} kelime";
+                    }
                 }
             }
             else
             {
-                statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                if (isEnglish)
+                {
+                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                }
+                else
+                {
+                    statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} kelime";
+                }
             }
         }
 
@@ -267,30 +299,30 @@ namespace EnglishAutomationApp.Views.Pages
                 card.Controls.Add(exampleLabel);
             }
 
-            // Difficulty and category badges
+            // Difficulty and category badges (bigger size)
             var difficultyLabel = new Label
             {
                 Text = word.DifficultyText,
-                Font = ModernUIHelper.Fonts.Small,
+                Font = ModernUIHelper.Fonts.Body,
                 ForeColor = Color.White,
                 BackColor = GetDifficultyColor(word.Difficulty),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(card.Width - 180, 10),
-                Size = new Size(70, 20),
-                Padding = new Padding(4),
+                Location = new Point(card.Width - 200, 10),
+                Size = new Size(90, 28),
+                Padding = new Padding(6),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             var categoryLabel = new Label
             {
                 Text = word.Category ?? "General",
-                Font = ModernUIHelper.Fonts.Small,
+                Font = ModernUIHelper.Fonts.Body,
                 ForeColor = ModernUIHelper.Colors.TextSecondary,
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(card.Width - 100, 10),
-                Size = new Size(80, 20),
-                Padding = new Padding(4),
+                Size = new Size(90, 28),
+                Padding = new Padding(6),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
@@ -460,6 +492,63 @@ namespace EnglishAutomationApp.Views.Pages
                 MessageBox.Show($"Error loading statistics: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📖 Vocabulary Learning";
+
+                searchBox.PlaceholderText = "Search words...";
+                addWordButton.Text = "+ Add Word";
+
+                // Update filter items
+                if (categoryFilter.Items.Count > 0)
+                {
+                    var selectedCategory = categoryFilter.SelectedItem?.ToString();
+                    categoryFilter.Items[0] = "All Categories";
+                    if (selectedCategory == "Tüm Kategoriler") categoryFilter.SelectedIndex = 0;
+                }
+
+                if (difficultyFilter.Items.Count > 0)
+                {
+                    var selectedDifficulty = difficultyFilter.SelectedIndex;
+                    difficultyFilter.Items.Clear();
+                    difficultyFilter.Items.AddRange(new[] { "All Levels", "Beginner", "Intermediate", "Advanced" });
+                    difficultyFilter.SelectedIndex = selectedDifficulty >= 0 ? selectedDifficulty : 0;
+                }
+            }
+            else
+            {
+                // Turkish
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📖 Kelime Öğrenme";
+
+                searchBox.PlaceholderText = "Kelime ara...";
+                addWordButton.Text = "+ Kelime Ekle";
+
+                // Update filter items
+                if (categoryFilter.Items.Count > 0)
+                {
+                    var selectedCategory = categoryFilter.SelectedItem?.ToString();
+                    categoryFilter.Items[0] = "Tüm Kategoriler";
+                    if (selectedCategory == "All Categories") categoryFilter.SelectedIndex = 0;
+                }
+
+                if (difficultyFilter.Items.Count > 0)
+                {
+                    var selectedDifficulty = difficultyFilter.SelectedIndex;
+                    difficultyFilter.Items.Clear();
+                    difficultyFilter.Items.AddRange(new[] { "Tüm Seviyeler", "Başlangıç", "Orta", "İleri" });
+                    difficultyFilter.SelectedIndex = selectedDifficulty >= 0 ? selectedDifficulty : 0;
+                }
+            }
+
+            // Update stats label
+            UpdateStatsLabel();
         }
     }
 }

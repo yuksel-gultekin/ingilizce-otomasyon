@@ -7,10 +7,9 @@ using EnglishAutomationApp.Models;
 
 namespace EnglishAutomationApp.Views
 {
-    public partial class AddUserForm : Form
+    public partial class EditUserForm : Form
     {
         private TextBox emailTextBox = null!;
-        private TextBox passwordTextBox = null!;
         private TextBox firstNameTextBox = null!;
         private TextBox lastNameTextBox = null!;
         private ComboBox roleComboBox = null!;
@@ -19,14 +18,18 @@ namespace EnglishAutomationApp.Views
         private Button saveButton = null!;
         private Button cancelButton = null!;
         private Label messageLabel = null!;
-
+        
+        private User userToEdit;
+        
         // Language support
         private bool isEnglish = true;
 
-        public AddUserForm(bool english = true)
+        public EditUserForm(User user, bool english = true)
         {
+            userToEdit = user;
             isEnglish = english;
             InitializeComponent();
+            LoadUserData();
             UpdateLanguage();
         }
 
@@ -35,8 +38,8 @@ namespace EnglishAutomationApp.Views
             this.SuspendLayout();
 
             // Form properties
-            this.Text = "Add New User - Admin Panel";
-            this.Size = new Size(450, 550);
+            this.Text = "Edit User - Admin Panel";
+            this.Size = new Size(450, 500);
             this.StartPosition = FormStartPosition.CenterParent;
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -45,7 +48,7 @@ namespace EnglishAutomationApp.Views
 
             // Title
             var titleLabel = new Label();
-            titleLabel.Text = isEnglish ? "👤 Add New User" : "👤 Yeni Kullanıcı Ekle";
+            titleLabel.Text = isEnglish ? "✏️ Edit User" : "✏️ Kullanıcı Düzenle";
             titleLabel.Font = new Font("Segoe UI", 18, FontStyle.Bold);
             titleLabel.ForeColor = Color.White;
             titleLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -56,19 +59,13 @@ namespace EnglishAutomationApp.Views
             var mainPanel = new Panel();
             mainPanel.BackColor = Color.FromArgb(30, 41, 59); // Slate-800
             mainPanel.Location = new Point(20, 70);
-            mainPanel.Size = new Size(410, 420);
+            mainPanel.Size = new Size(410, 370);
 
             int yPos = 20;
 
             // Email
             var emailLabel = CreateLabel(isEnglish ? "EMAIL ADDRESS" : "E-POSTA ADRESİ", yPos);
             emailTextBox = CreateTextBox(yPos + 20);
-            yPos += 60;
-
-            // Password
-            var passwordLabel = CreateLabel(isEnglish ? "PASSWORD" : "ŞİFRE", yPos);
-            passwordTextBox = CreateTextBox(yPos + 20);
-            passwordTextBox.UseSystemPasswordChar = true;
             yPos += 60;
 
             // First Name
@@ -101,7 +98,6 @@ namespace EnglishAutomationApp.Views
             isActiveCheckBox.ForeColor = Color.White;
             isActiveCheckBox.Location = new Point(30, yPos);
             isActiveCheckBox.Size = new Size(150, 25);
-            isActiveCheckBox.Checked = true;
 
             isAdminCheckBox = new CheckBox();
             isAdminCheckBox.Text = isEnglish ? "Admin Privileges" : "Yönetici Yetkisi";
@@ -113,7 +109,7 @@ namespace EnglishAutomationApp.Views
 
             // Buttons
             saveButton = new Button();
-            saveButton.Text = isEnglish ? "💾 Save User" : "💾 Kullanıcı Kaydet";
+            saveButton.Text = isEnglish ? "💾 Save Changes" : "💾 Değişiklikleri Kaydet";
             saveButton.Font = new Font("Segoe UI", 11, FontStyle.Bold);
             saveButton.BackColor = Color.FromArgb(34, 197, 94); // Green-500
             saveButton.ForeColor = Color.White;
@@ -148,8 +144,6 @@ namespace EnglishAutomationApp.Views
             // Add controls to main panel
             mainPanel.Controls.Add(emailLabel);
             mainPanel.Controls.Add(emailTextBox);
-            mainPanel.Controls.Add(passwordLabel);
-            mainPanel.Controls.Add(passwordTextBox);
             mainPanel.Controls.Add(firstNameLabel);
             mainPanel.Controls.Add(firstNameTextBox);
             mainPanel.Controls.Add(lastNameLabel);
@@ -192,6 +186,16 @@ namespace EnglishAutomationApp.Views
             return textBox;
         }
 
+        private void LoadUserData()
+        {
+            emailTextBox.Text = userToEdit.Email;
+            firstNameTextBox.Text = userToEdit.FirstName ?? "";
+            lastNameTextBox.Text = userToEdit.LastName ?? "";
+            roleComboBox.SelectedItem = userToEdit.Role;
+            isActiveCheckBox.Checked = userToEdit.IsActive;
+            isAdminCheckBox.Checked = userToEdit.IsAdmin;
+        }
+
         private async void SaveButton_Click(object? sender, EventArgs e)
         {
             if (!ValidateInput())
@@ -202,24 +206,19 @@ namespace EnglishAutomationApp.Views
 
             try
             {
-                var newUser = new User
-                {
-                    Email = emailTextBox.Text.Trim().ToLower(),
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordTextBox.Text),
-                    FirstName = string.IsNullOrWhiteSpace(firstNameTextBox.Text) ? null : firstNameTextBox.Text.Trim(),
-                    LastName = string.IsNullOrWhiteSpace(lastNameTextBox.Text) ? null : lastNameTextBox.Text.Trim(),
-                    Role = roleComboBox.SelectedItem?.ToString() ?? "User",
-                    IsActive = isActiveCheckBox.Checked,
-                    IsAdmin = isAdminCheckBox.Checked,
-                    CreatedDate = DateTime.Now,
-                    LastLoginDate = null
-                };
+                // Update user object
+                userToEdit.Email = emailTextBox.Text.Trim().ToLower();
+                userToEdit.FirstName = string.IsNullOrWhiteSpace(firstNameTextBox.Text) ? null : firstNameTextBox.Text.Trim();
+                userToEdit.LastName = string.IsNullOrWhiteSpace(lastNameTextBox.Text) ? null : lastNameTextBox.Text.Trim();
+                userToEdit.Role = roleComboBox.SelectedItem?.ToString() ?? "User";
+                userToEdit.IsActive = isActiveCheckBox.Checked;
+                userToEdit.IsAdmin = isAdminCheckBox.Checked;
 
-                var success = await AccessDatabaseHelper.CreateUserAsync(newUser);
+                var success = await AccessDatabaseHelper.UpdateUserAsync(userToEdit);
 
                 if (success)
                 {
-                    var message = isEnglish ? "User created successfully!" : "Kullanıcı başarıyla oluşturuldu!";
+                    var message = isEnglish ? "User updated successfully!" : "Kullanıcı başarıyla güncellendi!";
                     ShowMessage(message, Color.FromArgb(34, 197, 94));
                     await Task.Delay(1500);
                     this.DialogResult = DialogResult.OK;
@@ -227,7 +226,7 @@ namespace EnglishAutomationApp.Views
                 }
                 else
                 {
-                    var message = isEnglish ? "Failed to create user. Please try again." : "Kullanıcı oluşturulamadı. Lütfen tekrar deneyin.";
+                    var message = isEnglish ? "Failed to update user. Please try again." : "Kullanıcı güncellenemedi. Lütfen tekrar deneyin.";
                     ShowMessage(message, Color.FromArgb(248, 113, 113));
                 }
             }
@@ -239,7 +238,7 @@ namespace EnglishAutomationApp.Views
             finally
             {
                 saveButton.Enabled = true;
-                saveButton.Text = isEnglish ? "💾 Save User" : "💾 Kullanıcı Kaydet";
+                saveButton.Text = isEnglish ? "💾 Save Changes" : "💾 Değişiklikleri Kaydet";
             }
         }
 
@@ -250,14 +249,6 @@ namespace EnglishAutomationApp.Views
                 var message = isEnglish ? "Email address is required." : "E-posta adresi gereklidir.";
                 ShowMessage(message, Color.FromArgb(248, 113, 113));
                 emailTextBox.Focus();
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(passwordTextBox.Text) || passwordTextBox.Text.Length < 6)
-            {
-                var message = isEnglish ? "Password must be at least 6 characters long." : "Şifre en az 6 karakter olmalıdır.";
-                ShowMessage(message, Color.FromArgb(248, 113, 113));
-                passwordTextBox.Focus();
                 return false;
             }
 
@@ -281,13 +272,12 @@ namespace EnglishAutomationApp.Views
             if (isEnglish)
             {
                 // English
-                this.Text = "Add New User - Admin Panel";
-                // Title is set in InitializeComponent
+                this.Text = "Edit User - Admin Panel";
             }
             else
             {
                 // Turkish
-                this.Text = "Yeni Kullanıcı Ekle - Yönetici Paneli";
+                this.Text = "Kullanıcı Düzenle - Yönetici Paneli";
             }
         }
     }

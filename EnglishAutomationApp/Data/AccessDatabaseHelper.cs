@@ -708,6 +708,72 @@ namespace EnglishAutomationApp.Data
             }
         }
 
+        public static async Task<bool> DeleteUserAsync(int userId)
+        {
+            try
+            {
+                using var connection = new OleDbConnection(ConnectionString);
+                await connection.OpenAsync();
+
+                var sql = "DELETE FROM Users WHERE Id = ?";
+                using var command = new OleDbCommand(sql, connection);
+                command.Parameters.Add("?", OleDbType.Integer).Value = userId;
+
+                var rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error deleting user: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static async Task<bool> UpdateUserAsync(User user)
+        {
+            try
+            {
+                using var connection = new OleDbConnection(ConnectionString);
+                await connection.OpenAsync();
+
+                var sql = @"UPDATE Users SET
+                           Email = ?,
+                           Role = ?,
+                           FirstName = ?,
+                           LastName = ?,
+                           IsActive = ?,
+                           IsAdmin = ?
+                           WHERE Id = ?";
+
+                using var command = new OleDbCommand(sql, connection);
+
+                command.Parameters.Add("?", OleDbType.VarChar, 255).Value = user.Email ?? "";
+                command.Parameters.Add("?", OleDbType.VarChar, 50).Value = user.Role ?? "User";
+
+                if (string.IsNullOrWhiteSpace(user.FirstName))
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = DBNull.Value;
+                else
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = user.FirstName;
+
+                if (string.IsNullOrWhiteSpace(user.LastName))
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = DBNull.Value;
+                else
+                    command.Parameters.Add("?", OleDbType.VarChar, 100).Value = user.LastName;
+
+                command.Parameters.Add("?", OleDbType.Integer).Value = user.IsActive ? 1 : 0;
+                command.Parameters.Add("?", OleDbType.Integer).Value = user.IsAdmin ? 1 : 0;
+                command.Parameters.Add("?", OleDbType.Integer).Value = user.Id;
+
+                var rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating user: {ex.Message}");
+                return false;
+            }
+        }
+
         // Course operations
         public static async Task<List<Course>> GetAllCoursesAsync()
         {

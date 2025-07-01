@@ -25,10 +25,19 @@ namespace EnglishAutomationApp.Views.Pages
         private List<Course> allCourses = new List<Course>();
         private List<Course> filteredCourses = new List<Course>();
 
+        // Language support
+        private bool isEnglish = true;
+
         public CoursesUserControl()
         {
             InitializeComponent();
             LoadCoursesAsync();
+        }
+
+        public void SetLanguage(bool english)
+        {
+            isEnglish = english;
+            UpdateLanguage();
         }
 
         private void InitializeComponent()
@@ -162,7 +171,15 @@ namespace EnglishAutomationApp.Views.Pages
         {
             var totalCourses = allCourses.Count;
             var displayedCourses = filteredCourses.Count;
-            statsLabel.Text = $"Total: {totalCourses} courses | Showing: {displayedCourses} courses | All courses are FREE!";
+
+            if (isEnglish)
+            {
+                statsLabel.Text = $"Total: {totalCourses} courses | Showing: {displayedCourses} courses | All courses are FREE!";
+            }
+            else
+            {
+                statsLabel.Text = $"Toplam: {totalCourses} kurs | Gösterilen: {displayedCourses} kurs | Tüm kurslar ÜCRETSİZ!";
+            }
         }
 
         private void ApplyFilters()
@@ -274,20 +291,22 @@ namespace EnglishAutomationApp.Views.Pages
             }
 
             // FREE Badge
+            var freeText = isEnglish ? "FREE" : "ÜCRETSİZ";
             var freeLabel = new Label
             {
-                Text = "FREE",
+                Text = freeText,
                 Font = ModernUIHelper.Fonts.BodyBold,
                 ForeColor = Color.White,
                 BackColor = ModernUIHelper.Colors.Success,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(0, 230),
-                Size = new Size(60, 25),
+                Size = new Size(isEnglish ? 60 : 80, 25),
                 Padding = new Padding(4)
             };
 
             // Start Button
-            var startButton = ModernUIHelper.CreateLargeButton("Start Learning", ModernUIHelper.Colors.Primary);
+            var buttonText = isEnglish ? "Start Learning" : "Öğrenmeye Başla";
+            var startButton = ModernUIHelper.CreateLargeButton(buttonText, ModernUIHelper.Colors.Primary);
             startButton.Location = new Point(0, card.Height - 60);
             startButton.Width = card.Width - 40;
             startButton.Tag = course;
@@ -324,6 +343,68 @@ namespace EnglishAutomationApp.Views.Pages
                 var courseContentForm = new CourseContentForm(course);
                 courseContentForm.ShowDialog();
             }
+        }
+
+        private void UpdateLanguage()
+        {
+            if (isEnglish)
+            {
+                // English
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📚 English Learning Courses";
+
+                searchTextBox.PlaceholderText = "Search courses...";
+
+                // Update level filter
+                if (levelFilterComboBox.Items.Count > 0)
+                {
+                    var selectedLevel = levelFilterComboBox.SelectedIndex;
+                    levelFilterComboBox.Items.Clear();
+                    levelFilterComboBox.Items.AddRange(new[] { "All Levels", "Beginner", "Intermediate", "Advanced" });
+                    levelFilterComboBox.SelectedIndex = selectedLevel >= 0 ? selectedLevel : 0;
+                }
+
+                // Update type filter
+                if (typeFilterComboBox.Items.Count > 0)
+                {
+                    var selectedType = typeFilterComboBox.SelectedIndex;
+                    typeFilterComboBox.Items.Clear();
+                    typeFilterComboBox.Items.AddRange(new[] { "All Types", "Grammar", "Vocabulary", "Speaking", "Writing", "Listening", "Pronunciation" });
+                    typeFilterComboBox.SelectedIndex = selectedType >= 0 ? selectedType : 0;
+                }
+            }
+            else
+            {
+                // Turkish
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📚 İngilizce Öğrenme Kursları";
+
+                searchTextBox.PlaceholderText = "Kurs ara...";
+
+                // Update level filter
+                if (levelFilterComboBox.Items.Count > 0)
+                {
+                    var selectedLevel = levelFilterComboBox.SelectedIndex;
+                    levelFilterComboBox.Items.Clear();
+                    levelFilterComboBox.Items.AddRange(new[] { "Tüm Seviyeler", "Başlangıç", "Orta", "İleri" });
+                    levelFilterComboBox.SelectedIndex = selectedLevel >= 0 ? selectedLevel : 0;
+                }
+
+                // Update type filter
+                if (typeFilterComboBox.Items.Count > 0)
+                {
+                    var selectedType = typeFilterComboBox.SelectedIndex;
+                    typeFilterComboBox.Items.Clear();
+                    typeFilterComboBox.Items.AddRange(new[] { "Tüm Türler", "Gramer", "Kelime", "Konuşma", "Yazma", "Dinleme", "Telaffuz" });
+                    typeFilterComboBox.SelectedIndex = selectedType >= 0 ? selectedType : 0;
+                }
+            }
+
+            // Update stats label
+            UpdateStatsLabel();
+
+            // Refresh course display to update button texts
+            DisplayCourses();
         }
     }
 }
