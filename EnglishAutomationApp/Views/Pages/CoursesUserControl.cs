@@ -334,19 +334,25 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void StartCourseButton_Click(object? sender, EventArgs e)
         {
+            // Önce basit test
+            MessageBox.Show("Buton çalışıyor!", "Test", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             var button = sender as Button;
             var course = button?.Tag as Course;
 
-            if (course != null)
+            if (course == null)
             {
-                // Basit MessageBox ile kurs bilgilerini göster
-                var title = isEnglish ? "Course Content" : "Kurs İçeriği";
-                var message = isEnglish ?
-                    $"Course: {course.Title}\n\nLevel: {course.LevelText}\nType: {course.TypeText}\nDescription: {course.Description}\n\nThis course is now available for learning!" :
-                    $"Kurs: {course.Title}\n\nSeviye: {GetTurkishLevel(course.Level)}\nTür: {GetTurkishCourseType(course.Type)}\nAçıklama: {course.Description}\n\nBu kurs artık öğrenime hazır!";
-
-                MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Course null!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            // Basit MessageBox ile kurs bilgilerini göster
+            var title = isEnglish ? "Course Content" : "Kurs İçeriği";
+            var message = isEnglish ?
+                $"Course: {course.Title}\n\nLevel: {course.LevelText}\nType: {course.TypeText}\nDescription: {course.Description}\n\nThis course is now available for learning!" :
+                $"Kurs: {course.Title}\n\nSeviye: {GetTurkishLevel(course.Level)}\nTür: {GetTurkishCourseType(course.Type)}\nAçıklama: {course.Description}\n\nBu kurs artık öğrenime hazır!";
+
+            MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private string GetTurkishLevel(CourseLevel level)
