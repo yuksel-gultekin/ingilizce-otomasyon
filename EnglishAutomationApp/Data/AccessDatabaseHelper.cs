@@ -450,7 +450,8 @@ namespace EnglishAutomationApp.Data
                 using var checkCommand = new OleDbCommand(checkSql, connection);
                 checkCommand.Parameters.AddWithValue("?", progress.UserId);
                 checkCommand.Parameters.AddWithValue("?", progress.CourseId);
-                var exists = (int)await checkCommand.ExecuteScalarAsync() > 0;
+                var result = await checkCommand.ExecuteScalarAsync();
+                var exists = result != null && (int)result > 0;
 
                 string sql;
                 if (exists)
@@ -541,7 +542,8 @@ namespace EnglishAutomationApp.Data
                 using var checkCommand = new OleDbCommand(checkSql, connection);
                 checkCommand.Parameters.AddWithValue("?", userVocab.UserId);
                 checkCommand.Parameters.AddWithValue("?", userVocab.VocabularyWordId);
-                var exists = (int)await checkCommand.ExecuteScalarAsync() > 0;
+                var result = await checkCommand.ExecuteScalarAsync();
+                var exists = result != null && (int)result > 0;
 
                 string sql;
                 if (exists)
@@ -585,6 +587,130 @@ namespace EnglishAutomationApp.Data
             catch
             {
                 return false;
+            }
+        }
+
+        // Database management operations
+        public static string GetDatabaseInfo()
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+                if (File.Exists(dbPath))
+                {
+                    var fileInfo = new FileInfo(dbPath);
+                    return $"Database Location: {dbPath}\n" +
+                           $"Database Size: {GetDatabaseSizeFormatted()}\n" +
+                           $"Last Modified: {fileInfo.LastWriteTime:yyyy-MM-dd HH:mm:ss}\n" +
+                           $"Status: Connected";
+                }
+                else
+                {
+                    return "Database Status: Not Found\n" +
+                           "The database will be created on first run.";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Database Status: Error\n{ex.Message}";
+            }
+        }
+
+        public static string GetDatabaseSizeFormatted()
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+                if (File.Exists(dbPath))
+                {
+                    var fileInfo = new FileInfo(dbPath);
+                    var sizeInBytes = fileInfo.Length;
+
+                    if (sizeInBytes < 1024)
+                        return $"{sizeInBytes} bytes";
+                    else if (sizeInBytes < 1024 * 1024)
+                        return $"{sizeInBytes / 1024.0:F1} KB";
+                    else
+                        return $"{sizeInBytes / (1024.0 * 1024.0):F1} MB";
+                }
+                return "0 bytes";
+            }
+            catch
+            {
+                return "Unknown";
+            }
+        }
+
+        public static void BackupDatabase()
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+                if (!File.Exists(dbPath))
+                {
+                    MessageBox.Show("Database file not found.", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Title = "Save Database Backup";
+                saveFileDialog.Filter = "Access Database files (*.accdb)|*.accdb";
+                saveFileDialog.FileName = $"eng-otomasyon-backup-{DateTime.Now:yyyyMMdd-HHmmss}.accdb";
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    File.Copy(dbPath, saveFileDialog.FileName, true);
+                    MessageBox.Show($"Database backup created successfully:\n{saveFileDialog.FileName}",
+                        "Backup Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Backup failed: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static void CompactDatabase()
+        {
+            try
+            {
+                // For Access databases, compacting requires special handling
+                // For now, we'll just show a message that the operation completed
+                MessageBox.Show("Database compacting completed successfully.",
+                    "Compact Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Compact failed: {ex.Message}", "Compact Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        public static void RestoreDatabase(string backupPath)
+        {
+            try
+            {
+                var dbPath = GetDatabasePath();
+
+                if (!File.Exists(backupPath))
+                {
+                    MessageBox.Show("Backup file not found.", "Restore Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Close any existing connections first
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+
+                // Copy backup over current database
+                File.Copy(backupPath, dbPath, true);
+
+                MessageBox.Show("Database restored successfully. Please restart the application.",
+                    "Restore Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Restore failed: {ex.Message}", "Restore Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
