@@ -232,6 +232,7 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Reset UI state
             showingAnswer = false;
+            Console.WriteLine($"Answer is now hidden: {showingAnswer}");
             meaningLabel.Visible = false;
             exampleLabel.Visible = false;
             showAnswerButton.Visible = true;
@@ -244,6 +245,7 @@ namespace EnglishAutomationApp.Views.Pages
         private void ShowAnswerButton_Click(object? sender, EventArgs e)
         {
             showingAnswer = true;
+            Console.WriteLine($"Answer is now showing: {showingAnswer}");
             meaningLabel.Visible = true;
             exampleLabel.Visible = true;
             showAnswerButton.Visible = false;
