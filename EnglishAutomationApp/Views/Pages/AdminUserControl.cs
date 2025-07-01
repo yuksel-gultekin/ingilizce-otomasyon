@@ -406,18 +406,37 @@ namespace EnglishAutomationApp.Views.Pages
                 refreshButton.Text = "🔄 Refresh";
 
                 // Update DataGridView headers
-                if (usersDataGridView.Columns.Count > 0)
+                if (usersDataGridView != null && usersDataGridView.Columns != null)
                 {
-                    if (usersDataGridView.Columns["Email"] != null) usersDataGridView.Columns["Email"].HeaderText = "Email";
-                    if (usersDataGridView.Columns["FirstName"] != null) usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
-                    if (usersDataGridView.Columns["LastName"] != null) usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
-                    if (usersDataGridView.Columns["Role"] != null) usersDataGridView.Columns["Role"].HeaderText = "Role";
-                    if (usersDataGridView.Columns["IsActive"] != null) usersDataGridView.Columns["IsActive"].HeaderText = "Active";
-                    if (usersDataGridView.Columns["IsAdmin"] != null) usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
-                    if (usersDataGridView.Columns["CreatedDate"] != null) usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
-                    if (usersDataGridView.Columns["LastLoginDate"] != null) usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
-                    if (usersDataGridView.Columns["Edit"] != null) usersDataGridView.Columns["Edit"].HeaderText = "Edit";
-                    if (usersDataGridView.Columns["Delete"] != null) usersDataGridView.Columns["Delete"].HeaderText = "Delete";
+                    if (usersDataGridView.Columns.Contains("Email"))
+                        usersDataGridView.Columns["Email"].HeaderText = "Email";
+
+                    if (usersDataGridView.Columns.Contains("FirstName"))
+                        usersDataGridView.Columns["FirstName"].HeaderText = "First Name";
+
+                    if (usersDataGridView.Columns.Contains("LastName"))
+                        usersDataGridView.Columns["LastName"].HeaderText = "Last Name";
+
+                    if (usersDataGridView.Columns.Contains("Role"))
+                        usersDataGridView.Columns["Role"].HeaderText = "Role";
+
+                    if (usersDataGridView.Columns.Contains("IsActive"))
+                        usersDataGridView.Columns["IsActive"].HeaderText = "Active";
+
+                    if (usersDataGridView.Columns.Contains("IsAdmin"))
+                        usersDataGridView.Columns["IsAdmin"].HeaderText = "Admin";
+
+                    if (usersDataGridView.Columns.Contains("CreatedDate"))
+                        usersDataGridView.Columns["CreatedDate"].HeaderText = "Created Date";
+
+                    if (usersDataGridView.Columns.Contains("LastLoginDate"))
+                        usersDataGridView.Columns["LastLoginDate"].HeaderText = "Last Login";
+
+                    if (usersDataGridView.Columns.Contains("Edit"))
+                        usersDataGridView.Columns["Edit"].HeaderText = "Edit";
+
+                    if (usersDataGridView.Columns.Contains("Delete"))
+                        usersDataGridView.Columns["Delete"].HeaderText = "Delete";
                 }
             }
             else
