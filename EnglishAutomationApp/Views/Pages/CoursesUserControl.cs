@@ -304,12 +304,20 @@ namespace EnglishAutomationApp.Views.Pages
                 Padding = new Padding(6)
             };
 
-            // Start Button
+            // Start Button - Basit button oluştur
             var buttonText = isEnglish ? "Start Learning" : "Öğrenmeye Başla";
-            var startButton = ModernUIHelper.CreateLargeButton(buttonText, ModernUIHelper.Colors.Primary);
-            startButton.Location = new Point(0, card.Height - 60);
-            startButton.Width = card.Width - 40;
-            startButton.Tag = course;
+            var startButton = new Button
+            {
+                Text = buttonText,
+                BackColor = Color.Blue,
+                ForeColor = Color.White,
+                Location = new Point(0, card.Height - 60),
+                Size = new Size(card.Width - 40, 40),
+                Tag = course,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand
+            };
+            startButton.FlatAppearance.BorderSize = 0;
             startButton.Click += StartCourseButton_Click;
 
             card.Controls.AddRange(new Control[]
