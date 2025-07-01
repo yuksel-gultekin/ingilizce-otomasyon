@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EnglishAutomationApp.Data;
 using EnglishAutomationApp.Models;
-using EnglishAutomationApp.Views;
 using EnglishAutomationApp.Services;
 using EnglishAutomationApp.Helpers;
 
@@ -304,20 +303,12 @@ namespace EnglishAutomationApp.Views.Pages
                 Padding = new Padding(6)
             };
 
-            // Start Button - Basit button oluştur
+            // Start Button
             var buttonText = isEnglish ? "Start Learning" : "Öğrenmeye Başla";
-            var startButton = new Button
-            {
-                Text = buttonText,
-                BackColor = Color.Blue,
-                ForeColor = Color.White,
-                Location = new Point(0, card.Height - 60),
-                Size = new Size(card.Width - 40, 40),
-                Tag = course,
-                FlatStyle = FlatStyle.Flat,
-                Cursor = Cursors.Hand
-            };
-            startButton.FlatAppearance.BorderSize = 0;
+            var startButton = ModernUIHelper.CreateLargeButton(buttonText, ModernUIHelper.Colors.Primary);
+            startButton.Location = new Point(0, card.Height - 60);
+            startButton.Width = card.Width - 40;
+            startButton.Tag = course;
             startButton.Click += StartCourseButton_Click;
 
             card.Controls.AddRange(new Control[]
@@ -340,41 +331,17 @@ namespace EnglishAutomationApp.Views.Pages
             };
         }
 
-        private void startLearningButton_Click(object sender, EventArgs e)
+        private void StartCourseButton_Click(object? sender, EventArgs e)
         {
-            // Seçili kurs nesnesini al
-            Course selectedCourse = this.selectedCourse; // veya senin kurs modelin
-            bool isEnglish = true; // ya da seçilen dil durumuna göre false
+            var button = sender as Button;
+            var course = button?.Tag as Course;
 
-            // Yeni içerik formunu aç
-            var contentForm = new CourseContentForm(selectedCourse, isEnglish);
-            contentForm.ShowDialog();
-        }
-
-        private string GetTurkishLevel(CourseLevel level)
-        {
-            return level switch
+            if (course != null)
             {
-                CourseLevel.Beginner => "Başlangıç",
-                CourseLevel.Intermediate => "Orta",
-                CourseLevel.Advanced => "İleri",
-                _ => level.ToString()
-            };
-        }
-
-        private string GetTurkishCourseType(CourseType type)
-        {
-            return type switch
-            {
-                CourseType.Grammar => "Gramer",
-                CourseType.Vocabulary => "Kelime",
-                CourseType.Speaking => "Konuşma",
-                CourseType.Listening => "Dinleme",
-                CourseType.Reading => "Okuma",
-                CourseType.Writing => "Yazma",
-                CourseType.Pronunciation => "Telaffuz",
-                _ => type.ToString()
-            };
+                // Show course content form
+                var courseContentForm = new CourseContentForm(course);
+                courseContentForm.ShowDialog();
+            }
         }
 
         private void UpdateLanguage()
