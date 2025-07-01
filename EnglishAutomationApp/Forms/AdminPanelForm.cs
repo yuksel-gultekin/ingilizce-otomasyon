@@ -11,29 +11,29 @@ namespace EnglishAutomationApp.Forms
     public partial class AdminPanelForm : Form
     {
         private User _currentUser;
-        private TabControl tabControl;
-        private TabPage studentsTab;
-        private TabPage coursesTab;
-        private TabPage vocabularyTab;
-        private TabPage reportsTab;
+        private TabControl tabControl = null!;
+        private TabPage studentsTab = null!;
+        private TabPage coursesTab = null!;
+        private TabPage vocabularyTab = null!;
+        private TabPage reportsTab = null!;
 
         // Students Tab Controls
-        private DataGridView studentsGrid;
-        private Button addStudentBtn;
-        private Button editStudentBtn;
-        private Button deleteStudentBtn;
+        private DataGridView studentsGrid = null!;
+        private Button addStudentBtn = null!;
+        private Button editStudentBtn = null!;
+        private Button deleteStudentBtn = null!;
 
         // Courses Tab Controls
-        private DataGridView coursesGrid;
-        private Button addCourseBtn;
-        private Button editCourseBtn;
-        private Button deleteCourseBtn;
+        private DataGridView coursesGrid = null!;
+        private Button addCourseBtn = null!;
+        private Button editCourseBtn = null!;
+        private Button deleteCourseBtn = null!;
 
         // Vocabulary Tab Controls
-        private DataGridView vocabularyGrid;
-        private Button addVocabularyBtn;
-        private Button editVocabularyBtn;
-        private Button deleteVocabularyBtn;
+        private DataGridView vocabularyGrid = null!;
+        private Button addVocabularyBtn = null!;
+        private Button editVocabularyBtn = null!;
+        private Button deleteVocabularyBtn = null!;
 
         public AdminPanelForm(User currentUser)
         {
@@ -353,9 +353,9 @@ namespace EnglishAutomationApp.Forms
             {
                 studentsGrid.Rows.Add(
                     student.Id,
-                    student.Email,
-                    student.FirstName,
-                    student.LastName,
+                    student.Email ?? "",
+                    student.FirstName ?? "",
+                    student.LastName ?? "",
                     student.CreatedDate,
                     student.IsActive ? "Evet" : "Hayır"
                 );
@@ -381,8 +381,8 @@ namespace EnglishAutomationApp.Forms
             {
                 coursesGrid.Rows.Add(
                     course.Id,
-                    course.Title,
-                    course.Description,
+                    course.Title ?? "",
+                    course.Description ?? "",
                     course.LevelText,
                     course.TypeText,
                     course.PriceText,
@@ -410,18 +410,18 @@ namespace EnglishAutomationApp.Forms
             {
                 vocabularyGrid.Rows.Add(
                     word.Id,
-                    word.EnglishWord,
-                    word.TurkishMeaning,
-                    word.Pronunciation,
+                    word.EnglishWord ?? "",
+                    word.TurkishMeaning ?? "",
+                    word.Pronunciation ?? "",
                     word.DifficultyText,
                     word.PartOfSpeechText,
-                    word.Category
+                    word.Category ?? ""
                 );
             }
         }
 
         // Event handlers for buttons
-        private async void AddStudentBtn_Click(object sender, EventArgs e)
+        private async void AddStudentBtn_Click(object? sender, EventArgs e)
         {
             var addStudentForm = new AddStudentForm();
             if (addStudentForm.ShowDialog() == DialogResult.OK)
@@ -430,7 +430,7 @@ namespace EnglishAutomationApp.Forms
             }
         }
 
-        private void EditStudentBtn_Click(object sender, EventArgs e)
+        private void EditStudentBtn_Click(object? sender, EventArgs e)
         {
             if (studentsGrid.SelectedRows.Count > 0)
             {
@@ -439,13 +439,13 @@ namespace EnglishAutomationApp.Forms
             }
         }
 
-        private void DeleteStudentBtn_Click(object sender, EventArgs e)
+        private void DeleteStudentBtn_Click(object? sender, EventArgs e)
         {
             if (studentsGrid.SelectedRows.Count > 0)
             {
-                var result = MessageBox.Show("Seçili öğrenciyi silmek istediğinizden emin misiniz?", 
+                var result = MessageBox.Show("Seçili öğrenciyi silmek istediğinizden emin misiniz?",
                     "Onay", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                
+
                 if (result == DialogResult.Yes)
                 {
                     // Implementation for deleting student
@@ -454,32 +454,32 @@ namespace EnglishAutomationApp.Forms
             }
         }
 
-        private void AddCourseBtn_Click(object sender, EventArgs e)
+        private void AddCourseBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kurs ekleme özelliği yakında eklenecek.", "Bilgi");
         }
 
-        private void EditCourseBtn_Click(object sender, EventArgs e)
+        private void EditCourseBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kurs düzenleme özelliği yakında eklenecek.", "Bilgi");
         }
 
-        private void DeleteCourseBtn_Click(object sender, EventArgs e)
+        private void DeleteCourseBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kurs silme özelliği yakında eklenecek.", "Bilgi");
         }
 
-        private void AddVocabularyBtn_Click(object sender, EventArgs e)
+        private void AddVocabularyBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kelime ekleme özelliği yakında eklenecek.", "Bilgi");
         }
 
-        private void EditVocabularyBtn_Click(object sender, EventArgs e)
+        private void EditVocabularyBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kelime düzenleme özelliği yakında eklenecek.", "Bilgi");
         }
 
-        private void DeleteVocabularyBtn_Click(object sender, EventArgs e)
+        private void DeleteVocabularyBtn_Click(object? sender, EventArgs e)
         {
             MessageBox.Show("Kelime silme özelliği yakında eklenecek.", "Bilgi");
         }

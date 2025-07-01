@@ -9,14 +9,14 @@ namespace EnglishAutomationApp.Forms
 {
     public partial class AddStudentForm : Form
     {
-        private TextBox emailTextBox;
-        private TextBox firstNameTextBox;
-        private TextBox lastNameTextBox;
-        private TextBox passwordTextBox;
-        private TextBox confirmPasswordTextBox;
-        private CheckBox isActiveCheckBox;
-        private Button saveButton;
-        private Button cancelButton;
+        private TextBox emailTextBox = null!;
+        private TextBox firstNameTextBox = null!;
+        private TextBox lastNameTextBox = null!;
+        private TextBox passwordTextBox = null!;
+        private TextBox confirmPasswordTextBox = null!;
+        private CheckBox isActiveCheckBox = null!;
+        private Button saveButton = null!;
+        private Button cancelButton = null!;
 
         public AddStudentForm()
         {
@@ -182,7 +182,7 @@ namespace EnglishAutomationApp.Forms
             // Additional modern styling can be added here
         }
 
-        private async void SaveButton_Click(object sender, EventArgs e)
+        private async void SaveButton_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -207,25 +207,25 @@ namespace EnglishAutomationApp.Forms
 
                 if (success)
                 {
-                    MessageBox.Show("Öğrenci başarıyla eklendi!", "Başarılı", 
+                    MessageBox.Show("Öğrenci başarıyla eklendi!", "Başarılı",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
                 else
                 {
-                    MessageBox.Show("Öğrenci eklenirken bir hata oluştu.", "Hata", 
+                    MessageBox.Show("Öğrenci eklenirken bir hata oluştu.", "Hata",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Hata: {ex.Message}", "Hata", 
+                MessageBox.Show($"Hata: {ex.Message}", "Hata",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object? sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
