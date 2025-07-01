@@ -20,16 +20,22 @@ namespace EnglishAutomationApp.Views.Pages
         private ComboBox categoryFilter = null!;
         private ComboBox difficultyFilter = null!;
         private Button addWordButton = null!;
-        private Button studyModeButton = null!;
         private Label statsLabel = null!;
 
         private List<VocabularyWord> allWords = new List<VocabularyWord>();
         private List<VocabularyWord> filteredWords = new List<VocabularyWord>();
+        private bool isEnglish = true;
 
         public VocabularyUserControl()
         {
             InitializeComponent();
             LoadDataAsync();
+        }
+
+        public void SetLanguage(bool english)
+        {
+            isEnglish = english;
+            UpdateLanguage();
         }
 
         private void InitializeComponent()
@@ -78,12 +84,13 @@ namespace EnglishAutomationApp.Views.Pages
             toolbarPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 60,
+                Height = 100, // Increased height for two rows
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 Padding = new Padding(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small,
                                     ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small)
             };
 
+            // First row - Search and filters
             // Search box
             searchBox = ModernUIHelper.CreateModernTextBox("Search words...");
             searchBox.Location = new Point(ModernUIHelper.Spacing.Large, ModernUIHelper.Spacing.Small);
@@ -117,33 +124,30 @@ namespace EnglishAutomationApp.Views.Pages
             difficultyFilter.SelectedIndex = 0;
             difficultyFilter.SelectedIndexChanged += DifficultyFilter_SelectedIndexChanged;
 
+            // Second row - Action buttons (improved spacing and sizing)
             // Add word button
-            addWordButton = ModernUIHelper.CreateIconButton("Add Word", "+", ModernUIHelper.Colors.Secondary, 120);
-            addWordButton.Location = new Point(500, ModernUIHelper.Spacing.Small);
-            addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            addWordButton = ModernUIHelper.CreateIconButton("+ Add Word", "➕", ModernUIHelper.Colors.Secondary, 130);
+            addWordButton.Location = new Point(ModernUIHelper.Spacing.Large, 50);
+            addWordButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             addWordButton.Click += AddWordButton_Click;
 
-            // Study mode button
-            studyModeButton = ModernUIHelper.CreateIconButton("Study Mode", "📚", ModernUIHelper.Colors.Primary, 140);
-            studyModeButton.Location = new Point(630, ModernUIHelper.Spacing.Small);
-            studyModeButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            studyModeButton.Click += StudyModeButton_Click;
+
 
             // Review button
-            var reviewButton = ModernUIHelper.CreateIconButton("Review", "🔄", ModernUIHelper.Colors.Secondary, 120);
-            reviewButton.Location = new Point(780, ModernUIHelper.Spacing.Small);
-            reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            var reviewButton = ModernUIHelper.CreateIconButton("🔄 Review", "📝", ModernUIHelper.Colors.Secondary, 130);
+            reviewButton.Location = new Point(170, 50);
+            reviewButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             reviewButton.Click += ReviewButton_Click;
 
             // Stats button
-            var statsButton = ModernUIHelper.CreateIconButton("Stats", "📊", ModernUIHelper.Colors.Warning, 100);
-            statsButton.Location = new Point(910, ModernUIHelper.Spacing.Small);
-            statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            var statsButton = ModernUIHelper.CreateIconButton("📊 Stats", "📈", ModernUIHelper.Colors.Warning, 120);
+            statsButton.Location = new Point(320, 50);
+            statsButton.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             statsButton.Click += StatsButton_Click;
 
             toolbarPanel.Controls.AddRange(new Control[]
             {
-                searchBox, categoryFilter, difficultyFilter, addWordButton, studyModeButton, reviewButton, statsButton
+                searchBox, categoryFilter, difficultyFilter, addWordButton, reviewButton, statsButton
             });
         }
 
@@ -187,8 +191,8 @@ namespace EnglishAutomationApp.Views.Pages
                 categoryFilter.Items.AddRange(categories.ToArray());
                 categoryFilter.SelectedIndex = 0;
 
-                UpdateStatsLabel();
-                DisplayWords();
+                // Apply filters to show all words initially
+                ApplyFilters();
             }
             catch (Exception ex)
             {
@@ -211,18 +215,41 @@ namespace EnglishAutomationApp.Views.Pages
                     var masteredWords = userStats.GetValueOrDefault("MasteredWords", 0);
                     var currentStreak = userStats.GetValueOrDefault("CurrentStreak", 0);
 
-                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} | " +
-                                     $"Learned: {learnedWords} | Mastered: {masteredWords} | " +
-                                     $"Streak: {currentStreak} days 🔥";
+                    if (isEnglish)
+                    {
+                        statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} | " +
+                                         $"Learned: {learnedWords} | Mastered: {masteredWords} | " +
+                                         $"Streak: {currentStreak} days 🔥";
+                    }
+                    else
+                    {
+                        statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} | " +
+                                         $"Öğrenilen: {learnedWords} | Ustalaşılan: {masteredWords} | " +
+                                         $"Seri: {currentStreak} gün 🔥";
+                    }
                 }
                 catch
                 {
-                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                    if (isEnglish)
+                    {
+                        statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                    }
+                    else
+                    {
+                        statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} kelime";
+                    }
                 }
             }
             else
             {
-                statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                if (isEnglish)
+                {
+                    statsLabel.Text = $"Total: {totalWords} words | Showing: {displayedWords} words";
+                }
+                else
+                {
+                    statsLabel.Text = $"Toplam: {totalWords} kelime | Gösterilen: {displayedWords} kelime";
+                }
             }
         }
 
@@ -270,30 +297,30 @@ namespace EnglishAutomationApp.Views.Pages
                 card.Controls.Add(exampleLabel);
             }
 
-            // Difficulty and category badges
+            // Difficulty and category badges (bigger size)
             var difficultyLabel = new Label
             {
                 Text = word.DifficultyText,
-                Font = ModernUIHelper.Fonts.Small,
+                Font = ModernUIHelper.Fonts.Body,
                 ForeColor = Color.White,
                 BackColor = GetDifficultyColor(word.Difficulty),
                 TextAlign = ContentAlignment.MiddleCenter,
-                Location = new Point(card.Width - 180, 10),
-                Size = new Size(70, 20),
-                Padding = new Padding(4),
+                Location = new Point(card.Width - 220, 10),
+                Size = new Size(110, 35),
+                Padding = new Padding(8),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
             var categoryLabel = new Label
             {
                 Text = word.Category ?? "General",
-                Font = ModernUIHelper.Fonts.Small,
+                Font = ModernUIHelper.Fonts.Body,
                 ForeColor = ModernUIHelper.Colors.TextSecondary,
                 BackColor = ModernUIHelper.Colors.SurfaceVariant,
                 TextAlign = ContentAlignment.MiddleCenter,
                 Location = new Point(card.Width - 100, 10),
-                Size = new Size(80, 20),
-                Padding = new Padding(4),
+                Size = new Size(110, 35),
+                Padding = new Padding(8),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right
             };
 
@@ -328,7 +355,6 @@ namespace EnglishAutomationApp.Views.Pages
             };
         }
 
-        // Event Handlers
         private void SearchBox_TextChanged(object? sender, EventArgs e)
         {
             ApplyFilters();
@@ -364,6 +390,7 @@ namespace EnglishAutomationApp.Views.Pages
 
                 // Difficulty filter
                 var matchesDifficulty = selectedDifficulty == "All Levels" ||
+                    selectedDifficulty == "Tüm Seviyeler" ||
                     word.DifficultyText == selectedDifficulty;
 
                 return matchesSearch && matchesCategory && matchesDifficulty;
@@ -381,19 +408,7 @@ namespace EnglishAutomationApp.Views.Pages
             }
         }
 
-        private void StudyModeButton_Click(object? sender, EventArgs e)
-        {
-            if (filteredWords.Any())
-            {
-                var studyForm = new StudyModeForm(filteredWords);
-                studyForm.ShowDialog();
-            }
-            else
-            {
-                MessageBox.Show("No words available for study mode.", "Study Mode",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
+
 
         private void EditWord(VocabularyWord word)
         {
@@ -446,7 +461,6 @@ namespace EnglishAutomationApp.Views.Pages
 
                     // Refresh the vocabulary list after review
                     LoadDataAsync();
-
                 }
                 else
                 {
@@ -477,7 +491,6 @@ namespace EnglishAutomationApp.Views.Pages
             }
 
             try
-
             {
                 // Open stats form
                 var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id, isEnglish);
@@ -495,16 +508,58 @@ namespace EnglishAutomationApp.Views.Pages
         private void UpdateLanguage()
         {
             if (isEnglish)
+            {
+                // English
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📖 Vocabulary Learning";
 
-            {
-                var statsForm = new VocabularyStatsForm(AuthenticationService.CurrentUser.Id);
-                statsForm.ShowDialog();
+                searchBox.PlaceholderText = "Search words...";
+                addWordButton.Text = "+ Add Word";
+
+                // Update filter items
+                if (categoryFilter.Items.Count > 0)
+                {
+                    var selectedCategory = categoryFilter.SelectedItem?.ToString();
+                    categoryFilter.Items[0] = "All Categories";
+                    if (selectedCategory == "Tüm Kategoriler") categoryFilter.SelectedIndex = 0;
+                }
+
+                if (difficultyFilter.Items.Count > 0)
+                {
+                    var selectedDifficulty = difficultyFilter.SelectedIndex;
+                    difficultyFilter.Items.Clear();
+                    difficultyFilter.Items.AddRange(new[] { "All Levels", "Beginner", "Intermediate", "Advanced" });
+                    difficultyFilter.SelectedIndex = selectedDifficulty >= 0 ? selectedDifficulty : 0;
+                }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error loading statistics: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // Turkish
+                var titleLabel = headerPanel.Controls.OfType<Label>().FirstOrDefault();
+                if (titleLabel != null) titleLabel.Text = "📖 Kelime Öğrenme";
+
+                searchBox.PlaceholderText = "Kelime ara...";
+                addWordButton.Text = "+ Kelime Ekle";
+
+                // Update filter items
+                if (categoryFilter.Items.Count > 0)
+                {
+                    var selectedCategory = categoryFilter.SelectedItem?.ToString();
+                    categoryFilter.Items[0] = "Tüm Kategoriler";
+                    if (selectedCategory == "All Categories") categoryFilter.SelectedIndex = 0;
+                }
+
+                if (difficultyFilter.Items.Count > 0)
+                {
+                    var selectedDifficulty = difficultyFilter.SelectedIndex;
+                    difficultyFilter.Items.Clear();
+                    difficultyFilter.Items.AddRange(new[] { "Tüm Seviyeler", "Başlangıç", "Orta", "İleri" });
+                    difficultyFilter.SelectedIndex = selectedDifficulty >= 0 ? selectedDifficulty : 0;
+                }
             }
+
+            // Update stats label
+            UpdateStatsLabel();
         }
     }
 }
