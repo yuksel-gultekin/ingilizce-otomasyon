@@ -79,11 +79,12 @@ namespace EnglishAutomationApp.Services
                 {
                     Email = email.ToLower(),
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-                    FirstName = firstName,
-                    LastName = lastName,
+                    FirstName = string.IsNullOrWhiteSpace(firstName) ? null : firstName.Trim(),
+                    LastName = string.IsNullOrWhiteSpace(lastName) ? null : lastName.Trim(),
                     Role = "User",
                     IsActive = true,
-                    CreatedDate = DateTime.Now
+                    CreatedDate = DateTime.Now,
+                    LastLoginDate = null
                 };
 
                 System.Diagnostics.Debug.WriteLine("Calling CreateUserAsync...");

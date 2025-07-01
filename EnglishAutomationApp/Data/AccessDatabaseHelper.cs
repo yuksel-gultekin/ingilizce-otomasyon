@@ -150,11 +150,12 @@ namespace EnglishAutomationApp.Data
                 Id COUNTER PRIMARY KEY,
                 Email TEXT(255) NOT NULL,
                 PasswordHash TEXT(255) NOT NULL,
+                Role TEXT(50) NOT NULL,
                 FirstName TEXT(100),
                 LastName TEXT(100),
-                Role TEXT(50) NOT NULL,
                 IsActive INTEGER NOT NULL,
-                CreatedDate DATETIME NOT NULL
+                CreatedDate DATETIME NOT NULL,
+                LastLoginDate DATETIME
             )";
                 await ExecuteNonQueryAsync(connection, createUsersTable);
 
@@ -343,35 +344,9 @@ namespace EnglishAutomationApp.Data
 
         private static async Task SeedDataAsync(OleDbConnection connection)
         {
-            // Check if admin user already exists
-            var checkUserSql = "SELECT COUNT(*) FROM Users WHERE Email = ?";
-            using var checkUserCommand = new OleDbCommand(checkUserSql, connection);
-            checkUserCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
-            var userResult = await checkUserCommand.ExecuteScalarAsync();
-            var userCount = userResult != null ? (int)userResult : 0;
-
-            if (userCount == 0)
-            {
-                // Seed admin user
-                var adminSql = @"INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-                using var adminCommand = new OleDbCommand(adminSql, connection);
-                adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
-                adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
-                adminCommand.Parameters.AddWithValue("?", "Admin");
-                adminCommand.Parameters.AddWithValue("?", "User");
-                adminCommand.Parameters.AddWithValue("?", "Admin");
-                adminCommand.Parameters.AddWithValue("?", 1);
-                adminCommand.Parameters.AddWithValue("?", DateTime.Now);
-
-                await adminCommand.ExecuteNonQueryAsync();
-                System.Diagnostics.Debug.WriteLine("Admin user created successfully");
-            }
-
-            // Seed sample vocabulary words
+            
             await SeedVocabularyWordsAsync(connection);
 
-            // Seed sample courses
             await SeedCoursesAsync(connection);
         }
 
@@ -519,11 +494,12 @@ namespace EnglishAutomationApp.Data
                     Id = reader.GetInt32(0), // Id
                     Email = reader.GetString(1), // Email
                     PasswordHash = reader.GetString(2), // PasswordHash
-                    FirstName = reader.GetString(3), // FirstName
-                    LastName = reader.GetString(4), // LastName
-                    Role = reader.GetString(5), // Role
+                    Role = reader.GetString(3), // Role
+                    FirstName = reader.IsDBNull(4) ? null : reader.GetString(4), // FirstName
+                    LastName = reader.IsDBNull(5) ? null : reader.GetString(5), // LastName
                     IsActive = reader.GetInt32(6) == 1, // IsActive
-                    CreatedDate = reader.GetDateTime(7) // CreatedDate
+                    CreatedDate = reader.GetDateTime(7), // CreatedDate
+                    LastLoginDate = reader.IsDBNull(8) ? null : reader.GetDateTime(8) // LastLoginDate
                 };
             }
             return null;
@@ -580,11 +556,12 @@ namespace EnglishAutomationApp.Data
                         Id = reader.GetInt32(0), // Id
                         Email = reader.GetString(1), // Email
                         PasswordHash = reader.GetString(2), // PasswordHash
-                        FirstName = reader.IsDBNull(3) ? string.Empty : reader.GetString(3), // FirstName
-                        LastName = reader.IsDBNull(4) ? string.Empty : reader.GetString(4), // LastName
-                        Role = reader.GetString(5), // Role
+                        Role = reader.GetString(3), // Role
+                        FirstName = reader.IsDBNull(4) ? null : reader.GetString(4), // FirstName
+                        LastName = reader.IsDBNull(5) ? null : reader.GetString(5), // LastName
                         IsActive = reader.GetInt32(6) == 1, // IsActive
-                        CreatedDate = reader.GetDateTime(7) // CreatedDate
+                        CreatedDate = reader.GetDateTime(7), // CreatedDate
+                        LastLoginDate = reader.IsDBNull(8) ? null : reader.GetDateTime(8) // LastLoginDate
                     });
                 }
                 return users;
