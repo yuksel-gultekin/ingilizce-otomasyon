@@ -208,21 +208,30 @@ namespace EnglishAutomationApp.Data
 
         private static async Task SeedDataAsync(OleDbConnection connection)
         {
-            // Seed admin user
-            var adminSql = @"
-        INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // Check if admin user already exists
+            var checkUserSql = "SELECT COUNT(*) FROM Users WHERE Email = ?";
+            using var checkUserCommand = new OleDbCommand(checkUserSql, connection);
+            checkUserCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
+            var userResult = await checkUserCommand.ExecuteScalarAsync();
+            var userCount = userResult != null ? (int)userResult : 0;
 
-            using var adminCommand = new OleDbCommand(adminSql, connection);
-            adminCommand.Parameters.AddWithValue("?", "admin@engotomasyon.com");
-            adminCommand.Parameters.AddWithValue("?", BCrypt.Net.BCrypt.HashPassword("admin123"));
-            adminCommand.Parameters.AddWithValue("?", "Admin");
-            adminCommand.Parameters.AddWithValue("?", "User");
-            adminCommand.Parameters.AddWithValue("?", "Admin");
-            adminCommand.Parameters.AddWithValue("?", 1); // true = 1
-            adminCommand.Parameters.AddWithValue("?", DateTime.Now);
+            if (userCount == 0)
+            {
+                // Seed admin user
+                var adminSql = @"INSERT INTO Users (Email, PasswordHash, FirstName, LastName, Role, IsActive, CreatedDate) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            await adminCommand.ExecuteNonQueryAsync();
+                using var adminCommand = new OleDbCommand(adminSql, connection);
+                adminCommand.Parameters.Add("@Email", OleDbType.VarChar, 255).Value = "admin@engotomasyon.com";
+                adminCommand.Parameters.Add("@PasswordHash", OleDbType.VarChar, 255).Value = BCrypt.Net.BCrypt.HashPassword("admin123");
+                adminCommand.Parameters.Add("@FirstName", OleDbType.VarChar, 100).Value = "Admin";
+                adminCommand.Parameters.Add("@LastName", OleDbType.VarChar, 100).Value = "User";
+                adminCommand.Parameters.Add("@Role", OleDbType.VarChar, 50).Value = "Admin";
+                adminCommand.Parameters.Add("@IsActive", OleDbType.Integer).Value = 1;
+                adminCommand.Parameters.Add("@CreatedDate", OleDbType.Date).Value = DateTime.Now;
+
+                await adminCommand.ExecuteNonQueryAsync();
+                System.Diagnostics.Debug.WriteLine("Admin user created successfully");
+            }
 
             // Seed sample vocabulary words
             await SeedVocabularyWordsAsync(connection);
@@ -696,129 +705,7 @@ namespace EnglishAutomationApp.Data
             }
         }
 
-        // Database management operations
-        public static string GetDatabaseInfo()
-        {
-            try
-            {
-                var dbPath = GetDatabasePath();
-                if (File.Exists(dbPath))
-                {
-                    var fileInfo = new FileInfo(dbPath);
-                    return $"Database Location: {dbPath}\n" +
-                           $"Database Size: {GetDatabaseSizeFormatted()}\n" +
-                           $"Last Modified: {fileInfo.LastWriteTime:yyyy-MM-dd HH:mm:ss}\n" +
-                           $"Status: Connected";
-                }
-                else
-                {
-                    return "Database Status: Not Found\n" +
-                           "The database will be created on first run.";
-                }
-            }
-            catch (Exception ex)
-            {
-                return $"Database Status: Error\n{ex.Message}";
-            }
-        }
 
-        public static string GetDatabaseSizeFormatted()
-        {
-            try
-            {
-                var dbPath = GetDatabasePath();
-                if (File.Exists(dbPath))
-                {
-                    var fileInfo = new FileInfo(dbPath);
-                    var sizeInBytes = fileInfo.Length;
-
-                    if (sizeInBytes < 1024)
-                        return $"{sizeInBytes} bytes";
-                    else if (sizeInBytes < 1024 * 1024)
-                        return $"{sizeInBytes / 1024.0:F1} KB";
-                    else
-                        return $"{sizeInBytes / (1024.0 * 1024.0):F1} MB";
-                }
-                return "0 bytes";
-            }
-            catch
-            {
-                return "Unknown";
-            }
-        }
-
-        public static void BackupDatabase()
-        {
-            try
-            {
-                var dbPath = GetDatabasePath();
-                if (!File.Exists(dbPath))
-                {
-                    MessageBox.Show("Database file not found.", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                var saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Title = "Save Database Backup";
-                saveFileDialog.Filter = "Access Database files (*.accdb)|*.accdb";
-                saveFileDialog.FileName = $"eng-otomasyon-backup-{DateTime.Now:yyyyMMdd-HHmmss}.accdb";
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    File.Copy(dbPath, saveFileDialog.FileName, true);
-                    MessageBox.Show($"Database backup created successfully:\n{saveFileDialog.FileName}",
-                        "Backup Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Backup failed: {ex.Message}", "Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public static void CompactDatabase()
-        {
-            try
-            {
-                // For Access databases, compacting requires special handling
-                // For now, we'll just show a message that the operation completed
-                MessageBox.Show("Database compacting completed successfully.",
-                    "Compact Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Compact failed: {ex.Message}", "Compact Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        public static void RestoreDatabase(string backupPath)
-        {
-            try
-            {
-                var dbPath = GetDatabasePath();
-
-                if (!File.Exists(backupPath))
-                {
-                    MessageBox.Show("Backup file not found.", "Restore Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Close any existing connections first
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
-                // Copy backup over current database
-                File.Copy(backupPath, dbPath, true);
-
-                MessageBox.Show("Database restored successfully. Please restart the application.",
-                    "Restore Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Restore failed: {ex.Message}", "Restore Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
     }
 }

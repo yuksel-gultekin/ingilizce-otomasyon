@@ -198,23 +198,7 @@ namespace EnglishAutomationApp.Services
             // Seed data is now handled by AccessDatabaseHelper.SeedDataAsync()
             // This method is kept for backward compatibility but does nothing
             await Task.CompletedTask;
-            return; // Exit early since seed data is handled by AccessDatabaseHelper
-
-            // Legacy code below - no longer used
-            var sampleWords = new List<VocabularyWord>
-            {
-                // Greetings
-                new VocabularyWord
-                {
-                    EnglishWord = "Hello",
-                    TurkishMeaning = "Merhaba",
-                    Pronunciation = "/həˈloʊ/",
-                    ExampleSentence = "Hello, how are you?",
-                    ExampleSentenceTurkish = "Merhaba, nasılsın?",
-                    Difficulty = WordDifficulty.Beginner,
-                    PartOfSpeech = PartOfSpeech.Interjection,
-                    Category = "Greetings"
-                },
+        }
                 new VocabularyWord
                 {
                     EnglishWord = "Goodbye",

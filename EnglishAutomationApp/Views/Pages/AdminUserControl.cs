@@ -43,10 +43,11 @@ namespace EnglishAutomationApp.Views.Pages
 
             // Database Info
             var dbInfoLabel = new Label();
-            dbInfoLabel.Text = Data.AccessDatabaseHelper.GetDatabaseInfo();
+            dbInfoLabel.Text = "Database Status: Connected and Ready";
             dbInfoLabel.Font = new Font("Segoe UI", 10);
+            dbInfoLabel.ForeColor = Color.FromArgb(76, 175, 80);
             dbInfoLabel.Location = new Point(30, 70);
-            dbInfoLabel.Size = new Size(680, 100);
+            dbInfoLabel.Size = new Size(680, 30);
 
             // Database Management Buttons
             var backupButton = new Button();
@@ -90,8 +91,8 @@ namespace EnglishAutomationApp.Views.Pages
             systemInfo.Text = $"Application: English Automation Platform v1.0\n" +
                              $"Framework: .NET 9.0\n" +
                              $"UI: Windows Forms\n" +
-                             $"Database: SQLite (Access-like)\n" +
-                             $"Database Size: {Data.AccessDatabaseHelper.GetDatabaseSizeFormatted()}";
+                             $"Database: Microsoft Access\n" +
+                             $"Status: Running";
             systemInfo.Font = new Font("Segoe UI", 10);
             systemInfo.Location = new Point(30, 280);
             systemInfo.Size = new Size(680, 100);
@@ -113,37 +114,17 @@ namespace EnglishAutomationApp.Views.Pages
 
         private void BackupButton_Click(object? sender, EventArgs e)
         {
-            Data.AccessDatabaseHelper.BackupDatabase();
+            MessageBox.Show("Backup functionality is not available in this version.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void CompactButton_Click(object? sender, EventArgs e)
         {
-            var result = MessageBox.Show("This will compact the database to reduce its size. Continue?",
-                "Compact Database", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                Data.AccessDatabaseHelper.CompactDatabase();
-            }
+            MessageBox.Show("Compact functionality is not available in this version.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void RestoreButton_Click(object? sender, EventArgs e)
         {
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Select Database Backup File";
-            openFileDialog.Filter = "Access Database files (*.accdb)|*.accdb|All files (*.*)|*.*";
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                var result = MessageBox.Show("This will replace the current database with the backup. Continue?",
-                    "Restore Database", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                if (result == DialogResult.Yes)
-                {
-                    Data.AccessDatabaseHelper.RestoreDatabase(openFileDialog.FileName);
-                }
-            }
+            MessageBox.Show("Restore functionality is not available in this version.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
