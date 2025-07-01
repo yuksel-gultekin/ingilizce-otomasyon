@@ -339,10 +339,17 @@ namespace EnglishAutomationApp.Views.Pages
 
             if (course != null)
             {
-                // Show course content form
-                var courseContentForm = new EnglishAutomationApp.Views.CourseContentForm(course, isEnglish);
-
-                courseContentForm.ShowDialog();
+                try
+                {
+                    // Show course content form with interactive lessons
+                    var courseContentForm = new CourseContentForm(course, isEnglish);
+                    courseContentForm.ShowDialog(this.FindForm());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening course: {ex.Message}", "Error",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
