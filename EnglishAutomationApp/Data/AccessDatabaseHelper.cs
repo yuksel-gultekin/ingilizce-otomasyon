@@ -210,8 +210,8 @@ namespace EnglishAutomationApp.Data
                 LessonType INTEGER NOT NULL,
                 OrderIndex INTEGER NOT NULL,
                 EstimatedDurationMinutes INTEGER,
-                VideoUrl TEXT(500),
-                AudioUrl TEXT(500),
+                VideoUrl TEXT(255),
+                AudioUrl TEXT(255),
                 IsActive INTEGER NOT NULL,
                 CreatedDate DATETIME NOT NULL
             )";
